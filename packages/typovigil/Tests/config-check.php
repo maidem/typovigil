@@ -11,6 +11,9 @@ declare(strict_types=1);
  */
 
 $extensionDir = dirname(__DIR__);
+// packages/typovigil/Tests -> project root
+require_once dirname(__DIR__, 3) . '/vendor/autoload.php';
+
 $failed = false;
 
 function report(bool $ok, string $message): void
