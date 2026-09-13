@@ -71,6 +71,9 @@ body {
     width: 100%;
     margin-inline: auto;
     padding-inline: 20px;
+    /* Breathing room below the badges: flush against the window edge reads as
+       a cut-off page rather than a finished one. */
+    padding-block-end: 32px;
     box-sizing: border-box;
 }
 
@@ -583,14 +586,14 @@ body {
    <details> element: it opens, closes and takes keyboard focus on its own, and
    still works with JavaScript disabled. */
 
+/* Full width on purpose: the user menu belongs at the window edge like the
+   backend's own, not aligned to the content column. */
 .tv-topbar {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: 16px;
-    max-width: 1180px;
-    margin-inline: auto;
-    padding: 14px 20px 0;
+    padding: 14px 24px 0;
 }
 
 .tv-user {
