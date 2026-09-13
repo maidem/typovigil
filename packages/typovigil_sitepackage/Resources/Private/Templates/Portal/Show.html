@@ -1,0 +1,60 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+
+<!-- No f:layout: Layouts/ holds page layouts only, and a plugin rendered into a
+     content element brings its own markup. -->
+<div class="tv-portal">
+        <p><f:link.action action="list" class="tv-back">&larr; All installations</f:link.action></p>
+
+        <h1>{project.title}</h1>
+
+        <p class="tv-state tv-state--{project.worstSeverity}">
+            <f:switch expression="{project.worstSeverity}">
+                <f:case value="critical">
+                    <strong>Security update required.</strong>
+                    {project.counts.critical} of {project.packageCount} components are affected by a known vulnerability.
+                </f:case>
+                <f:case value="outdated">
+                    <strong>Updates available.</strong>
+                    {project.updatesAvailable} of {project.packageCount} components are out of date.
+                </f:case>
+                <f:defaultCase>
+                    <strong>Everything is up to date.</strong>
+                    All {project.packageCount} components are on their current version.
+                </f:defaultCase>
+            </f:switch>
+        </p>
+
+        <dl class="tv-facts">
+            <dt>TYPO3 version</dt>
+            <dd>
+                <f:if condition="{project.coreVersion}">
+                    <f:then>{project.coreVersion}</f:then>
+                    <f:else>unknown</f:else>
+                </f:if>
+            </dd>
+
+            <dt>Last checked</dt>
+            <dd>
+                <f:if condition="{project.hasReported}">
+                    <f:then><f:format.date format="d.m.Y H:i">{project.lastReportAt}</f:format.date></f:then>
+                    <f:else>never</f:else>
+                </f:if>
+            </dd>
+        </dl>
+
+        <f:if condition="{project.isStale}">
+            <p class="tv-warning">
+                This installation has not reported recently, so the figures above may
+                be out of date. Please get in touch if this persists.
+            </p>
+        </f:if>
+
+        <p class="tv-note">
+            For the full list of affected components, please contact your agency.
+        </p>
+</div>
+
+</html>

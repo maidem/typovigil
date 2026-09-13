@@ -1318,10 +1318,12 @@
             "dist": {
                 "type": "path",
                 "url": "./packages/typovigil_sitepackage",
-                "reference": "b9c5078cceffa20c28830dd05499979e3f639477"
+                "reference": "478b72574eec31737546742153b9fefbd65230ce"
             },
             "require": {
+                "maidemde/typovigil": "@dev",
                 "typo3/cms-core": "^14.0",
+                "typo3/cms-felogin": "^14.0",
                 "typo3/cms-fluid-styled-content": "^14.0",
                 "typo3/cms-rte-ckeditor": "^14.0"
             },

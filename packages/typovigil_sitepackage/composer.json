@@ -3,8 +3,12 @@
     "type": "typo3-cms-extension",
     "description": "",
     "homepage": "https://maidem.de",
-    "license": ["GPL-2.0-or-later"],
-    "keywords": ["TYPO3 CMS"],
+    "license": [
+        "GPL-2.0-or-later"
+    ],
+    "keywords": [
+        "TYPO3 CMS"
+    ],
     "version": "1.0.0",
     "authors": [
         {
@@ -14,9 +18,11 @@
         }
     ],
     "require": {
+        "maidemde/typovigil": "@dev",
         "typo3/cms-core": "^14.0",
-        "typo3/cms-rte-ckeditor": "^14.0",
-        "typo3/cms-fluid-styled-content": "^14.0"
+        "typo3/cms-felogin": "^14.0",
+        "typo3/cms-fluid-styled-content": "^14.0",
+        "typo3/cms-rte-ckeditor": "^14.0"
     },
     "autoload": {
         "psr-4": {

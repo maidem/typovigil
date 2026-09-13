@@ -3,3 +3,4 @@ label: 'TypoVigil Sitepackage'
 dependencies:
   - typo3/fluid-styled-content
   - typo3/fluid-styled-content-css
+  - typo3/felogin
