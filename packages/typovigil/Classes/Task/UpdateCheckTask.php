@@ -68,12 +68,17 @@ final class UpdateCheckTask extends AbstractTask
                 $severity = $resolver->resolve($installed, $latest, $packageAdvisories);
             }
 
-            $repository->updatePackage((int)$package['uid'], [
-                'latest_version' => $latest,
-                'severity' => $severity->value,
-                'advisory_json' => $packageAdvisories === [] ? '' : json_encode($packageAdvisories, JSON_THROW_ON_ERROR),
-                'checked_at' => $now,
-            ]);
+            $repository->updatePackage(
+                (int)($package['project'] ?? 0),
+                (string)($package['composer_name'] ?? ''),
+                (string)($package['extension_key'] ?? ''),
+                [
+                    'latest_version' => $latest,
+                    'severity' => $severity->value,
+                    'advisory_json' => $packageAdvisories === [] ? '' : json_encode($packageAdvisories, JSON_THROW_ON_ERROR),
+                    'checked_at' => $now,
+                ]
+            );
         }
 
         return true;

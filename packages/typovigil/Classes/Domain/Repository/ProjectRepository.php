@@ -192,11 +192,23 @@ final readonly class ProjectRepository
             ->update(self::TABLE_PROJECT, $values, ['uid' => $uid], [Connection::PARAM_INT]);
     }
 
-    public function updatePackage(int $uid, array $values): void
+    /**
+     * Addressed by (project, composer_name) rather than a surrogate key: the
+     * table has no TCA, so TYPO3's schema migration does not give it a uid, and
+     * that pair is the real identity of a row anyway.
+     */
+    public function updatePackage(int $project, string $composerName, string $extensionKey, array $values): void
     {
+        $identifier = ['project' => $project];
+        if ($composerName !== '') {
+            $identifier['composer_name'] = $composerName;
+        } else {
+            $identifier['extension_key'] = $extensionKey;
+        }
+
         $this->connectionPool
             ->getConnectionForTable(self::TABLE_PACKAGE)
-            ->update(self::TABLE_PACKAGE, $values, ['uid' => $uid], [Connection::PARAM_INT]);
+            ->update(self::TABLE_PACKAGE, $values, $identifier);
     }
 
     private function queryBuilder(string $table): \TYPO3\CMS\Core\Database\Query\QueryBuilder

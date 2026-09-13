@@ -71,11 +71,11 @@ RUN mkdir -p var public/fileadmin public/uploads \
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Checks that Apache serves at all, not that TYPO3 is fully migrated: tying the
-# health state to /typo3/ means a failed migration keeps the container out of
-# the proxy forever, so the site cannot even be reached to fix it.
+# Probes the backend, which answers even with an empty page tree. / would return
+# 404 until a site is configured, and curl treats that as failure — the container
+# would stay unhealthy forever and Traefik would never route to it.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-    CMD curl -fsS -o /dev/null http://localhost/ || exit 1
+    CMD curl -fsS -o /dev/null -H "X-Forwarded-Proto: https" http://localhost/typo3/ || exit 1
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["apache2-foreground"]

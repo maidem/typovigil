@@ -9,6 +9,9 @@ CREATE TABLE tx_typovigil_project (
     KEY token_hash (token_hash)
 );
 
+-- No uid: TYPO3's schema migration only adds one to tables that have TCA, and
+-- this one deliberately has none — it is written by the report middleware and
+-- never edited in the backend. Rows are addressed by (project, composer_name).
 CREATE TABLE tx_typovigil_package (
     project int(11) unsigned DEFAULT 0 NOT NULL,
     -- when the agent last reported this package; checked_at is something else
@@ -24,6 +27,7 @@ CREATE TABLE tx_typovigil_package (
     is_core tinyint(1) unsigned DEFAULT 0 NOT NULL,
 
     KEY project (project),
+    KEY project_package (project, composer_name),
     KEY severity (severity)
 );
 
