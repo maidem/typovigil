@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2026-09-13T00:00:00Z" product-name="typovigil">
+        <header/>
+        <body>
+            <trans-unit id="tx_typovigil_project">
+                <source>Monitored project</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.title">
+                <source>Title</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.token_hash">
+                <source>Token (hash)</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.token_hash.description">
+                <source>Only the hash is stored. The token itself is shown once when the project is created and cannot be recovered afterwards.</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.core_version">
+                <source>TYPO3 version</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.last_report_at">
+                <source>Last report</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.fe_users">
+                <source>Visible to frontend users</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.fe_users.description">
+                <source>These users can see this project's status in the frontend. Without an assignment nobody sees it.</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.notes">
+                <source>Notes</source>
+            </trans-unit>
+            <trans-unit id="tab.status">
+                <source>Status</source>
+            </trans-unit>
+            <trans-unit id="tab.access">
+                <source>Access</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

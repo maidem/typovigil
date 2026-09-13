@@ -1,0 +1,5 @@
+# additional.php and production.php are versioned on purpose: production.php
+# carries the Coolify/Docker configuration and must be present in the image.
+# settings.php stays out — it holds the encryption key and the ddev credentials.
+/settings.php
+/drushrc.php

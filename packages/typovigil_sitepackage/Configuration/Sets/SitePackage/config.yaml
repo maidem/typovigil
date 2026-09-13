@@ -1,0 +1,5 @@
+name: maidemde/typovigil-sitepackage
+label: 'TypoVigil Sitepackage'
+dependencies:
+  - typo3/fluid-styled-content
+  - typo3/fluid-styled-content-css

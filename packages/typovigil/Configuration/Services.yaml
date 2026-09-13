@@ -1,0 +1,18 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Maidemde\Typovigil\:
+    resource: '../Classes/*'
+
+  cache.typovigil:
+    class: 'TYPO3\CMS\Core\Cache\Frontend\FrontendInterface'
+    factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
+    arguments:
+      $identifier: 'typovigil'
+
+  Maidemde\Typovigil\Service\VersionCheckService:
+    arguments:
+      $cache: '@cache.typovigil'
