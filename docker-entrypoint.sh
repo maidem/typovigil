@@ -62,10 +62,26 @@ su -s /bin/bash www-data -c \
 #
 # A cron in the container rather than a scheduler task: it needs no record in
 # the database and therefore survives a redeploy onto a fresh volume.
+# A cron job inherits none of the container's environment, and the database
+# credentials arrive exactly that way. Without this the check runs on schedule
+# but cannot connect, failing silently every hour. Written 0600 and owned by
+# www-data: it holds the database password.
+# printf %q rather than wrapping in quotes by hand: a password containing a
+# quote, $ or backslash would otherwise produce a broken file, and the job
+# would fail silently every hour — the very bug this fixes.
+: > /var/www/html/var/cron-env.sh
+while IFS='=' read -r -d '' key value; do
+    case "$key" in
+        TYPO3_*) printf 'export %s=%q\n' "$key" "$value" >> /var/www/html/var/cron-env.sh ;;
+    esac
+done < <(env -0)
+chmod 0600 /var/www/html/var/cron-env.sh
+chown www-data:www-data /var/www/html/var/cron-env.sh
+
 printf '%s\n' \
     'SHELL=/bin/bash' \
     'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' \
-    '17 * * * * www-data cd /var/www/html && php vendor/bin/typo3 typovigil:check >> /var/log/typovigil-check.log 2>&1' \
+    '17 * * * * www-data . /var/www/html/var/cron-env.sh && cd /var/www/html && php vendor/bin/typo3 typovigil:check >> /var/log/typovigil-check.log 2>&1' \
     '' \
     > /etc/cron.d/typovigil
 chmod 0644 /etc/cron.d/typovigil
