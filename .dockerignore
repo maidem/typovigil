@@ -1,0 +1,13 @@
+.git
+.gitignore
+.ddev
+.github
+vendor
+var
+public/fileadmin
+public/typo3temp
+public/uploads
+config/system/settings.php
+*.md
+!README.md
+.DS_Store
