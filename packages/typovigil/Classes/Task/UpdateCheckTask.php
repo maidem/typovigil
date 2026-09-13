@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Maidemde\Typovigil\Task;
 
 use Maidemde\Typovigil\Domain\Repository\ProjectRepository;
-use Maidemde\Typovigil\Domain\Severity;
 use Maidemde\Typovigil\Service\SeverityResolver;
 use Maidemde\Typovigil\Service\VersionCheckService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -21,9 +20,12 @@ final class UpdateCheckTask extends AbstractTask
 {
     public function execute(): bool
     {
-        $repository = GeneralUtility::makeInstance(ProjectRepository::class);
-        $versions = GeneralUtility::makeInstance(VersionCheckService::class);
-        $resolver = GeneralUtility::makeInstance(SeverityResolver::class);
+        // Scheduler tasks are unserialized, not built by the container, so nothing
+        // injects constructor arguments — they have to be resolved by hand.
+        $container = GeneralUtility::getContainer();
+        $repository = $container->get(ProjectRepository::class);
+        $versions = $container->get(VersionCheckService::class);
+        $resolver = $container->get(SeverityResolver::class);
 
         $packages = $repository->findAllPackages();
         if ($packages === []) {
@@ -95,7 +97,7 @@ final class UpdateCheckTask extends AbstractTask
 
     public function getAdditionalInformation(): string
     {
-        $repository = GeneralUtility::makeInstance(ProjectRepository::class);
+        $repository = GeneralUtility::getContainer()->get(ProjectRepository::class);
 
         return sprintf('%d packages tracked', count($repository->findAllPackages()));
     }

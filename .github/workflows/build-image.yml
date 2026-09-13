@@ -54,7 +54,10 @@ jobs:
     notify-coolify:
         needs: build-and-push
         runs-on: ubuntu-latest
-        if: ${{ github.ref == 'refs/heads/main' }}
+        # Skipped entirely while the Tailscale credentials are placeholders:
+        # the action itself retries for over ten minutes before failing, which
+        # would hold up every later build in the queue.
+        if: ${{ github.ref == 'refs/heads/main' && vars.TAILSCALE_READY == 'yes' }}
         steps:
             # Coolify only listens inside the tailnet, so the runner joins it first.
             - name: Connect to Tailscale

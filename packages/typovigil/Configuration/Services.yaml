@@ -7,6 +7,17 @@ services:
   Maidemde\Typovigil\:
     resource: '../Classes/*'
 
+  # Scheduler tasks resolve these from the container themselves, which only works
+  # for services that are public.
+  Maidemde\Typovigil\Domain\Repository\ProjectRepository:
+    public: true
+
+  Maidemde\Typovigil\Service\SeverityResolver:
+    public: true
+
+  Maidemde\Typovigil\Service\StatusReportService:
+    public: true
+
   cache.typovigil:
     class: 'TYPO3\CMS\Core\Cache\Frontend\FrontendInterface'
     factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
@@ -14,5 +25,6 @@ services:
       $identifier: 'typovigil'
 
   Maidemde\Typovigil\Service\VersionCheckService:
+    public: true
     arguments:
       $cache: '@cache.typovigil'
