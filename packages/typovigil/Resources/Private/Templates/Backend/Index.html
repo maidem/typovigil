@@ -1,0 +1,85 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+
+<f:section name="Content">
+    <h1>TypoVigil</h1>
+
+    <f:if condition="{projects}">
+        <f:then>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>TYPO3</th>
+                        <th>Status</th>
+                        <th>Packages</th>
+                        <th>Last report</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <f:for each="{projects}" as="project">
+                        <tr>
+                            <td>
+                                <f:link.action action="show" arguments="{project: project.uid}">
+                                    <strong>{project.title}</strong>
+                                </f:link.action>
+                            </td>
+                            <td>
+                                <f:if condition="{project.coreVersion}">
+                                    <f:then>{project.coreVersion}</f:then>
+                                    <f:else><span class="text-muted">&ndash;</span></f:else>
+                                </f:if>
+                            </td>
+                            <td>
+                                <f:switch expression="{project.worstSeverity}">
+                                    <f:case value="critical">
+                                        <span class="badge bg-danger">{project.counts.critical} critical</span>
+                                    </f:case>
+                                    <f:case value="outdated">
+                                        <span class="badge bg-warning text-dark">{project.counts.outdated} outdated</span>
+                                    </f:case>
+                                    <f:defaultCase>
+                                        <span class="badge bg-success">up to date</span>
+                                    </f:defaultCase>
+                                </f:switch>
+                            </td>
+                            <td>{project.packageCount}</td>
+                            <td>
+                                <f:if condition="{project.hasReported}">
+                                    <f:then>
+                                        <f:if condition="{project.isStale}">
+                                            <f:then>
+                                                <span class="badge bg-danger" title="No report for over 48 hours - the agent may be broken">
+                                                    silent since
+                                                    <f:format.date format="d.m.Y H:i">{project.lastReportAt}</f:format.date>
+                                                </span>
+                                            </f:then>
+                                            <f:else>
+                                                <f:format.date format="d.m.Y H:i">{project.lastReportAt}</f:format.date>
+                                            </f:else>
+                                        </f:if>
+                                    </f:then>
+                                    <f:else>
+                                        <span class="badge bg-secondary">never reported</span>
+                                    </f:else>
+                                </f:if>
+                            </td>
+                        </tr>
+                    </f:for>
+                </tbody>
+            </table>
+        </f:then>
+        <f:else>
+            <div class="callout callout-info">
+                <p>
+                    No projects yet. Create a record of type <em>Monitored project</em>
+                    in the list module; the access token is shown once when you save it.
+                </p>
+            </div>
+        </f:else>
+    </f:if>
+</f:section>
+
+</html>
