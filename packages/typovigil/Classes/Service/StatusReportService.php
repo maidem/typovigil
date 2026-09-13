@@ -40,7 +40,17 @@ final readonly class StatusReportService
     public function summariesForFrontendUser(int $feUserId, bool $seesAllProjects = false): array
     {
         return array_map(
-            fn(array $project): array => $this->summarize($project),
+            function (array $project): array {
+                $summary = $this->summarize($project);
+                // The customer list shows the components inline, so they have to
+                // travel with the summary — one query per project either way,
+                // since summarize() already loaded them to count severities.
+                $summary['packages'] = $this->sortBySeverity(
+                    $this->projects->findPackagesByProject((int)$project['uid'])
+                );
+
+                return $summary;
+            },
             $this->projects->findForFrontendUser($feUserId, $seesAllProjects)
         );
     }

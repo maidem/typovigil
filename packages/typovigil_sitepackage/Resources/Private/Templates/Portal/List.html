@@ -92,9 +92,44 @@
                             <p class="tv-card__stale">Meldet sich nicht — Angaben womöglich veraltet</p>
                         </f:if>
 
-                        <footer class="tv-card__foot">
-                            <f:link.action action="show" arguments="{project: project.uid}" class="tv-card__more">Details ansehen</f:link.action>
-                        </footer>
+                        <f:if condition="{project.packages}">
+                            <!-- <details> rather than a scripted toggle: it opens and
+                                 closes on its own, is reachable by keyboard, and still
+                                 works when JavaScript does not run. -->
+                            <details class="tv-details">
+                                <summary class="tv-details__summary">
+                                    <span class="tv-details__label">Details ansehen</span>
+                                    <span class="tv-details__hint">{project.packageCount} Komponenten</span>
+                                </summary>
+
+                                <ul class="tv-badges">
+                                    <f:for each="{project.packages}" as="package">
+                                        <li>
+                                            <span class="tv-badge tv-badge--{package.severity}{f:if(condition: package.is_core, then: ' tv-badge--core')}">
+                                                <span class="tv-badge__name">
+                                                    <f:if condition="{package.extension_key}">
+                                                        <f:then>{package.extension_key}</f:then>
+                                                        <f:else>{package.composer_name}</f:else>
+                                                    </f:if>
+                                                </span>
+                                                <span class="tv-badge__version">{package.installed_version}</span>
+                                                <f:if condition="{package.severity} != 'ok'">
+                                                    <span class="tv-badge__target" title="verfügbar: {package.latest_version}">
+                                                        &rarr; {package.latest_version}
+                                                    </span>
+                                                </f:if>
+                                            </span>
+                                        </li>
+                                    </f:for>
+                                </ul>
+
+                                <p class="tv-legend">
+                                    <span class="tv-legend__item"><span class="tv-dot tv-dot--ok"></span> aktuell</span>
+                                    <span class="tv-legend__item"><span class="tv-dot tv-dot--outdated"></span> Update verfügbar</span>
+                                    <span class="tv-legend__item"><span class="tv-dot tv-dot--critical"></span> Sicherheitslücke bekannt</span>
+                                </p>
+                            </details>
+                        </f:if>
                     </article>
                 </f:for>
             </div>

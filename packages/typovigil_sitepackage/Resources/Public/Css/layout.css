@@ -107,6 +107,12 @@ body {
     align-items: start;
 }
 
+/* An opened card holds dozens of badges, which do not fit a narrow column.
+   Letting it span the full row keeps them readable without a second page. */
+.tv-card:has(.tv-details[open]) {
+    grid-column: 1 / -1;
+}
+
 .tv-card {
     display: flex;
     flex-direction: column;
@@ -253,6 +259,64 @@ body {
 
 .tv-back {
     margin: 0 0 18px;
+}
+
+/* --- inline details ------------------------------------------------------ */
+
+.tv-details {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--tv-border);
+}
+
+.tv-details__summary {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    list-style: none;
+}
+
+/* Replace the native marker with one that follows the open state. */
+.tv-details__summary::-webkit-details-marker { display: none; }
+
+.tv-details__summary::before {
+    content: "›";
+    display: inline-block;
+    font-size: 1.1em;
+    line-height: 1;
+    transition: transform 0.15s;
+}
+
+.tv-details[open] .tv-details__summary::before {
+    transform: rotate(90deg);
+}
+
+.tv-details__summary:focus-visible {
+    outline: 2px solid var(--tv-text);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+.tv-details__hint {
+    color: var(--tv-muted);
+    font-weight: 400;
+}
+
+.tv-details .tv-badges {
+    margin-top: 14px;
+}
+
+/* Inside a card the badges sit closer together than on a full-width page. */
+.tv-details .tv-badge {
+    padding: 4px 10px;
+    font-size: 0.78rem;
+}
+
+.tv-details .tv-legend {
+    margin-top: 12px;
 }
 
 /* --- package badges ----------------------------------------------------- */
