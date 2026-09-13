@@ -45,10 +45,13 @@ Im **Backend** sieht die Agentur die vollständige Liste: jede Erweiterung mit
 installierter und verfügbarer Version, sortiert nach Dringlichkeit.
 
 Im **Frontend** können sich Kunden anmelden und den Zustand ihrer eigenen Seite
-einsehen — dort allerdings nur als Ampel mit Anzahl der anstehenden Updates,
-nicht als vollständige Paketliste. Der Grund ist bewusst gewählt: Eine
-detaillierte Aufstellung verwundbarer Versionen wäre eine fertige Anleitung für
-einen Angriff, falls ein Kundenzugang einmal in falsche Hände gerät.
+einsehen: als Übersicht mit Ampel je Installation und in der Detailansicht mit
+allen Komponenten als eingefärbte Kennzeichen samt Versionsnummer.
+
+Dass dort die vollständige Liste steht, ist eine bewusste Entscheidung des
+Betreibers und nicht selbstverständlich: Sie nennt die genaue Version jeder
+Komponente, auch der verwundbaren. Wer das nicht möchte, blendet die Liste im
+Kundenbereich aus und belässt es bei den Kennzahlen.
 
 Jeder Kunde sieht ausschließlich die ihm zugeordneten Projekte. Diese Prüfung
 findet im Programmcode selbst statt, nicht nur über den Seitenschutz — sonst
@@ -108,18 +111,34 @@ Dringlichkeit und die Trennung der Kundenzugänge.
 
 ## Projekt einrichten
 
+In der Zentrale:
+
 1. Im Backend einen Datensatz *Überwachtes Projekt* anlegen
 2. Beim Speichern erscheint einmalig ein Zugangsschlüssel. Gespeichert wird nur
    dessen Prüfsumme — später lässt er sich nicht erneut anzeigen
-3. Diesen Schlüssel zusammen mit der Adresse der Zentrale in der Konfiguration
-   des Agents auf der zu überwachenden Seite eintragen
-4. Im Reiter *Zugriff* festlegen, welche Frontend-Benutzer das Projekt sehen
+3. Im Reiter *Zugriff* festlegen, welche Frontend-Benutzer das Projekt sehen
    dürfen
 
-Anschließend im Scheduler beider Systeme je eine Aufgabe anlegen: auf der
-überwachten Seite das Melden, in der Zentrale den Abgleich. Zusätzlich meldet
-sich der Agent von selbst, sobald eine Erweiterung installiert oder entfernt
-wird.
+Auf der zu überwachenden Seite den Agent installieren und in
+`config/system/settings.php` eintragen:
+
+```php
+'typovigil_agent' => [
+    'hubUrl' => 'https://zentrale.example.org',
+    'token' => '<der kopierte Schlüssel>',
+],
+```
+
+Danach dort im Scheduler die Aufgabe *TypoVigil: send report* anlegen, täglich.
+
+Anschließend in der Zentrale den Abgleich als Scheduler-Aufgabe einrichten.
+Zusätzlich meldet sich der Agent von selbst, sobald eine Erweiterung installiert
+oder entfernt wird.
+
+Für einen neuen Kunden kommt ein Frontend-Benutzer im Ordner *Kunden* hinzu, der
+über Schritt 3 seinen Projekten zugeordnet wird. Wer alle Projekte sehen soll,
+kommt stattdessen in die Agentur-Gruppe; deren Nummer trägt man einmalig in den
+Einstellungen der Erweiterung ein.
 
 ## Deploying
 
