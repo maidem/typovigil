@@ -1,0 +1,102 @@
+#
+# Declares the settings this set ships in settings.yaml.
+#
+# Without these definitions TYPO3 v14 leaves every {$...} constant unresolved,
+# so the rendered page shows the literal placeholder instead of the value.
+# Every definition needs a label — the set is disabled outright without one.
+#
+categories:
+  typovigil:
+    label: 'TypoVigil'
+  typovigil.page:
+    label: 'Page'
+    parent: typovigil
+  typovigil.config:
+    label: 'Configuration'
+    parent: typovigil
+
+settings:
+  page.pageview.paths:
+    label: 'PageView template paths'
+    default: 'EXT:typovigil_sitepackage/Resources/Private/PageView/'
+    type: string
+    category: typovigil.page
+
+  page.meta.viewport:
+    label: 'Meta: viewport'
+    default: 'width=device-width, initial-scale=1'
+    type: string
+    category: typovigil.page
+  page.meta.robots:
+    label: 'Meta: robots'
+    default: 'index,follow'
+    type: string
+    category: typovigil.page
+  page.meta.apple-mobile-web-app-capable:
+    label: 'Meta: apple-mobile-web-app-capable'
+    default: 'no'
+    type: string
+    category: typovigil.page
+  page.meta.compatible:
+    label: 'Meta: X-UA-Compatible'
+    default: 'IE=edge'
+    type: string
+    category: typovigil.page
+
+  page.tracking.google.trackingID:
+    label: 'Google tracking ID'
+    default: ''
+    type: string
+    category: typovigil.page
+  page.tracking.google.anonymizeIp:
+    label: 'Google tracking: anonymize IP'
+    default: '1'
+    type: string
+    category: typovigil.page
+
+  styles.templates.layoutRootPath:
+    label: 'Content elements: layout root path'
+    default: 'EXT:typovigil_sitepackage/Resources/Private/ContentElements/Layouts/'
+    type: string
+    category: typovigil.page
+  styles.templates.partialRootPath:
+    label: 'Content elements: partial root path'
+    default: 'EXT:typovigil_sitepackage/Resources/Private/ContentElements/Partials/'
+    type: string
+    category: typovigil.page
+  styles.templates.templateRootPath:
+    label: 'Content elements: template root path'
+    default: 'EXT:typovigil_sitepackage/Resources/Private/ContentElements/Templates/'
+    type: string
+    category: typovigil.page
+
+  config.no_cache:
+    label: 'Disable caching'
+    default: '0'
+    type: string
+    category: typovigil.config
+  config.removeDefaultJS:
+    label: 'Remove default JavaScript'
+    default: '0'
+    type: string
+    category: typovigil.config
+  config.admPanel:
+    label: 'Admin panel'
+    default: '1'
+    type: string
+    category: typovigil.config
+  config.prefixLocalAnchors:
+    label: 'Prefix local anchors'
+    default: 'all'
+    type: string
+    category: typovigil.config
+  config.headerComment:
+    label: 'Header comment'
+    default: 'build by get.typo3.org/sitepackage'
+    type: string
+    category: typovigil.config
+  config.sendCacheHeaders:
+    label: 'Send cache headers'
+    default: '1'
+    type: string
+    category: typovigil.config

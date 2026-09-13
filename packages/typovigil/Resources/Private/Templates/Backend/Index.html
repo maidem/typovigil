@@ -80,6 +80,31 @@
             </div>
         </f:else>
     </f:if>
+
+    <!-- Reachability of the upstream sources at their last query. Unknown stays
+         neutral: a scheduler that has not run yet is not a broken source. -->
+    <p class="text-muted mt-4">
+        <strong class="me-2">Data sources</strong>
+        <f:for each="{sources}" as="source">
+            <f:switch expression="{source.state}">
+                <f:case value="ok">
+                    <span class="badge bg-success me-1" title="Last checked {source.checkedAtLabel}">
+                        {source.label}
+                    </span>
+                </f:case>
+                <f:case value="down">
+                    <span class="badge bg-danger me-1" title="No contact at the last check, {source.checkedAtLabel}">
+                        {source.label} &ndash; no contact
+                    </span>
+                </f:case>
+                <f:defaultCase>
+                    <span class="badge bg-secondary me-1" title="Not queried yet">
+                        {source.label} &ndash; not queried yet
+                    </span>
+                </f:defaultCase>
+            </f:switch>
+        </f:for>
+    </p>
 </f:section>
 
 </html>

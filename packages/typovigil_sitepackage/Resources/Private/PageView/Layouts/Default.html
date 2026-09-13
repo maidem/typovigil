@@ -1,3 +1,36 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:tv="http://typo3.org/ns/Maidemde/TypovigilSitepackage/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+<f:security.ifAuthenticated>
+    <!-- User area, top right like the backend's own. Only for logged-in
+         visitors: an anonymous page has nothing to log out of. -->
+    <div class="tv-topbar">
+        <f:variable name="displayName"><tv:frontendUser /></f:variable>
+
+        <details class="tv-user" data-tv-user>
+            <summary class="tv-user__summary">
+                <span class="tv-user__avatar" aria-hidden="true">{displayName -> f:format.crop(maxCharacters: 1, append: '')}</span>
+                <span>{displayName}</span>
+                <span class="tv-user__caret" aria-hidden="true">▾</span>
+            </summary>
+
+            <div class="tv-user__menu">
+                <span class="tv-user__name">Angemeldet als {displayName}</span>
+
+                <!-- POST, not a link: a GET logout can be triggered by any
+                     foreign page through an embedded <img src>. felogin needs
+                     no request token for logging out, only for logging in. -->
+                <form method="post" action="">
+                    <input type="hidden" name="logintype" value="logout" />
+                    <button type="submit" class="tv-user__logout">Abmelden</button>
+                </form>
+            </div>
+        </details>
+    </div>
+</f:security.ifAuthenticated>
+
 <ul>
     <f:for each="{mainnavigation}" as="mainnavigationItem">
         <li class="{f:if(condition: mainnavigationItem.active, then:'active')}">

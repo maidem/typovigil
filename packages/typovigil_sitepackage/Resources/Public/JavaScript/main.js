@@ -5,6 +5,29 @@
  * screen, so a server round trip would only add latency. Without JavaScript the
  * pills are inert and every card stays visible, which is the honest fallback.
  */
+/*
+ * Closes the user menu when clicking elsewhere. The <details> element handles
+ * opening, closing and keyboard access by itself — this only adds the
+ * click-outside behaviour a native <details> does not have.
+ */
+document.addEventListener('click', function (event) {
+    var menu = document.querySelector('[data-tv-user]');
+    if (menu && menu.open && !menu.contains(event.target)) {
+        menu.open = false;
+    }
+});
+
+document.addEventListener('keydown', function (event) {
+    if (event.key !== 'Escape') {
+        return;
+    }
+    var menu = document.querySelector('[data-tv-user]');
+    if (menu && menu.open) {
+        menu.open = false;
+        menu.querySelector('summary').focus();
+    }
+});
+
 document.addEventListener('DOMContentLoaded', function () {
     var bar = document.querySelector('[data-tv-filter]');
     if (!bar) {

@@ -401,6 +401,63 @@ body {
     gap: 6px;
 }
 
+/* --- data sources footer ------------------------------------------------- */
+
+.tv-sources {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 16px;
+    margin-top: 40px;
+    padding-top: 18px;
+    border-top: 1px solid var(--tv-border);
+    color: var(--tv-muted);
+    font-size: 0.82rem;
+}
+
+.tv-sources__label {
+    font-weight: 600;
+}
+
+.tv-sources__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tv-source {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 11px;
+    border: 1px solid var(--tv-border);
+    border-radius: var(--tv-radius-pill);
+    background: var(--tv-surface);
+}
+
+.tv-source--down {
+    border-color: color-mix(in srgb, var(--tv-critical) 35%, transparent);
+    background: var(--tv-critical-bg);
+    color: var(--tv-critical);
+}
+
+.tv-dot--down {
+    background: var(--tv-critical);
+}
+
+.tv-dot--unknown {
+    background: var(--tv-muted);
+    opacity: 0.5;
+}
+
+.tv-source__note {
+    font-style: italic;
+    opacity: 0.9;
+}
+
 /* --- empty states ------------------------------------------------------- */
 
 .tv-empty {
@@ -498,6 +555,118 @@ body {
     background: var(--tv-critical-bg);
     color: var(--tv-critical);
     font-size: 0.86rem;
+}
+
+/* --- user area ----------------------------------------------------------
+   Sits at the top right, like the backend's own user menu. The dropdown is a
+   <details> element: it opens, closes and takes keyboard focus on its own, and
+   still works with JavaScript disabled. */
+
+.tv-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+    max-width: 1180px;
+    margin-inline: auto;
+    padding: 14px 20px 0;
+}
+
+.tv-user {
+    position: relative;
+}
+
+.tv-user__summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 6px 8px;
+    border: 1px solid var(--tv-border);
+    border-radius: var(--tv-radius-pill);
+    background: var(--tv-surface);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+}
+
+.tv-user__summary::-webkit-details-marker { display: none; }
+
+.tv-user__summary:hover {
+    border-color: var(--tv-muted);
+}
+
+.tv-user__summary:focus-visible {
+    outline: 2px solid var(--tv-text);
+    outline-offset: 2px;
+}
+
+/* Initial in a circle — no avatar upload exists, and a letter reads better
+   than a generic silhouette. */
+.tv-user__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--tv-text);
+    color: var(--tv-surface);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+}
+
+.tv-user__caret {
+    color: var(--tv-muted);
+    font-size: 0.7rem;
+    transition: transform 0.15s;
+}
+
+.tv-user[open] .tv-user__caret {
+    transform: rotate(180deg);
+}
+
+.tv-user__menu {
+    position: absolute;
+    right: 0;
+    z-index: 10;
+    min-width: 200px;
+    margin-top: 6px;
+    padding: 8px;
+    border: 1px solid var(--tv-border);
+    border-radius: 12px;
+    background: var(--tv-surface);
+    box-shadow: 0 8px 24px rgb(16 16 26 / 12%);
+}
+
+.tv-user__name {
+    display: block;
+    padding: 6px 10px 10px;
+    border-bottom: 1px solid var(--tv-border);
+    color: var(--tv-muted);
+    font-size: 0.78rem;
+}
+
+/* Logout is a POST form, not a link: a plain GET link would let any foreign
+   page log the customer out through an embedded <img src>. */
+.tv-user__logout {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    padding: 9px 10px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--tv-text);
+    font: inherit;
+    font-size: 0.88rem;
+    text-align: left;
+    cursor: pointer;
+}
+
+.tv-user__logout:hover {
+    background: var(--tv-critical-bg);
+    color: var(--tv-critical);
 }
 
 /* --- page chrome -------------------------------------------------------- */

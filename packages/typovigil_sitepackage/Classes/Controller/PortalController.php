@@ -6,6 +6,7 @@ namespace Maidemde\TypovigilSitepackage\Controller;
 
 use Maidemde\Typovigil\Domain\Repository\ProjectRepository;
 use Maidemde\Typovigil\Service\StatusReportService;
+use Maidemde\Typovigil\Service\VersionCheckService;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Context\Context;
@@ -27,6 +28,7 @@ final class PortalController extends ActionController
         private readonly ProjectRepository $projects,
         private readonly Context $context,
         private readonly ExtensionConfiguration $extensionConfiguration,
+        private readonly VersionCheckService $versionCheck,
     ) {}
 
     public function listAction(): ResponseInterface
@@ -40,6 +42,7 @@ final class PortalController extends ActionController
 
         $this->view->assign('projects', $this->statusReport->summariesForFrontendUser($userId, $seesAll));
         $this->view->assign('seesAllProjects', $seesAll);
+        $this->view->assign('sources', $this->versionCheck->sourceStatus());
 
         return $this->htmlResponse();
     }
@@ -69,6 +72,7 @@ final class PortalController extends ActionController
         // not an oversight — the trade-off is that this page now names the exact
         // version of every component, including the vulnerable ones.
         $this->view->assign('project', $detail);
+        $this->view->assign('sources', $this->versionCheck->sourceStatus());
 
         return $this->htmlResponse();
     }

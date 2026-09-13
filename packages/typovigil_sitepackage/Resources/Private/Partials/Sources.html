@@ -1,0 +1,39 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+
+<!-- Which upstream sources answered at their last query. A source nobody has
+     asked yet stays neutral: on a fresh installation the scheduler has simply
+     not run, and a red badge there would be a false alarm. -->
+<footer class="tv-sources">
+    <span class="tv-sources__label">Datenquellen</span>
+
+    <ul class="tv-sources__list">
+        <f:for each="{sources}" as="source">
+            <li>
+                <!-- Zeitpunkt im title, nicht im Text: vier sichtbare Datumsangaben
+                     blähen den Footer auf, ohne im Normalfall zu interessieren.
+                     Der Text kommt fertig aus dem Service — ein Datum bedingt in
+                     einem Attributwert zusammenzusetzen, kann Fluid nicht. -->
+                <span
+                    class="tv-source tv-source--{source.state}"
+                    title="{f:if(condition: source.checkedAtLabel, then: 'zuletzt geprüft {source.checkedAtLabel}')}"
+                >
+                    <span class="tv-dot tv-dot--{source.state}"></span>
+                    <span class="tv-source__name">{source.label}</span>
+                    <f:switch expression="{source.state}">
+                        <f:case value="down">
+                            <span class="tv-source__note">kein Kontakt</span>
+                        </f:case>
+                        <f:case value="unknown">
+                            <span class="tv-source__note">noch nicht abgefragt</span>
+                        </f:case>
+                    </f:switch>
+                </span>
+            </li>
+        </f:for>
+    </ul>
+</footer>
+
+</html>

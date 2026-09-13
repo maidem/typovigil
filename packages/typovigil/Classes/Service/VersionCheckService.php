@@ -25,6 +25,25 @@ final readonly class VersionCheckService
     private const CACHE_LIFETIME = 3600;
     private const TIMEOUT = 15;
 
+    /**
+     * Reachability of each source, kept far longer than the answers themselves:
+     * the footer must still be able to say "no contact" long after a failed
+     * answer would have expired from the cache.
+     */
+    private const SOURCE_STATUS_KEY = 'source_status';
+    private const SOURCE_STATUS_LIFETIME = 604800; // 7 days
+
+    /**
+     * Host => label shown to the customer. Keyed by host so fetchJson() can
+     * attribute a URL to a source without every caller passing a name.
+     */
+    private const SOURCES = [
+        'get.typo3.org' => 'get.typo3.org',
+        'repo.packagist.org' => 'Packagist',
+        'packagist.org' => 'Sicherheitsmeldungen',
+        'extensions.typo3.org' => 'TYPO3 Extension Repository',
+    ];
+
     public function __construct(
         private FrontendInterface $cache,
         private RequestFactory $requestFactory,
@@ -47,6 +66,10 @@ final readonly class VersionCheckService
         }
 
         $data = $this->fetchJson(sprintf(self::PACKAGIST_PACKAGE, $composerName));
+        if ($data === []) {
+            return '';
+        }
+
         $versions = $data['packages'][$composerName] ?? [];
 
         $latest = '';
@@ -93,6 +116,10 @@ final readonly class VersionCheckService
 
         $query = http_build_query(['packages' => $composerNames]);
         $data = $this->fetchJson(self::PACKAGIST_ADVISORIES . '?' . $query);
+        if ($data === []) {
+            return [];
+        }
+
         $advisories = is_array($data['advisories'] ?? null) ? $data['advisories'] : [];
 
         $this->cache->set($cacheKey, $advisories, [], self::CACHE_LIFETIME);
@@ -119,6 +146,13 @@ final readonly class VersionCheckService
         }
 
         $data = $this->fetchJson(self::TYPO3_RELEASES);
+        if ($data === []) {
+            // Do not cache a failure: it would keep the footer showing "no
+            // contact" for an hour after the source is back, and would blank
+            // real version data in the meantime.
+            return [];
+        }
+
         $releases = [];
         foreach ($data[$major]['releases'] ?? [] as $release) {
             $version = (string)($release['version'] ?? '');
@@ -155,11 +189,73 @@ final readonly class VersionCheckService
         }
 
         $data = $this->fetchJson(sprintf(self::TER_EXTENSION, $extensionKey));
+        if ($data === []) {
+            return '';
+        }
+
         $name = (string)($data[0]['meta']['composer_name'] ?? '');
 
         $this->cache->set($cacheKey, $name, [], self::CACHE_LIFETIME);
 
         return $name;
+    }
+
+    /**
+     * Reachability of every source at its last attempt, for the footer.
+     *
+     * A source nobody has queried yet reports 'unknown' rather than a failure —
+     * on a fresh installation the scheduler simply has not run, and painting
+     * that red would be a false alarm.
+     *
+     * 'state' collapses the three cases into one value the templates can append
+     * to a class name — Fluid cannot nest a conditional inside an inline one.
+     *
+     * 'checkedAtLabel' is formatted here rather than in the templates: Fluid
+     * cannot nest a conditional date inside an attribute value, and both views
+     * want the same string.
+     *
+     * @return list<array{label: string, state: 'ok'|'down'|'unknown', checkedAt: int, checkedAtLabel: string}>
+     */
+    public function sourceStatus(): array
+    {
+        $stored = $this->cache->get(self::SOURCE_STATUS_KEY);
+        $stored = is_array($stored) ? $stored : [];
+
+        $status = [];
+        foreach (self::SOURCES as $host => $label) {
+            $entry = $stored[$host] ?? null;
+            $checkedAt = (int)($entry['at'] ?? 0);
+            $status[] = [
+                'label' => $label,
+                'state' => match (true) {
+                    $entry === null => 'unknown',
+                    (bool)($entry['ok'] ?? false) => 'ok',
+                    default => 'down',
+                },
+                'checkedAt' => $checkedAt,
+                'checkedAtLabel' => $checkedAt > 0 ? date('d.m.Y H:i', $checkedAt) : '',
+            ];
+        }
+
+        return $status;
+    }
+
+    /**
+     * Notes whether a source answered. Written on every attempt rather than only
+     * on failure, so a source that recovers stops being shown as broken.
+     */
+    private function recordSourceStatus(string $url, bool $ok): void
+    {
+        $host = parse_url($url, PHP_URL_HOST);
+        if (!is_string($host) || !isset(self::SOURCES[$host])) {
+            return;
+        }
+
+        $stored = $this->cache->get(self::SOURCE_STATUS_KEY);
+        $stored = is_array($stored) ? $stored : [];
+        $stored[$host] = ['ok' => $ok, 'at' => time()];
+
+        $this->cache->set(self::SOURCE_STATUS_KEY, $stored, [], self::SOURCE_STATUS_LIFETIME);
     }
 
     /**
@@ -178,11 +274,13 @@ final readonly class VersionCheckService
                     'url' => $url,
                     'status' => $response->getStatusCode(),
                 ]);
+                $this->recordSourceStatus($url, false);
 
                 return [];
             }
 
             $decoded = json_decode((string)$response->getBody(), true, 64, JSON_THROW_ON_ERROR);
+            $this->recordSourceStatus($url, true);
 
             return is_array($decoded) ? $decoded : [];
         } catch (\Throwable $e) {
@@ -192,6 +290,7 @@ final readonly class VersionCheckService
                 'url' => $url,
                 'exception' => $e->getMessage(),
             ]);
+            $this->recordSourceStatus($url, false);
 
             return [];
         }
