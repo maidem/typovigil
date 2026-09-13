@@ -43,6 +43,22 @@ RUN chmod +x /usr/local/bin/install-php-extensions \
 
 RUN a2enmod rewrite headers expires
 
+# The base image ships AllowOverride None, so TYPO3's public/.htaccess is never
+# evaluated. Its rules are applied here instead.
+#
+# CGIPassAuth matters for the report endpoint: without it the Authorization
+# header reaches apache_request_headers() but never $_SERVER, which is where
+# PSR-7 — and therefore TYPO3 — looks for it. Every bearer token would be
+# rejected with 401 while looking perfectly valid.
+RUN printf '%s\n' \
+    '<Directory /var/www/html/public>' \
+    '    AllowOverride All' \
+    '    Require all granted' \
+    '    CGIPassAuth On' \
+    '</Directory>' \
+    > /etc/apache2/conf-available/typo3.conf \
+    && a2enconf typo3
+
 RUN { \
     echo 'opcache.memory_consumption=128'; \
     echo 'opcache.interned_strings_buffer=8'; \
