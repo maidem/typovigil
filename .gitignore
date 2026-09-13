@@ -14,3 +14,6 @@ nbproject
 # Artefakte der Browser-Automatisierung und Editor-Einstellungen
 .playwright-mcp/
 .vscode/
+
+# Screenshots aus Browser-Tests
+/*.png

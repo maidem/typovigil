@@ -38,6 +38,12 @@ return [
         'scheduler' => [
             'maxLifetime' => '1440',
         ],
+        // Versioned on purpose: extension:setup runs on every container start and
+        // rewrites extension configuration from ext_conf_template.txt, which would
+        // reset this to its default and silently switch the agency role off.
+        'typovigil' => [
+            'agencyFeGroupId' => '2',
+        ],
     ],
     'FE' => [
         'cacheHash' => [
