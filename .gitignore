@@ -4,5 +4,9 @@ nbproject
 /var/*
 !/var/labels
 /vendor
+# public/ is generated, except the entry points: without index.php in the image
+# Apache has nothing to serve and answers 403 on / and 500 on /typo3/.
 /public/*
 !/public/.htaccess
+!/public/index.php
+!/public/typo3/
