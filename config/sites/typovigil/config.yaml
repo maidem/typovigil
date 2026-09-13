@@ -1,0 +1,18 @@
+base: 'https://typovigil.maidem.de'
+baseVariants:
+  -
+    base: 'https://typovigil.ddev.site/'
+    condition: 'applicationContext == "Development"'
+dependencies:
+  - maidemde/typovigil-sitepackage
+languages:
+  -
+    title: Deutsch
+    enabled: true
+    languageId: 0
+    base: /
+    locale: de_DE.UTF-8
+    navigationTitle: Deutsch
+    flag: de
+rootPageId: 1
+websiteTitle: TypoVigil
