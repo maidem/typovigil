@@ -81,9 +81,17 @@ jobs:
                           exit 0
                           ;;
                   esac
+                  # No --retry: Coolify answers only once the deployment has
+                  # finished, so a retry does not recover a slow call — it
+                  # starts the whole deployment again. Together with the
+                  # missing timeout this left the job hanging for ten minutes,
+                  # while the same call without retries takes eleven seconds in
+                  # the sibling project.
                   curl --silent --show-error --fail-with-body \
-                    --retry 3 --retry-all-errors \
+                    --max-time 120 \
                     --request POST \
                     --url "$WEBHOOK_URL" \
                     --header "Authorization: Bearer $WEBHOOK_TOKEN" \
+                    --output /tmp/coolify_response.txt \
                     --write-out "HTTP Status: %{http_code}\n"
+                  echo "Coolify deployment triggered"
