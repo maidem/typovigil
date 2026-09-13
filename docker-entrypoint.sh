@@ -56,4 +56,21 @@ su -s /bin/bash www-data -c \
     "php vendor/bin/typo3 extension:setup 2>&1" || \
     echo "[docker-entrypoint] WARNING: extension:setup exited non-zero - check output above"
 
+# Hourly upstream check. Without this nothing ever queries Packagist and
+# get.typo3.org: the agents keep reporting their versions, but no comparison
+# happens and every data source stays "not queried yet" in the footer.
+#
+# A cron in the container rather than a scheduler task: it needs no record in
+# the database and therefore survives a redeploy onto a fresh volume.
+printf '%s\n' \
+    'SHELL=/bin/bash' \
+    'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' \
+    '17 * * * * www-data cd /var/www/html && php vendor/bin/typo3 typovigil:check >> /var/log/typovigil-check.log 2>&1' \
+    '' \
+    > /etc/cron.d/typovigil
+chmod 0644 /etc/cron.d/typovigil
+touch /var/log/typovigil-check.log
+chown www-data:www-data /var/log/typovigil-check.log
+cron
+
 exec docker-php-entrypoint "$@"

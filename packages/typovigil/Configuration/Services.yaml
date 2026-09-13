@@ -18,6 +18,9 @@ services:
   Maidemde\Typovigil\Service\StatusReportService:
     public: true
 
+  Maidemde\Typovigil\Service\UpdateChecker:
+    public: true
+
   cache.typovigil:
     class: 'TYPO3\CMS\Core\Cache\Frontend\FrontendInterface'
     factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
@@ -28,3 +31,9 @@ services:
     public: true
     arguments:
       $cache: '@cache.typovigil'
+
+  Maidemde\Typovigil\Command\CheckUpdatesCommand:
+    tags:
+      - name: 'console.command'
+        command: 'typovigil:check'
+        description: 'Match reported packages against the upstream sources'
