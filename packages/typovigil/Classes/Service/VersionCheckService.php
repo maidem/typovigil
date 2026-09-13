@@ -6,6 +6,7 @@ namespace Maidemde\Typovigil\Service;
 
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\RequestFactory;
 
 /**
@@ -26,12 +27,13 @@ final readonly class VersionCheckService
     private const TIMEOUT = 15;
 
     /**
-     * Reachability of each source, kept far longer than the answers themselves:
-     * the footer must still be able to say "no contact" long after a failed
-     * answer would have expired from the cache.
+     * Reachability lives in a table, not in the cache: it records what happened
+     * rather than a result that can be recomputed, and the container entrypoint
+     * flushes every cache on start — a cached status disappeared with each
+     * deployment and the footer claimed "not queried yet" although the check
+     * had run.
      */
-    private const SOURCE_STATUS_KEY = 'source_status';
-    private const SOURCE_STATUS_LIFETIME = 604800; // 7 days
+    private const TABLE_SOURCE = 'tx_typovigil_source';
 
     /**
      * Host => label shown to the customer. Keyed by host so fetchJson() can
@@ -48,6 +50,7 @@ final readonly class VersionCheckService
         private FrontendInterface $cache,
         private RequestFactory $requestFactory,
         private LoggerInterface $logger,
+        private ConnectionPool $connectionPool,
     ) {}
 
     /**
@@ -218,18 +221,30 @@ final readonly class VersionCheckService
      */
     public function sourceStatus(): array
     {
-        $stored = $this->cache->get(self::SOURCE_STATUS_KEY);
-        $stored = is_array($stored) ? $stored : [];
+        return self::mapSourceRows($this->storedSourceRows());
+    }
 
+    /**
+     * Turns stored rows into what the footer renders, keyed by host.
+     *
+     * Static and free of dependencies so it can be checked on its own: the
+     * three-state mapping and the per-host attribution are the parts worth
+     * testing, and neither needs a database to be exercised.
+     *
+     * @param array<string, array{reachable: int|bool, checked_at: int}> $stored
+     * @return list<array{label: string, state: 'ok'|'down'|'unknown', checkedAt: int, checkedAtLabel: string}>
+     */
+    public static function mapSourceRows(array $stored): array
+    {
         $status = [];
         foreach (self::SOURCES as $host => $label) {
             $entry = $stored[$host] ?? null;
-            $checkedAt = (int)($entry['at'] ?? 0);
+            $checkedAt = (int)($entry['checked_at'] ?? 0);
             $status[] = [
                 'label' => $label,
                 'state' => match (true) {
                     $entry === null => 'unknown',
-                    (bool)($entry['ok'] ?? false) => 'ok',
+                    (bool)($entry['reachable'] ?? false) => 'ok',
                     default => 'down',
                 },
                 'checkedAt' => $checkedAt,
@@ -238,6 +253,37 @@ final readonly class VersionCheckService
         }
 
         return $status;
+    }
+
+    /**
+     * @return array<string, array{reachable: int, checked_at: int}>
+     */
+    private function storedSourceRows(): array
+    {
+        try {
+            $rows = $this->connectionPool
+                ->getConnectionForTable(self::TABLE_SOURCE)
+                ->select(['host', 'reachable', 'checked_at'], self::TABLE_SOURCE)
+                ->fetchAllAssociative();
+        } catch (\Throwable $e) {
+            // The footer must never take the page down — before the schema
+            // migration has run, this table does not exist yet.
+            $this->logger->warning('TypoVigil: cannot read source status', [
+                'exception' => $e->getMessage(),
+            ]);
+
+            return [];
+        }
+
+        $stored = [];
+        foreach ($rows as $row) {
+            $stored[(string)$row['host']] = [
+                'reachable' => (int)$row['reachable'],
+                'checked_at' => (int)$row['checked_at'],
+            ];
+        }
+
+        return $stored;
     }
 
     /**
@@ -251,11 +297,22 @@ final readonly class VersionCheckService
             return;
         }
 
-        $stored = $this->cache->get(self::SOURCE_STATUS_KEY);
-        $stored = is_array($stored) ? $stored : [];
-        $stored[$host] = ['ok' => $ok, 'at' => time()];
+        $values = ['reachable' => $ok ? 1 : 0, 'checked_at' => time()];
 
-        $this->cache->set(self::SOURCE_STATUS_KEY, $stored, [], self::SOURCE_STATUS_LIFETIME);
+        try {
+            $connection = $this->connectionPool->getConnectionForTable(self::TABLE_SOURCE);
+            // update-then-insert rather than a database-specific upsert: one row
+            // per host, and a failed check must never abort the whole run.
+            $updated = $connection->update(self::TABLE_SOURCE, $values, ['host' => $host]);
+            if ($updated === 0) {
+                $connection->insert(self::TABLE_SOURCE, $values + ['host' => $host]);
+            }
+        } catch (\Throwable $e) {
+            $this->logger->warning('TypoVigil: cannot record source status', [
+                'host' => $host,
+                'exception' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**

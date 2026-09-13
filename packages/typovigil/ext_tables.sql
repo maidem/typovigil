@@ -31,6 +31,23 @@ CREATE TABLE tx_typovigil_package (
     KEY severity (severity)
 );
 
+-- Reachability of each upstream source at its last query.
+--
+-- A table rather than the cache: this records what happened, not a result that
+-- can be recomputed. The entrypoint flushes every cache on container start, so
+-- a cached status vanished on each deployment and the footer fell back to
+-- "not queried yet" even though the check had run.
+--
+-- No uid, like tx_typovigil_package: no TCA, never edited in the backend. Rows
+-- are addressed by host.
+CREATE TABLE tx_typovigil_source (
+    host varchar(255) DEFAULT '' NOT NULL,
+    reachable tinyint(1) unsigned DEFAULT 0 NOT NULL,
+    checked_at int(11) unsigned DEFAULT 0 NOT NULL,
+
+    PRIMARY KEY (host)
+);
+
 CREATE TABLE tx_typovigil_project_feuser_mm (
     uid_local int(11) unsigned DEFAULT 0 NOT NULL,
     uid_foreign int(11) unsigned DEFAULT 0 NOT NULL,
