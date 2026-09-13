@@ -58,15 +58,20 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* The portal is the growing element; everything else keeps its natural height. */
-.tv-portal {
+/* <main> is the growing element; everything else keeps its natural height.
+   It has to be a direct child of the flex body — the plugin's own wrapper sits
+   too deep for flex-grow to reach it. */
+.tv-main {
     flex: 1 0 auto;
-    display: flex;
-    flex-direction: column;
 }
 
 .tv-sources {
-    margin-top: auto;
+    flex: 0 0 auto;
+    max-width: 1180px;
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: 20px;
+    box-sizing: border-box;
 }
 
 .tv-portal {
