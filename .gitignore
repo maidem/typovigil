@@ -10,3 +10,7 @@ nbproject
 !/public/.htaccess
 !/public/index.php
 !/public/typo3/
+
+# Artefakte der Browser-Automatisierung und Editor-Einstellungen
+.playwright-mcp/
+.vscode/
