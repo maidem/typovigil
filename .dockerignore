@@ -2,11 +2,14 @@
 .gitignore
 .ddev
 .github
-vendor
-var
-public/fileadmin
-public/typo3temp
-public/uploads
+/vendor
+# var/ must never reach the image: a DI cache built on this machine is invalid
+# in the container and makes TYPO3 instantiate services without their arguments.
+/var
+/public/fileadmin
+/public/typo3temp
+/public/uploads
+/public/_assets
 config/system/settings.php
 *.md
 !README.md
