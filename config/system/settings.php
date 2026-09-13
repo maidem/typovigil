@@ -1,13 +1,4 @@
 <?php
-
-/**
- * Base configuration, versioned on purpose so the container has one at all.
- *
- * Secrets are NOT stored here — the encryption key and the install tool password
- * come from the environment. Database values stay neutral: ddev overrides them in
- * additional.php, production.php does so from TYPO3_DATABASE_* on the server.
- */
-
 return [
     'BE' => [
         'debug' => false,
@@ -21,12 +12,12 @@ return [
         'Connections' => [
             'Default' => [
                 'charset' => 'utf8mb4',
+                'dbname' => '',
                 'defaultTableOptions' => [
                     'charset' => 'utf8mb4',
                     'collation' => 'utf8mb4_unicode_ci',
                 ],
                 'driver' => 'mysqli',
-                'dbname' => '',
                 'host' => '',
                 'password' => '',
                 'port' => 3306,
@@ -35,6 +26,15 @@ return [
         ],
     ],
     'EXTENSIONS' => [
+        'backend' => [
+            'backendFavicon' => '',
+            'backendLogo' => '',
+            'loginBackgroundImage' => '',
+            'loginFootnote' => '',
+            'loginHighlightColor' => '',
+            'loginLogo' => '',
+            'loginLogoAlt' => '',
+        ],
         'scheduler' => [
             'maxLifetime' => '1440',
         ],
@@ -83,7 +83,6 @@ return [
         ],
         'devIPmask' => '',
         'displayErrors' => 0,
-        // Without a key TYPO3 cannot sign anything and the backend login loops.
         'encryptionKey' => getenv('TYPO3_ENCRYPTION_KEY') ?: '',
         'exceptionalErrors' => 12290,
         'features' => [

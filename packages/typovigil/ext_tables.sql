@@ -11,6 +11,9 @@ CREATE TABLE tx_typovigil_project (
 
 CREATE TABLE tx_typovigil_package (
     project int(11) unsigned DEFAULT 0 NOT NULL,
+    -- when the agent last reported this package; checked_at is something else
+    -- entirely, namely when it was last matched against the upstream sources.
+    tstamp int(11) unsigned DEFAULT 0 NOT NULL,
     composer_name varchar(255) DEFAULT '' NOT NULL,
     extension_key varchar(255) DEFAULT '' NOT NULL,
     installed_version varchar(64) DEFAULT '' NOT NULL,
