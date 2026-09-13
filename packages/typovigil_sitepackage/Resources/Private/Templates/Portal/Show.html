@@ -6,55 +6,98 @@
 <!-- No f:layout: Layouts/ holds page layouts only, and a plugin rendered into a
      content element brings its own markup. -->
 <div class="tv-portal">
-        <p><f:link.action action="list" class="tv-back">&larr; All installations</f:link.action></p>
+    <p class="tv-back">
+        <f:link.action action="list">&larr; Alle Installationen</f:link.action>
+    </p>
 
-        <h1>{project.title}</h1>
+    <article class="tv-card tv-card--{project.worstSeverity} tv-card--detail">
+        <header class="tv-card__head">
+            <span class="tv-chip tv-chip--{project.worstSeverity}">
+                <f:switch expression="{project.worstSeverity}">
+                    <f:case value="critical">Sicherheitsupdate nötig</f:case>
+                    <f:case value="outdated">Updates verfügbar</f:case>
+                    <f:defaultCase>Aktuell</f:defaultCase>
+                </f:switch>
+            </span>
+        </header>
 
-        <p class="tv-state tv-state--{project.worstSeverity}">
+        <h1 class="tv-card__title">{project.title}</h1>
+
+        <p class="tv-lead">
             <f:switch expression="{project.worstSeverity}">
                 <f:case value="critical">
-                    <strong>Security update required.</strong>
-                    {project.counts.critical} of {project.packageCount} components are affected by a known vulnerability.
+                    {project.counts.critical} von {project.packageCount} Komponenten sind von einer bekannten Sicherheitslücke betroffen.
                 </f:case>
                 <f:case value="outdated">
-                    <strong>Updates available.</strong>
-                    {project.updatesAvailable} of {project.packageCount} components are out of date.
+                    {project.updatesAvailable} von {project.packageCount} Komponenten sind nicht auf dem neuesten Stand.
                 </f:case>
                 <f:defaultCase>
-                    <strong>Everything is up to date.</strong>
-                    All {project.packageCount} components are on their current version.
+                    Alle {project.packageCount} Komponenten sind auf ihrer aktuellen Version.
                 </f:defaultCase>
             </f:switch>
         </p>
 
-        <dl class="tv-facts">
-            <dt>TYPO3 version</dt>
-            <dd>
-                <f:if condition="{project.coreVersion}">
-                    <f:then>{project.coreVersion}</f:then>
-                    <f:else>unknown</f:else>
-                </f:if>
-            </dd>
-
-            <dt>Last checked</dt>
-            <dd>
-                <f:if condition="{project.hasReported}">
-                    <f:then><f:format.date format="d.m.Y H:i">{project.lastReportAt}</f:format.date></f:then>
-                    <f:else>never</f:else>
-                </f:if>
-            </dd>
+        <dl class="tv-card__facts">
+            <div class="tv-fact">
+                <dt>TYPO3</dt>
+                <dd>
+                    <f:if condition="{project.coreVersion}">
+                        <f:then>{project.coreVersion}</f:then>
+                        <f:else>unbekannt</f:else>
+                    </f:if>
+                </dd>
+            </div>
+            <div class="tv-fact">
+                <dt>Zuletzt gemeldet</dt>
+                <dd>
+                    <f:if condition="{project.hasReported}">
+                        <f:then><f:format.date format="d.m.Y H:i">{project.lastReportAt}</f:format.date></f:then>
+                        <f:else>nie</f:else>
+                    </f:if>
+                </dd>
+            </div>
         </dl>
 
         <f:if condition="{project.isStale}">
-            <p class="tv-warning">
-                This installation has not reported recently, so the figures above may
-                be out of date. Please get in touch if this persists.
+            <p class="tv-card__stale">
+                Diese Installation hat sich längere Zeit nicht gemeldet — die Angaben
+                können veraltet sein. Bitte melden Sie sich, falls das so bleibt.
             </p>
         </f:if>
+    </article>
 
-        <p class="tv-note">
-            For the full list of affected components, please contact your agency.
-        </p>
+    <f:if condition="{project.packages}">
+        <section class="tv-packages">
+            <h2 class="tv-packages__heading">Komponenten</h2>
+
+            <ul class="tv-badges">
+                <f:for each="{project.packages}" as="package">
+                    <li>
+                        <span class="tv-badge tv-badge--{package.severity}{f:if(condition: package.is_core, then: ' tv-badge--core')}">
+                            <span class="tv-badge__name">
+                                <f:if condition="{package.extension_key}">
+                                    <f:then>{package.extension_key}</f:then>
+                                    <f:else>{package.composer_name}</f:else>
+                                </f:if>
+                            </span>
+                            <span class="tv-badge__version">{package.installed_version}</span>
+                            <f:if condition="{package.severity} != 'ok'">
+                                <span class="tv-badge__target" title="verfügbar: {package.latest_version}">
+                                    &rarr; {package.latest_version}
+                                </span>
+                            </f:if>
+                        </span>
+                    </li>
+                </f:for>
+            </ul>
+
+            <p class="tv-legend">
+                <span class="tv-legend__item"><span class="tv-dot tv-dot--ok"></span> aktuell</span>
+                <span class="tv-legend__item"><span class="tv-dot tv-dot--outdated"></span> Update verfügbar</span>
+                <span class="tv-legend__item"><span class="tv-dot tv-dot--critical"></span> Sicherheitslücke bekannt</span>
+            </p>
+        </section>
+    </f:if>
 </div>
 
 </html>

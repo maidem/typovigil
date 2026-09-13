@@ -6,45 +6,107 @@
 <!-- No f:layout: Layouts/ holds page layouts only, and a plugin rendered into a
      content element brings its own markup. -->
 <div class="tv-portal">
-        <h1>
-            <f:if condition="{seesAllProjects}">
-                <f:then>All TYPO3 installations</f:then>
-                <f:else>Your TYPO3 installations</f:else>
-            </f:if>
-        </h1>
-
-        <f:if condition="{projects}">
-            <f:then>
-                <ul class="tv-projects">
-                    <f:for each="{projects}" as="project">
-                        <li class="tv-project tv-project--{project.worstSeverity}">
-                            <f:link.action action="show" arguments="{project: project.uid}" class="tv-project__link">
-                                <span class="tv-project__title">{project.title}</span>
-
-                                <span class="tv-project__state">
-                                    <f:switch expression="{project.worstSeverity}">
-                                        <f:case value="critical">Security update required</f:case>
-                                        <f:case value="outdated">Updates available</f:case>
-                                        <f:defaultCase>Up to date</f:defaultCase>
-                                    </f:switch>
-                                </span>
-
-                                <f:if condition="{project.isStale}">
-                                    <span class="tv-project__stale" title="No report received recently">
-                                        status may be outdated
-                                    </span>
-                                </f:if>
-                            </f:link.action>
-                        </li>
-                    </f:for>
-                </ul>
-            </f:then>
-            <f:else>
-                <p class="tv-empty">
-                    No installations are assigned to your account yet.
-                </p>
-            </f:else>
+    <h1 class="tv-portal__heading">
+        <f:if condition="{seesAllProjects}">
+            <f:then>Alle TYPO3-Installationen</f:then>
+            <f:else>Ihre TYPO3-Installationen</f:else>
         </f:if>
+    </h1>
+
+    <f:if condition="{projects}">
+        <f:then>
+            <!-- Client-side filter: with a handful of projects a server round trip
+                 buys nothing. Without JavaScript every card simply stays visible. -->
+            <div class="tv-filter" data-tv-filter>
+                <button type="button" class="tv-filter__pill is-active" data-tv-filter-value="all">Alle</button>
+                <button type="button" class="tv-filter__pill" data-tv-filter-value="critical">Sicherheitsupdate</button>
+                <button type="button" class="tv-filter__pill" data-tv-filter-value="outdated">Updates</button>
+                <button type="button" class="tv-filter__pill" data-tv-filter-value="ok">Aktuell</button>
+            </div>
+
+            <div class="tv-cards">
+                <f:for each="{projects}" as="project">
+                    <article class="tv-card tv-card--{project.worstSeverity}" data-tv-severity="{project.worstSeverity}">
+                        <header class="tv-card__head">
+                            <span class="tv-chip tv-chip--{project.worstSeverity}">
+                                <f:switch expression="{project.worstSeverity}">
+                                    <f:case value="critical">Sicherheitsupdate nötig</f:case>
+                                    <f:case value="outdated">Updates verfügbar</f:case>
+                                    <f:defaultCase>Aktuell</f:defaultCase>
+                                </f:switch>
+                            </span>
+                        </header>
+
+                        <h2 class="tv-card__title">
+                            <f:link.action action="show" arguments="{project: project.uid}">{project.title}</f:link.action>
+                        </h2>
+
+                        <dl class="tv-card__facts">
+                            <div class="tv-fact">
+                                <dt>TYPO3</dt>
+                                <dd>
+                                    <f:if condition="{project.coreVersion}">
+                                        <f:then>{project.coreVersion}</f:then>
+                                        <f:else>unbekannt</f:else>
+                                    </f:if>
+                                </dd>
+                            </div>
+                            <div class="tv-fact">
+                                <dt>Komponenten</dt>
+                                <dd>{project.packageCount}</dd>
+                            </div>
+                            <div class="tv-fact">
+                                <dt>Zuletzt gemeldet</dt>
+                                <dd>
+                                    <f:if condition="{project.hasReported}">
+                                        <f:then><f:format.date format="d.m.Y H:i">{project.lastReportAt}</f:format.date></f:then>
+                                        <f:else>nie</f:else>
+                                    </f:if>
+                                </dd>
+                            </div>
+                        </dl>
+
+                        <div class="tv-dots" aria-hidden="true">
+                            <f:if condition="{project.counts.critical} > 0">
+                                <span class="tv-dot tv-dot--critical" title="{project.counts.critical} kritisch"></span>
+                            </f:if>
+                            <f:if condition="{project.counts.outdated} > 0">
+                                <span class="tv-dot tv-dot--outdated" title="{project.counts.outdated} veraltet"></span>
+                            </f:if>
+                            <f:if condition="{project.counts.ok} > 0">
+                                <span class="tv-dot tv-dot--ok" title="{project.counts.ok} aktuell"></span>
+                            </f:if>
+                        </div>
+
+                        <p class="tv-card__counts">
+                            <f:if condition="{project.counts.critical} > 0">
+                                <span class="tv-count tv-count--critical">{project.counts.critical} kritisch</span>
+                            </f:if>
+                            <f:if condition="{project.counts.outdated} > 0">
+                                <span class="tv-count tv-count--outdated">{project.counts.outdated} veraltet</span>
+                            </f:if>
+                            <span class="tv-count tv-count--ok">{project.counts.ok} aktuell</span>
+                        </p>
+
+                        <f:if condition="{project.isStale}">
+                            <p class="tv-card__stale">Meldet sich nicht — Angaben womöglich veraltet</p>
+                        </f:if>
+
+                        <footer class="tv-card__foot">
+                            <f:link.action action="show" arguments="{project: project.uid}" class="tv-card__more">Details ansehen</f:link.action>
+                        </footer>
+                    </article>
+                </f:for>
+            </div>
+
+            <p class="tv-empty tv-empty--filtered" data-tv-empty hidden>
+                Keine Installation in dieser Auswahl.
+            </p>
+        </f:then>
+        <f:else>
+            <p class="tv-empty">Ihrem Konto ist noch keine Installation zugeordnet.</p>
+        </f:else>
+    </f:if>
 </div>
 
 </html>

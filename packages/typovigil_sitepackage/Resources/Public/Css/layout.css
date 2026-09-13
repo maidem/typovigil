@@ -1,0 +1,464 @@
+/*
+ * TypoVigil frontend.
+ *
+ * Card layout modelled on the reference design: white cards with a thin border
+ * and soft corners, pill-shaped filters and chips, grey meta text, coloured
+ * status dots. Styles the felogin markup too, so the login page matches without
+ * needing its own template override.
+ */
+
+:root {
+    --tv-bg: #f6f6f7;
+    --tv-surface: #fff;
+    --tv-border: #e3e3e6;
+    --tv-text: #16161a;
+    --tv-muted: #6b6b73;
+    --tv-radius: 14px;
+    --tv-radius-pill: 999px;
+
+    --tv-ok: #2e9e4f;
+    --tv-outdated: #e0a713;
+    --tv-critical: #d93a36;
+
+    --tv-ok-bg: #eaf6ee;
+    --tv-outdated-bg: #fdf4e0;
+    --tv-critical-bg: #fbeceb;
+
+    --tv-shadow: 0 1px 2px rgb(16 16 26 / 4%);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --tv-bg: #121214;
+        --tv-surface: #1b1b1f;
+        --tv-border: #2e2e34;
+        --tv-text: #f2f2f4;
+        --tv-muted: #a0a0aa;
+
+        --tv-ok-bg: #16281c;
+        --tv-outdated-bg: #2c2413;
+        --tv-critical-bg: #2e1917;
+
+        --tv-shadow: none;
+    }
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--tv-bg);
+    color: var(--tv-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+.tv-portal {
+    max-width: 1180px;
+    margin-inline: auto;
+    padding-block: 40px 64px;
+    padding-inline: 20px;
+}
+
+.tv-portal__heading {
+    margin: 0 0 24px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+/* --- filter pills ------------------------------------------------------- */
+
+.tv-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 28px;
+}
+
+.tv-filter__pill {
+    padding: 8px 18px;
+    border: 1px solid var(--tv-border);
+    border-radius: var(--tv-radius-pill);
+    background: var(--tv-surface);
+    color: var(--tv-text);
+    font: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.tv-filter__pill:hover {
+    border-color: var(--tv-muted);
+}
+
+.tv-filter__pill.is-active {
+    background: var(--tv-text);
+    border-color: var(--tv-text);
+    color: var(--tv-surface);
+}
+
+/* --- cards -------------------------------------------------------------- */
+
+.tv-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    align-items: start;
+}
+
+.tv-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 22px;
+    border: 1px solid var(--tv-border);
+    border-radius: var(--tv-radius);
+    background: var(--tv-surface);
+    box-shadow: var(--tv-shadow);
+}
+
+.tv-card[hidden] {
+    display: none;
+}
+
+.tv-card--detail {
+    max-width: 640px;
+}
+
+.tv-card__head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--tv-border);
+}
+
+.tv-card__title {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.tv-card__title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.tv-card__title a:hover {
+    text-decoration: underline;
+}
+
+.tv-lead {
+    margin: 0;
+    color: var(--tv-muted);
+}
+
+/* --- chips -------------------------------------------------------------- */
+
+.tv-chip {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: var(--tv-radius-pill);
+    background: var(--tv-bg);
+    color: var(--tv-muted);
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.tv-chip--ok       { background: var(--tv-ok-bg);       color: var(--tv-ok); }
+.tv-chip--outdated { background: var(--tv-outdated-bg); color: var(--tv-outdated); }
+.tv-chip--critical { background: var(--tv-critical-bg); color: var(--tv-critical); }
+
+/* --- facts -------------------------------------------------------------- */
+
+.tv-card__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 26px;
+    margin: 0;
+}
+
+.tv-fact dt {
+    color: var(--tv-muted);
+    font-size: 0.78rem;
+}
+
+.tv-fact dd {
+    margin: 0;
+    font-size: 0.94rem;
+    font-variant-numeric: tabular-nums;
+}
+
+/* --- dots and counts ---------------------------------------------------- */
+
+.tv-dots {
+    display: flex;
+    gap: 5px;
+}
+
+.tv-dot {
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--tv-muted);
+}
+
+.tv-dot--ok       { background: var(--tv-ok); }
+.tv-dot--outdated { background: var(--tv-outdated); }
+.tv-dot--critical { background: var(--tv-critical); }
+
+.tv-card__counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin: 0;
+    font-size: 0.86rem;
+}
+
+.tv-count--ok       { color: var(--tv-ok); }
+.tv-count--outdated { color: var(--tv-outdated); }
+.tv-count--critical { color: var(--tv-critical); font-weight: 600; }
+
+.tv-card__stale {
+    margin: 0;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--tv-outdated-bg);
+    color: var(--tv-outdated);
+    font-size: 0.86rem;
+}
+
+.tv-card__foot {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--tv-border);
+}
+
+.tv-card__more,
+.tv-back a {
+    color: var(--tv-text);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.tv-card__more:hover,
+.tv-back a:hover {
+    text-decoration: underline;
+}
+
+.tv-back {
+    margin: 0 0 18px;
+}
+
+/* --- package badges ----------------------------------------------------- */
+
+.tv-packages {
+    margin-top: 32px;
+}
+
+.tv-packages__heading {
+    margin: 0 0 14px;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.tv-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tv-badge {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 7px;
+    padding: 6px 12px;
+    border: 1px solid transparent;
+    border-radius: var(--tv-radius-pill);
+    font-size: 0.84rem;
+    line-height: 1.3;
+}
+
+.tv-badge__name {
+    font-weight: 600;
+}
+
+.tv-badge__version,
+.tv-badge__target {
+    font-variant-numeric: tabular-nums;
+    opacity: 0.85;
+}
+
+.tv-badge--ok {
+    background: var(--tv-ok-bg);
+    border-color: color-mix(in srgb, var(--tv-ok) 25%, transparent);
+    color: var(--tv-ok);
+}
+
+.tv-badge--outdated {
+    background: var(--tv-outdated-bg);
+    border-color: color-mix(in srgb, var(--tv-outdated) 30%, transparent);
+    color: var(--tv-outdated);
+}
+
+.tv-badge--critical {
+    background: var(--tv-critical-bg);
+    border-color: color-mix(in srgb, var(--tv-critical) 35%, transparent);
+    color: var(--tv-critical);
+    font-weight: 600;
+}
+
+/* The core is not one extension among many — give it a visible outline. */
+.tv-badge--core {
+    outline: 2px solid currentColor;
+    outline-offset: 1px;
+}
+
+.tv-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin: 16px 0 0;
+    color: var(--tv-muted);
+    font-size: 0.82rem;
+}
+
+.tv-legend__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* --- empty states ------------------------------------------------------- */
+
+.tv-empty {
+    margin: 0;
+    padding: 28px;
+    border: 1px dashed var(--tv-border);
+    border-radius: var(--tv-radius);
+    background: var(--tv-surface);
+    color: var(--tv-muted);
+    text-align: center;
+}
+
+.tv-empty--filtered {
+    margin-top: 20px;
+}
+
+/* --- felogin ------------------------------------------------------------
+   Styled by class rather than replaced by a template override: felogin's own
+   markup already carries everything needed, and an override would have to be
+   kept in step with the extension on every update. */
+
+.frame-type-felogin_login {
+    max-width: 420px;
+    margin: 48px auto;
+    padding: 28px;
+    border: 1px solid var(--tv-border);
+    border-radius: var(--tv-radius);
+    background: var(--tv-surface);
+    box-shadow: var(--tv-shadow);
+}
+
+.frame-type-felogin_login h2,
+.frame-type-felogin_login h3 {
+    margin: 0 0 6px;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.frame-type-felogin_login p {
+    margin: 0 0 18px;
+    color: var(--tv-muted);
+    font-size: 0.9rem;
+}
+
+.frame-type-felogin_login label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.84rem;
+    font-weight: 600;
+}
+
+.frame-type-felogin_login input[type="text"],
+.frame-type-felogin_login input[type="password"] {
+    box-sizing: border-box;
+    width: 100%;
+    margin-bottom: 16px;
+    padding: 11px 13px;
+    border: 1px solid var(--tv-border);
+    border-radius: 10px;
+    background: var(--tv-bg);
+    color: var(--tv-text);
+    font: inherit;
+}
+
+.frame-type-felogin_login input[type="text"]:focus,
+.frame-type-felogin_login input[type="password"]:focus {
+    border-color: var(--tv-text);
+    outline: none;
+}
+
+.frame-type-felogin_login input[type="submit"],
+.frame-type-felogin_login button[type="submit"] {
+    width: 100%;
+    padding: 12px 18px;
+    border: 0;
+    border-radius: var(--tv-radius-pill);
+    background: var(--tv-text);
+    color: var(--tv-surface);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.frame-type-felogin_login input[type="submit"]:hover,
+.frame-type-felogin_login button[type="submit"]:hover {
+    opacity: 0.88;
+}
+
+/* felogin renders the failure notice as a heading, not as a dedicated class. */
+.frame-type-felogin_login .alert,
+.frame-type-felogin_login .typo3-messages {
+    margin-bottom: 16px;
+    padding: 11px 13px;
+    border-radius: 10px;
+    background: var(--tv-critical-bg);
+    color: var(--tv-critical);
+    font-size: 0.86rem;
+}
+
+/* --- page chrome -------------------------------------------------------- */
+
+body > ul,
+.tv-nav {
+    display: flex;
+    gap: 14px;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 16px 20px 0;
+    list-style: none;
+    font-size: 0.9rem;
+}
+
+body > ul a {
+    color: var(--tv-muted);
+    text-decoration: none;
+}
+
+body > ul a:hover {
+    color: var(--tv-text);
+}
+
+@media (max-width: 520px) {
+    .tv-portal { padding-block: 24px 40px; }
+    .tv-cards { grid-template-columns: 1fr; }
+}

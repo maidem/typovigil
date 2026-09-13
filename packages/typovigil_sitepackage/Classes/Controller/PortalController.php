@@ -63,11 +63,11 @@ final class PortalController extends ActionController
             return $this->accessDenied('This project is not available to your account.');
         }
 
-        // The package list stays out of the customer view on purpose: a complete
-        // inventory of vulnerable versions is an attack plan once an account is
-        // compromised. Counts convey the urgency without handing that over.
-        unset($detail['packages']);
-
+        // The package list used to be stripped here, on the grounds that a full
+        // inventory of vulnerable versions helps an attacker who has taken over a
+        // customer account. Showing it is a deliberate decision by the operator,
+        // not an oversight — the trade-off is that this page now names the exact
+        // version of every component, including the vulnerable ones.
         $this->view->assign('project', $detail);
 
         return $this->htmlResponse();
