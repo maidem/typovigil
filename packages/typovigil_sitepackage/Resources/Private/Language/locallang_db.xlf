@@ -6,6 +6,12 @@
             <authorEmail>hi@maidem.de</authorEmail>
         </header>
         <body>
+            <trans-unit id="plugin.portal.title">
+                <source>TypoVigil: installation status</source>
+            </trans-unit>
+            <trans-unit id="plugin.portal.description">
+                <source>Shows the logged-in customer the update and security status of their TYPO3 installations.</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
