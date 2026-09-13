@@ -59,10 +59,16 @@ final readonly class ProjectRepository
      *
      * @return array<int, array<string, mixed>>
      */
-    public function findForFrontendUser(int $feUserId): array
+    public function findForFrontendUser(int $feUserId, bool $seesAllProjects = false): array
     {
         if ($feUserId <= 0) {
             return [];
+        }
+
+        // The agency role still requires a logged-in user — the check above is
+        // what keeps this from turning into public access.
+        if ($seesAllProjects) {
+            return $this->findAll();
         }
 
         $qb = $this->queryBuilder(self::TABLE_PROJECT);
@@ -81,10 +87,16 @@ final readonly class ProjectRepository
             ->fetchAllAssociative();
     }
 
-    public function isVisibleToFrontendUser(int $projectUid, int $feUserId): bool
+    public function isVisibleToFrontendUser(int $projectUid, int $feUserId, bool $seesAllProjects = false): bool
     {
         if ($projectUid <= 0 || $feUserId <= 0) {
             return false;
+        }
+
+        // Same rule as findForFrontendUser: the role widens which projects are
+        // visible, it never lets an anonymous request through.
+        if ($seesAllProjects) {
+            return $this->findByUid($projectUid) !== null;
         }
 
         $qb = $this->queryBuilder(self::TABLE_PROJECT);

@@ -37,11 +37,11 @@ final readonly class StatusReportService
     /**
      * @return list<array<string, mixed>>
      */
-    public function summariesForFrontendUser(int $feUserId): array
+    public function summariesForFrontendUser(int $feUserId, bool $seesAllProjects = false): array
     {
         return array_map(
             fn(array $project): array => $this->summarize($project),
-            $this->projects->findForFrontendUser($feUserId)
+            $this->projects->findForFrontendUser($feUserId, $seesAllProjects)
         );
     }
 

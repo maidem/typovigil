@@ -6,7 +6,12 @@
 <!-- No f:layout: Layouts/ holds page layouts only, and a plugin rendered into a
      content element brings its own markup. -->
 <div class="tv-portal">
-        <h1>Your TYPO3 installations</h1>
+        <h1>
+            <f:if condition="{seesAllProjects}">
+                <f:then>All TYPO3 installations</f:then>
+                <f:else>Your TYPO3 installations</f:else>
+            </f:if>
+        </h1>
 
         <f:if condition="{projects}">
             <f:then>

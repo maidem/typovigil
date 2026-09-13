@@ -1,0 +1,2 @@
+# cat=access; type=int+; label=Agency frontend user group: Members of this frontend user group see every project in the portal, not just the ones assigned to them. 0 disables the role. Set the group uid, not its title — a title can be renamed in the backend and would silently grant access to everyone.
+agencyFeGroupId = 0

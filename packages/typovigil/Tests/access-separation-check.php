@@ -88,6 +88,18 @@ check(count($listB) === 1 && (int)$listB[0]['uid'] === $projectB, 'list of B hol
 check($status->summariesForFrontendUser(0) === [], 'anonymous list is empty');
 check($status->summariesForFrontendUser(999999) === [], 'unassigned list is empty');
 
+// --- the agency role: sees everything, but is still not a way in ----------------
+// A user with no assignment of their own must see both fixtures once the role is
+// granted, and nothing at all without a session.
+$allForA = $repo->findForFrontendUser($userA, true);
+$uidsSeen = array_map(static fn(array $r): int => (int)$r['uid'], $allForA);
+check(in_array($projectA, $uidsSeen, true) && in_array($projectB, $uidsSeen, true), 'agency role sees both projects');
+check($repo->isVisibleToFrontendUser($projectB, $userA, true), 'agency role reaches an unassigned project');
+check($repo->findForFrontendUser(0, true) === [], 'agency role without session sees nothing');
+check(!$repo->isVisibleToFrontendUser($projectA, 0, true), 'agency role without session is refused');
+check(!$repo->isVisibleToFrontendUser(0, $userA, true), 'agency role still refuses project uid 0');
+check(!$repo->isVisibleToFrontendUser(999999999, $userA, true), 'agency role refuses a nonexistent project');
+
 // --- cleanup --------------------------------------------------------------------
 foreach ($ids as $id) {
     $mmConn->delete($mmTable, ['uid_local' => $id]);
