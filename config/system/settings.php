@@ -98,6 +98,7 @@ return [
         'sitename' => 'TypoVigil',
         'systemMaintainers' => [
             2,
+            3,
         ],
         'trustedHostsPattern' => '.*',
     ],
