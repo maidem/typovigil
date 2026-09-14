@@ -27,9 +27,10 @@
     --tv-shadow: 0 1px 2px rgb(16 16 26 / 4%);
 
     /* One accent, used sparingly (login dialog, focus rings) — the rest of
-       the page stays on the neutral/status palette above on purpose. */
-    --tv-accent: #3a5fd9;
-    --tv-accent-bg: #eef1fc;
+       the page stays on the neutral/status palette above on purpose.
+       Matches the Jobmanager brand violet, shared across the agency's tools. */
+    --tv-accent: #783cfe;
+    --tv-accent-bg: #f1ebff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -44,8 +45,8 @@
         --tv-outdated-bg: #2c2413;
         --tv-critical-bg: #2e1917;
 
-        --tv-accent: #7b93ea;
-        --tv-accent-bg: #1c2340;
+        --tv-accent: #9155ff;
+        --tv-accent-bg: #2a1f4d;
 
         --tv-shadow: none;
     }
@@ -807,6 +808,7 @@ body > ul a:hover {
 /* Sizing/positioning specific to the dialog — colours, spacing and form
    styling for its content come from the combined felogin rules above. */
 .tv-login-dialog {
+    box-sizing: border-box;
     width: calc(100% - 40px);
     box-shadow: 0 20px 60px rgb(16 16 26 / 20%);
 }
