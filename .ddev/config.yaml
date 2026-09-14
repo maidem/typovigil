@@ -16,6 +16,8 @@ web_environment:
     # settings.php reads the key from the environment so no secret is versioned;
     # this is a local development key, unrelated to the production one.
     - TYPO3_ENCRYPTION_KEY=dd91ae06bfc1233f2d4c21527320e07fd75c54c5fe3ea0dcc303944868d0139b3c3dfbb42dc03312405e850284dfa4b8
+    # Local-only install tool password, hash of "admin" - unrelated to production.
+    - TYPO3_INSTALL_TOOL_PASSWORD_HASH=$$2y$$12$$n4t30AmePQ.sVQJyyJAAS.ajBs1Q5dB2O0OAchtxcHw0eWb/.eXMW
 nodejs_version: "24"
 corepack_enable: false
 
