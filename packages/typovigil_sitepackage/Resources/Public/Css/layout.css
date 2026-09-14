@@ -715,7 +715,110 @@ body > ul a:hover {
     color: var(--tv-text);
 }
 
+.tv-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 14px 24px 0;
+    box-sizing: border-box;
+}
+
+.tv-nav {
+    margin: 0;
+    padding: 0;
+}
+
+.tv-nav__link {
+    color: var(--tv-muted);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.tv-nav__link:hover {
+    color: var(--tv-text);
+}
+
+/* Overrides .tv-topbar's own full-width flex row: inside .tv-header it is
+   just the right-hand item next to the nav, not a row of its own. */
+.tv-header .tv-topbar {
+    padding: 0;
+}
+
+.tv-login-link {
+    color: var(--tv-text);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 6px 14px;
+    border: 1px solid var(--tv-border);
+    border-radius: var(--tv-radius-pill);
+}
+
+.tv-login-link:hover {
+    border-color: var(--tv-muted);
+}
+
+.tv-login-dialog {
+    max-width: 380px;
+    width: calc(100% - 40px);
+    padding: 28px;
+    border: 1px solid var(--tv-border);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgb(16 16 26 / 20%);
+}
+
+.tv-login-dialog::backdrop {
+    background: rgb(16 16 26 / 45%);
+}
+
+.tv-login-dialog__close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    background: transparent;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--tv-muted);
+}
+
+.tv-login-dialog__close:hover {
+    color: var(--tv-text);
+}
+
+.tv-login-dialog form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.tv-legal {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 24px 20px 32px;
+    font-size: 0.82rem;
+}
+
+.tv-legal a {
+    color: var(--tv-muted);
+    text-decoration: none;
+}
+
+.tv-legal a:hover {
+    color: var(--tv-text);
+}
+
 @media (max-width: 520px) {
     .tv-portal { padding-block: 24px 40px; }
     .tv-cards { grid-template-columns: 1fr; }
+    .tv-header { flex-direction: column; align-items: flex-start; gap: 10px; }
 }

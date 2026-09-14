@@ -6,3 +6,9 @@ services:
 
   Maidemde\TypovigilSitepackage\:
     resource: '../Classes/*'
+
+  Maidemde\TypovigilSitepackage\Command\SeedLegalPagesCommand:
+    tags:
+      - name: 'console.command'
+        command: 'typovigilsitepackage:seed-legal-pages'
+        description: 'Creates the Impressum and Datenschutzerklärung pages if they do not exist yet'

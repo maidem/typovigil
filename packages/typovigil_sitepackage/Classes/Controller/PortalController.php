@@ -6,6 +6,7 @@ namespace Maidemde\TypovigilSitepackage\Controller;
 
 use Maidemde\Typovigil\Domain\Repository\ProjectRepository;
 use Maidemde\Typovigil\Service\StatusReportService;
+use Maidemde\Typovigil\Service\VersionCheckService;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Context\Context;
@@ -27,19 +28,44 @@ final class PortalController extends ActionController
         private readonly ProjectRepository $projects,
         private readonly Context $context,
         private readonly ExtensionConfiguration $extensionConfiguration,
+        private readonly VersionCheckService $versionCheck,
     ) {}
 
+    /**
+     * Logged-in visitors see their own projects; everyone else sees the public
+     * security overview instead of a bare "please log in" — general TYPO3
+     * update/security information is useful on its own, with or without an
+     * account.
+     */
     public function listAction(): ResponseInterface
     {
         $userId = $this->frontendUserId();
         if ($userId === 0) {
-            return $this->accessDenied('Please log in to see your projects.');
+            // Renders the Security template explicitly rather than calling
+            // securityAction() as a plain method: $this->view is already bound
+            // to List.html at this point, and render() is the supported way to
+            // pick a different template within the same request.
+            $this->view->assign('coreVersions', $this->versionCheck->maintainedCoreVersions());
+
+            return $this->htmlResponse($this->view->render('Security'));
         }
 
         $seesAll = $this->seesAllProjects();
 
         $this->view->assign('projects', $this->statusReport->summariesForFrontendUser($userId, $seesAll));
         $this->view->assign('seesAllProjects', $seesAll);
+
+        return $this->htmlResponse();
+    }
+
+    /**
+     * The public security overview, reachable from the navigation regardless
+     * of login state — a logged-in customer may want it too, not only visitors
+     * without an account.
+     */
+    public function securityAction(): ResponseInterface
+    {
+        $this->view->assign('coreVersions', $this->versionCheck->maintainedCoreVersions());
 
         return $this->htmlResponse();
     }

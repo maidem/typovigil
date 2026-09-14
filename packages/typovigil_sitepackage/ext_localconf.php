@@ -12,7 +12,7 @@ $GLOBALS['TYPO3_CONF_VARS']['RTE']['Presets']['typovigil_sitepackage'] = 'EXT:ty
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'TypovigilSitepackage',
     'Portal',
-    [\Maidemde\TypovigilSitepackage\Controller\PortalController::class => 'list,show'],
-    [\Maidemde\TypovigilSitepackage\Controller\PortalController::class => 'list,show'],
+    [\Maidemde\TypovigilSitepackage\Controller\PortalController::class => 'list,show,security'],
+    [\Maidemde\TypovigilSitepackage\Controller\PortalController::class => 'list,show,security'],
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );

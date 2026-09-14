@@ -28,6 +28,50 @@ document.addEventListener('keydown', function (event) {
     }
 });
 
+/*
+ * Opens the login form in a <dialog> instead of navigating to /login, so a
+ * visitor reading the public security cards does not lose that page. The
+ * link still points at /login for anyone without JavaScript, or if the fetch
+ * below fails.
+ */
+document.addEventListener('click', function (event) {
+    var opener = event.target.closest('[data-tv-login-open]');
+    if (!opener) {
+        return;
+    }
+
+    var dialog = document.querySelector('[data-tv-login-dialog]');
+    if (!dialog) {
+        return;
+    }
+
+    event.preventDefault();
+    dialog.showModal();
+
+    var content = dialog.querySelector('[data-tv-login-content]');
+    if (content.dataset.loaded) {
+        return;
+    }
+
+    fetch('/login')
+        .then(function (response) { return response.text(); })
+        .then(function (html) {
+            var doc = new DOMParser().parseFromString(html, 'text/html');
+            var form = doc.querySelector('form[action*="login"]');
+            content.innerHTML = form ? form.outerHTML : 'Anmeldung konnte nicht geladen werden. <a href="/login">Zur Login-Seite</a>.';
+            content.dataset.loaded = 'true';
+        })
+        .catch(function () {
+            content.innerHTML = 'Anmeldung konnte nicht geladen werden. <a href="/login">Zur Login-Seite</a>.';
+        });
+});
+
+document.addEventListener('click', function (event) {
+    if (event.target.closest('[data-tv-login-close]')) {
+        document.querySelector('[data-tv-login-dialog]').close();
+    }
+});
+
 document.addEventListener('DOMContentLoaded', function () {
     var bar = document.querySelector('[data-tv-filter]');
     if (!bar) {

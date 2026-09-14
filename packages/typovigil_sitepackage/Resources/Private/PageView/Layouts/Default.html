@@ -3,37 +3,68 @@
     xmlns:tv="http://typo3.org/ns/Maidemde/TypovigilSitepackage/ViewHelpers"
     data-namespace-typo3-fluid="true"
 >
-<f:security.ifAuthenticated>
-    <!-- User area, top right like the backend's own. Only for logged-in
-         visitors: an anonymous page has nothing to log out of. -->
-    <div class="tv-topbar">
-        <f:variable name="displayName"><tv:frontendUser /></f:variable>
+<header class="tv-header">
+    <!-- The security overview is always reachable, logged in or not — a
+         customer checking their own project may still want the general
+         TYPO3 release status, and it costs nothing to keep it one click away. -->
+    <nav class="tv-nav">
+        <f:link.page pageUid="1" additionalParams="{tx_typovigilsitepackage_portal: {action: 'security', controller: 'Portal'}}" class="tv-nav__link">
+            Sicherheitsstatus
+        </f:link.page>
+        <f:security.ifAuthenticated>
+            <f:link.page pageUid="1" class="tv-nav__link">Meine Installationen</f:link.page>
+        </f:security.ifAuthenticated>
+    </nav>
 
-        <details class="tv-user" data-tv-user>
-            <summary class="tv-user__summary">
-                <span class="tv-user__avatar" aria-hidden="true">{displayName -> f:format.crop(maxCharacters: 1, append: '')}</span>
-                <span>{displayName}</span>
-                <span class="tv-user__caret" aria-hidden="true">▾</span>
-            </summary>
+    <f:security.ifAuthenticated>
+        <f:then>
+            <!-- User area, top right like the backend's own. -->
+            <div class="tv-topbar">
+                <f:variable name="displayName"><tv:frontendUser /></f:variable>
 
-            <div class="tv-user__menu">
-                <span class="tv-user__name">Angemeldet als {displayName}</span>
+                <details class="tv-user" data-tv-user>
+                    <summary class="tv-user__summary">
+                        <span class="tv-user__avatar" aria-hidden="true">{displayName -> f:format.crop(maxCharacters: 1, append: '')}</span>
+                        <span>{displayName}</span>
+                        <span class="tv-user__caret" aria-hidden="true">▾</span>
+                    </summary>
 
-                <!-- POST, not a link: a GET logout can be triggered by any
-                     foreign page through an embedded <img src>. felogin needs
-                     no request token for logging out, only for logging in. -->
-                <form method="post" action="">
-                    <input type="hidden" name="logintype" value="logout" />
-                    <button type="submit" class="tv-user__logout">Abmelden</button>
-                </form>
+                    <div class="tv-user__menu">
+                        <span class="tv-user__name">Angemeldet als {displayName}</span>
+
+                        <!-- POST, not a link: a GET logout can be triggered by any
+                             foreign page through an embedded <img src>. felogin needs
+                             no request token for logging out, only for logging in. -->
+                        <form method="post" action="">
+                            <input type="hidden" name="logintype" value="logout" />
+                            <button type="submit" class="tv-user__logout">Abmelden</button>
+                        </form>
+                    </div>
+                </details>
             </div>
-        </details>
-    </div>
-</f:security.ifAuthenticated>
+        </f:then>
+        <f:else>
+            <!-- Mirrors the logged-in topbar's position, so the corner always
+                 holds exactly one thing: a way in, or a way out. The link still
+                 goes to /login directly - only JavaScript intercepts it to open
+                 the dialog instead, so the page works without JavaScript too. -->
+            <div class="tv-topbar">
+                <a href="/login" class="tv-login-link" data-tv-login-open>Anmelden</a>
+            </div>
 
-<!-- No page navigation: the portal has exactly one page per role, reached
-     after login. A menu listing "Status" and "Login" only restates where the
-     visitor already is. -->
+            <!-- <dialog> rather than a hand-rolled overlay: focus trapping, Escape-
+                 to-close and the backdrop come from the browser for free. Content
+                 is fetched from /login on open - the felogin form keeps living in
+                 exactly one place instead of being duplicated here. -->
+            <dialog class="tv-login-dialog" data-tv-login-dialog>
+                <button type="button" class="tv-login-dialog__close" data-tv-login-close aria-label="Schließen">&times;</button>
+                <div data-tv-login-content>
+                    <p>Lade Anmeldung …</p>
+                </div>
+            </dialog>
+        </f:else>
+    </f:security.ifAuthenticated>
+</header>
 
 <main class="tv-main">
     <f:render section="Main" />
@@ -43,3 +74,8 @@
      of the flex body can be pushed to the bottom edge, and the plugin renders
      inside TYPO3's own frame wrapper. -->
 <f:render partial="Sources" arguments="{sources: '{tv:sourceStatus()}'}" />
+
+<footer class="tv-legal">
+    <a href="/impressum">Impressum</a>
+    <a href="/datenschutz">Datenschutzerklärung</a>
+</footer>

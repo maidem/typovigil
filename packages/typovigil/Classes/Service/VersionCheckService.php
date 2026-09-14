@@ -27,6 +27,12 @@ final readonly class VersionCheckService
     private const TIMEOUT = 15;
 
     /**
+     * TYPO3 major versions still receiving updates. Reviewed by hand rather than
+     * derived from get.typo3.org, which lists every major ever released.
+     */
+    private const MAINTAINED_MAJORS = ['12', '13', '14'];
+
+    /**
      * Reachability lives in a table, not in the cache: it records what happened
      * rather than a result that can be recomputed, and the container entrypoint
      * flushes every cache on start — a cached status disappeared with each
@@ -171,6 +177,51 @@ final readonly class VersionCheckService
         $this->cache->set($cacheKey, $releases, [], self::CACHE_LIFETIME);
 
         return $releases;
+    }
+
+    /**
+     * Currently maintained TYPO3 major versions, newest release each — shown on
+     * the public landing page so a visitor can check their own installation
+     * without logging in, or an account at all.
+     *
+     * @return list<array{major: string, version: string, severity: string, severityLabel: string}>
+     */
+    public function maintainedCoreVersions(): array
+    {
+        $cacheKey = 'core_public_summary';
+        $cached = $this->cache->get($cacheKey);
+        if ($cached !== false) {
+            return (array)$cached;
+        }
+
+        $data = $this->fetchJson(self::TYPO3_RELEASES);
+        if ($data === []) {
+            return [];
+        }
+
+        $summary = [];
+        foreach (self::MAINTAINED_MAJORS as $major) {
+            $releases = $data[$major]['releases'] ?? [];
+            if ($releases === []) {
+                continue;
+            }
+            // get.typo3.org lists releases newest first.
+            $newest = reset($releases);
+            $isSecurity = ($newest['type'] ?? '') === 'security';
+            $summary[] = [
+                'major' => $major,
+                'version' => (string)($newest['version'] ?? ''),
+                // A ready-made string rather than a boolean: Fluid's inline
+                // f:if does not interpolate into a class-name expression, so
+                // the template would need it as a string either way.
+                'severity' => $isSecurity ? 'critical' : 'ok',
+                'severityLabel' => $isSecurity ? 'Sicherheitsupdate' : 'Aktuell',
+            ];
+        }
+
+        $this->cache->set($cacheKey, $summary, [], self::CACHE_LIFETIME);
+
+        return $summary;
     }
 
     /**

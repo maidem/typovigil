@@ -1,0 +1,22 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+
+<!-- No f:layout: Layouts/ holds page layouts only, and a plugin rendered into a
+     content element brings its own markup. -->
+<div class="tv-portal">
+    <div class="tv-cards">
+        <f:for each="{coreVersions}" as="core">
+            <article class="tv-card tv-card--{core.severity}">
+                <header class="tv-card__head">
+                    <span class="tv-chip tv-chip--{core.severity}">{core.severityLabel}</span>
+                </header>
+                <h2 class="tv-card__title">TYPO3 {core.major}</h2>
+                <p class="tv-lead">Neueste Version: {core.version}</p>
+            </article>
+        </f:for>
+    </div>
+</div>
+
+</html>
