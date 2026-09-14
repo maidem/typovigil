@@ -7,6 +7,24 @@
  * needing its own template override.
  */
 
+/* Self-hosted so the page needs no third-party request. Variable font: one
+   file covers the whole weight range, so no separate 400/600/700 files. */
+@font-face {
+    font-family: "Inter";
+    src: url("../Fonts/Inter-roman.var.woff2") format("woff2-variations");
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Inter";
+    src: url("../Fonts/Inter-italic.var.woff2") format("woff2-variations");
+    font-weight: 100 900;
+    font-style: italic;
+    font-display: swap;
+}
+
 :root {
     --tv-bg: #f6f6f7;
     --tv-surface: #fff;
@@ -52,6 +70,13 @@
     }
 }
 
+/* Reserves the scrollbar's width whether or not it is currently needed, so
+   logging in/out (which changes page height) never shifts the content
+   sideways. */
+html {
+    scrollbar-gutter: stable;
+}
+
 /* Sticky footer: the page fills the viewport even when short, so the data
    source badges sit at the bottom edge instead of floating mid-screen. */
 body {
@@ -62,7 +87,8 @@ body {
     padding: 0;
     background: var(--tv-bg);
     color: var(--tv-text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-feature-settings: "cv11", "ss01";
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
 }
@@ -86,11 +112,55 @@ body {
     box-sizing: border-box;
 }
 
-.tv-portal {
+.tv-portal,
+.tv-content {
     max-width: 1180px;
     margin-inline: auto;
     padding-block: 40px 64px;
     padding-inline: 20px;
+}
+
+/* Plain content pages (Impressum, Datenschutz): the plugin styles its own
+   headings and text via the tv-* classes above, so this only needs to cover
+   what TYPO3's text/RTE elements render. */
+.tv-content {
+    max-width: 760px;
+}
+
+.tv-content h1,
+.tv-content h2,
+.tv-content h3 {
+    margin: 1.6em 0 0.6em;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+}
+
+.tv-content h1 { font-size: 1.75rem; margin-top: 0; }
+.tv-content h2 { font-size: 1.3rem; }
+.tv-content h3 { font-size: 1.1rem; }
+
+.tv-content p,
+.tv-content ul,
+.tv-content ol {
+    margin: 0 0 1em;
+}
+
+.tv-content ul,
+.tv-content ol {
+    padding-inline-start: 1.4em;
+}
+
+.tv-content li + li {
+    margin-top: 0.3em;
+}
+
+.tv-content a {
+    color: var(--tv-accent);
+}
+
+.tv-content a:hover {
+    text-decoration-thickness: 2px;
 }
 
 .tv-portal__heading {
@@ -779,7 +849,13 @@ body > ul a:hover {
     color: var(--tv-text);
 }
 
+/* Stays put while the page scrolls, so the way back to the security overview
+   and the user menu are always in reach. Full-width background behind the
+   centered content, so it covers the page edge to edge. */
 .tv-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -787,8 +863,12 @@ body > ul a:hover {
     width: 100%;
     max-width: 1180px;
     margin: 0 auto;
-    padding: 14px 24px 0;
+    padding: 14px 24px;
     box-sizing: border-box;
+    background: var(--tv-bg);
+    /* Extends the background to the window edge without a wrapper element:
+       shadows aren't clipped by the header's own max-width/centering. */
+    box-shadow: -100vw 0 0 var(--tv-bg), 100vw 0 0 var(--tv-bg);
 }
 
 .tv-nav {
@@ -797,13 +877,16 @@ body > ul a:hover {
 }
 
 .tv-nav__link {
-    color: var(--tv-muted);
+    color: var(--tv-text);
     text-decoration: none;
     font-weight: 600;
+    padding: 6px 14px;
+    border: 1px solid var(--tv-border);
+    border-radius: var(--tv-radius-pill);
 }
 
 .tv-nav__link:hover {
-    color: var(--tv-text);
+    border-color: var(--tv-muted);
 }
 
 /* Overrides .tv-topbar's own full-width flex row: inside .tv-header it is
