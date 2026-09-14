@@ -8,14 +8,10 @@
  */
 
 /* Self-hosted so the page needs no third-party request. Variable font: one
-   file covers the whole weight range, so no separate 400/600/700 files.
-   Served from /fonts (a plain public/ path baked into the image) rather than
-   the extension's own Resources/Public/ — TYPO3 publishes that through a
-   runtime-generated _assets/<hash>/ symlink, which 500s for these files in
-   the production container. */
+   file covers the whole weight range, so no separate 400/600/700 files. */
 @font-face {
     font-family: "Inter";
-    src: url("/fonts/Inter-roman.var.woff2") format("woff2-variations");
+    src: url("../Fonts/Inter-roman.var.woff2") format("woff2-variations");
     font-weight: 100 900;
     font-style: normal;
     font-display: swap;
@@ -23,7 +19,7 @@
 
 @font-face {
     font-family: "Inter";
-    src: url("/fonts/Inter-italic.var.woff2") format("woff2-variations");
+    src: url("../Fonts/Inter-italic.var.woff2") format("woff2-variations");
     font-weight: 100 900;
     font-style: italic;
     font-display: swap;
