@@ -112,19 +112,33 @@ body {
     box-sizing: border-box;
 }
 
-.tv-portal,
-.tv-content {
+.tv-portal {
     max-width: 1180px;
     margin-inline: auto;
     padding-block: 40px 64px;
     padding-inline: 20px;
 }
 
-/* Plain content pages (Impressum, Datenschutz): the plugin styles its own
-   headings and text via the tv-* classes above, so this only needs to cover
-   what TYPO3's text/RTE elements render. */
+/* Wraps every page's main content, plugin included, so this has to stay
+   full-width itself — the readable text measure is applied to plain text
+   (Impressum, Datenschutz) only. A nested .tv-portal (the security plugin)
+   overrides it back to its own grid width. */
 .tv-content {
+    max-width: 1180px;
+    margin-inline: auto;
+    padding-inline: 20px;
+}
+
+.tv-content > *:not(.tv-portal) {
     max-width: 760px;
+    margin-inline: auto;
+}
+
+.tv-content > :first-child { padding-top: 40px; }
+.tv-content > :last-child { padding-bottom: 64px; }
+
+.tv-content .tv-portal {
+    padding-inline: 0;
 }
 
 .tv-content h1,
