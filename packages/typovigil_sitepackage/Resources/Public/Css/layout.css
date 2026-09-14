@@ -503,9 +503,12 @@ body {
    markup already carries everything needed, and an override would have to be
    kept in step with the extension on every update. */
 
-.frame-type-felogin_login {
+/* Both selectors target the same felogin markup: .frame-type-felogin_login on
+   its own page, .tv-login-dialog when the same form is fetched into the
+   dialog (see main.js) — the markup is identical, only the wrapper differs. */
+.frame-type-felogin_login,
+.tv-login-dialog {
     max-width: 420px;
-    margin: 48px auto;
     padding: 28px;
     border: 1px solid var(--tv-border);
     border-radius: var(--tv-radius);
@@ -513,20 +516,40 @@ body {
     box-shadow: var(--tv-shadow);
 }
 
+.frame-type-felogin_login { margin: 48px auto; }
+
 .frame-type-felogin_login h2,
-.frame-type-felogin_login h3 {
+.frame-type-felogin_login h3,
+.tv-login-dialog h2,
+.tv-login-dialog h3 {
     margin: 0 0 6px;
     font-size: 1.25rem;
     font-weight: 700;
 }
 
-.frame-type-felogin_login p {
+.frame-type-felogin_login p,
+.tv-login-dialog p {
     margin: 0 0 18px;
     color: var(--tv-muted);
     font-size: 0.9rem;
 }
 
-.frame-type-felogin_login label {
+/* felogin's own <fieldset>/<legend> add a default border and inline label the
+   card layout does not want — reset() them down to plain grouping. */
+.tv-login-dialog fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.tv-login-dialog legend {
+    padding: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.frame-type-felogin_login label,
+.tv-login-dialog label {
     display: block;
     margin-bottom: 5px;
     font-size: 0.84rem;
@@ -534,7 +557,9 @@ body {
 }
 
 .frame-type-felogin_login input[type="text"],
-.frame-type-felogin_login input[type="password"] {
+.frame-type-felogin_login input[type="password"],
+.tv-login-dialog input[type="text"],
+.tv-login-dialog input[type="password"] {
     box-sizing: border-box;
     width: 100%;
     margin-bottom: 16px;
@@ -547,13 +572,17 @@ body {
 }
 
 .frame-type-felogin_login input[type="text"]:focus,
-.frame-type-felogin_login input[type="password"]:focus {
+.frame-type-felogin_login input[type="password"]:focus,
+.tv-login-dialog input[type="text"]:focus,
+.tv-login-dialog input[type="password"]:focus {
     border-color: var(--tv-text);
     outline: none;
 }
 
 .frame-type-felogin_login input[type="submit"],
-.frame-type-felogin_login button[type="submit"] {
+.frame-type-felogin_login button[type="submit"],
+.tv-login-dialog input[type="submit"],
+.tv-login-dialog button[type="submit"] {
     width: 100%;
     padding: 12px 18px;
     border: 0;
@@ -566,13 +595,17 @@ body {
 }
 
 .frame-type-felogin_login input[type="submit"]:hover,
-.frame-type-felogin_login button[type="submit"]:hover {
+.frame-type-felogin_login button[type="submit"]:hover,
+.tv-login-dialog input[type="submit"]:hover,
+.tv-login-dialog button[type="submit"]:hover {
     opacity: 0.88;
 }
 
 /* felogin renders the failure notice as a heading, not as a dedicated class. */
 .frame-type-felogin_login .alert,
-.frame-type-felogin_login .typo3-messages {
+.frame-type-felogin_login .typo3-messages,
+.tv-login-dialog .alert,
+.tv-login-dialog .typo3-messages {
     margin-bottom: 16px;
     padding: 11px 13px;
     border-radius: 10px;
@@ -761,12 +794,10 @@ body > ul a:hover {
     border-color: var(--tv-muted);
 }
 
+/* Sizing/positioning specific to the dialog — colours, spacing and form
+   styling for its content come from the combined felogin rules above. */
 .tv-login-dialog {
-    max-width: 380px;
     width: calc(100% - 40px);
-    padding: 28px;
-    border: 1px solid var(--tv-border);
-    border-radius: 16px;
     box-shadow: 0 20px 60px rgb(16 16 26 / 20%);
 }
 
@@ -790,12 +821,6 @@ body > ul a:hover {
 
 .tv-login-dialog__close:hover {
     color: var(--tv-text);
-}
-
-.tv-login-dialog form {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
 }
 
 .tv-legal {
