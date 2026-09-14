@@ -12,3 +12,9 @@ services:
       - name: 'console.command'
         command: 'typovigilsitepackage:seed-legal-pages'
         description: 'Creates the Impressum and Datenschutzerklärung pages if they do not exist yet'
+
+  Maidemde\TypovigilSitepackage\Command\OpenStatusPageCommand:
+    tags:
+      - name: 'console.command'
+        command: 'typovigilsitepackage:open-status-page'
+        description: 'Removes the login-only restriction from the /status page'
