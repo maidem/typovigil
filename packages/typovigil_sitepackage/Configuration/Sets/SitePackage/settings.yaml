@@ -18,3 +18,10 @@ config.admPanel: '1'
 config.prefixLocalAnchors: 'all'
 config.headerComment: 'build by get.typo3.org/sitepackage'
 config.sendCacheHeaders: '1'
+
+# The login form is fetched into a <dialog> on the root page (see main.js),
+# so felogin's own referrer-based redirect isn't reliable — always sending
+# customers to the root page after login is where their installations live.
+felogin.redirectMode: 'login'
+felogin.redirectPageLogin: 1
+felogin.redirectDisable: false

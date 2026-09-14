@@ -25,6 +25,11 @@
     --tv-critical-bg: #fbeceb;
 
     --tv-shadow: 0 1px 2px rgb(16 16 26 / 4%);
+
+    /* One accent, used sparingly (login dialog, focus rings) — the rest of
+       the page stays on the neutral/status palette above on purpose. */
+    --tv-accent: #3a5fd9;
+    --tv-accent-bg: #eef1fc;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -38,6 +43,9 @@
         --tv-ok-bg: #16281c;
         --tv-outdated-bg: #2c2413;
         --tv-critical-bg: #2e1917;
+
+        --tv-accent: #7b93ea;
+        --tv-accent-bg: #1c2340;
 
         --tv-shadow: none;
     }
@@ -511,6 +519,7 @@ body {
     max-width: 420px;
     padding: 28px;
     border: 1px solid var(--tv-border);
+    border-top: 3px solid var(--tv-accent);
     border-radius: var(--tv-radius);
     background: var(--tv-surface);
     box-shadow: var(--tv-shadow);
@@ -575,8 +584,9 @@ body {
 .frame-type-felogin_login input[type="password"]:focus,
 .tv-login-dialog input[type="text"]:focus,
 .tv-login-dialog input[type="password"]:focus {
-    border-color: var(--tv-text);
-    outline: none;
+    border-color: var(--tv-accent);
+    outline: 3px solid var(--tv-accent-bg);
+    outline-offset: 0;
 }
 
 .frame-type-felogin_login input[type="submit"],
@@ -587,8 +597,8 @@ body {
     padding: 12px 18px;
     border: 0;
     border-radius: var(--tv-radius-pill);
-    background: var(--tv-text);
-    color: var(--tv-surface);
+    background: var(--tv-accent);
+    color: #fff;
     font: inherit;
     font-weight: 600;
     cursor: pointer;
