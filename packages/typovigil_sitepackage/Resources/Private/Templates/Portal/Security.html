@@ -17,6 +17,57 @@
             </article>
         </f:for>
     </div>
+
+    <h2 class="tv-portal__heading">Security Advisories</h2>
+
+    <!-- Filter via Links statt Client-JS: die Liste ist ohnehin serverseitig
+         paginiert, ein zweites Filter-System client-seitig wäre doppelt. -->
+    <div class="tv-filter">
+        <f:link.action action="security" arguments="{advisoryType: 'all'}" class="tv-filter__pill{f:if(condition: '{advisoryType} == all', then: ' is-active')}">Alle</f:link.action>
+        <f:link.action action="security" arguments="{advisoryType: 'core'}" class="tv-filter__pill{f:if(condition: '{advisoryType} == core', then: ' is-active')}">TYPO3 Core</f:link.action>
+        <f:link.action action="security" arguments="{advisoryType: 'extension'}" class="tv-filter__pill{f:if(condition: '{advisoryType} == extension', then: ' is-active')}">Extensions</f:link.action>
+    </div>
+
+    <f:if condition="{advisories.items}">
+        <f:then>
+            <div class="tv-cards">
+                <f:for each="{advisories.items}" as="advisory">
+                    <article class="tv-card tv-card--{f:if(condition: '{advisory.type} == core', then: 'critical', else: 'outdated')}">
+                        <header class="tv-card__head">
+                            <span class="tv-chip tv-chip--{f:if(condition: '{advisory.type} == core', then: 'critical', else: 'outdated')}">
+                                <f:if condition="{advisory.type} == core">
+                                    <f:then>TYPO3 Core</f:then>
+                                    <f:else>Extension</f:else>
+                                </f:if>
+                            </span>
+                        </header>
+
+                        <h2 class="tv-card__title">
+                            <a href="{advisory.link}" target="_blank" rel="noopener">{advisory.title}</a>
+                        </h2>
+
+                        <p class="tv-lead">{advisory.description}</p>
+
+                        <div class="tv-card__foot">
+                            <span class="tv-card__more">{advisory.id} &middot; <f:format.date format="d.m.Y">{advisory.date}</f:format.date></span>
+                        </div>
+                    </article>
+                </f:for>
+            </div>
+
+            <div class="tv-back">
+                <f:if condition="{advisoryPage} > 1">
+                    <f:link.action action="security" arguments="{advisoryType: advisoryType, advisoryPage: advisoryPage - 1}">&larr; Neuer</f:link.action>
+                </f:if>
+                <f:if condition="{advisories.hasMore}">
+                    <f:link.action action="security" arguments="{advisoryType: advisoryType, advisoryPage: advisoryPage + 1}">Älter &rarr;</f:link.action>
+                </f:if>
+            </div>
+        </f:then>
+        <f:else>
+            <p class="tv-empty">Keine Security Advisories in dieser Auswahl.</p>
+        </f:else>
+    </f:if>
 </div>
 
 </html>

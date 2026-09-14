@@ -22,6 +22,9 @@ final readonly class VersionCheckService
     private const PACKAGIST_ADVISORIES = 'https://packagist.org/api/security-advisories/';
     private const TYPO3_RELEASES = 'https://get.typo3.org/json';
     private const TER_EXTENSION = 'https://extensions.typo3.org/api/v1/extension/%s';
+    private const SECURITY_ADVISORIES_FEED = 'https://news.typo3.com/security/rss-security';
+
+    private const ADVISORIES_PER_PAGE = 30;
 
     private const CACHE_LIFETIME = 3600;
     private const TIMEOUT = 15;
@@ -50,6 +53,7 @@ final readonly class VersionCheckService
         'repo.packagist.org' => 'Packagist',
         'packagist.org' => 'Sicherheitsmeldungen',
         'extensions.typo3.org' => 'TYPO3 Extension Repository',
+        'news.typo3.com' => 'TYPO3 Security Advisories',
     ];
 
     public function __construct(
@@ -222,6 +226,98 @@ final readonly class VersionCheckService
         $this->cache->set($cacheKey, $summary, [], self::CACHE_LIFETIME);
 
         return $summary;
+    }
+
+    /**
+     * Official TYPO3 security advisories, newest first, paginated.
+     *
+     * The feed carries no severity field, only enough to tell a core advisory
+     * from an extension advisory (the "TYPO3-CORE-SA-" / "TYPO3-EXT-SA-"
+     * prefix in the title) — filtering by type rather than a guessed severity.
+     *
+     * @return array{items: list<array{id: string, title: string, description: string, link: string, date: int, type: 'core'|'extension'}>, total: int, hasMore: bool}
+     */
+    public function securityAdvisories(int $page = 1, string $type = 'all'): array
+    {
+        $cacheKey = 'sec_feed';
+        $cached = $this->cache->get($cacheKey);
+        if ($cached === false) {
+            $cached = $this->fetchSecurityAdvisories();
+            $this->cache->set($cacheKey, $cached, [], self::CACHE_LIFETIME);
+        }
+
+        $items = (array)$cached;
+        if ($type !== 'all') {
+            $items = array_values(array_filter($items, static fn (array $item): bool => $item['type'] === $type));
+        }
+
+        $total = count($items);
+        $offset = max(0, $page - 1) * self::ADVISORIES_PER_PAGE;
+
+        return [
+            'items' => array_slice($items, $offset, self::ADVISORIES_PER_PAGE),
+            'total' => $total,
+            'hasMore' => $offset + self::ADVISORIES_PER_PAGE < $total,
+        ];
+    }
+
+    /**
+     * @return list<array{id: string, title: string, description: string, link: string, date: int, type: 'core'|'extension'}>
+     */
+    private function fetchSecurityAdvisories(): array
+    {
+        try {
+            $response = $this->requestFactory->request(self::SECURITY_ADVISORIES_FEED, 'GET', [
+                'timeout' => self::TIMEOUT,
+                'headers' => ['User-Agent' => 'TypoVigil'],
+            ]);
+
+            if ($response->getStatusCode() !== 200) {
+                $this->recordSourceStatus(self::SECURITY_ADVISORIES_FEED, false);
+
+                return [];
+            }
+
+            $body = (string)$response->getBody();
+            $previous = libxml_use_internal_errors(true);
+            $xml = simplexml_load_string($body);
+            libxml_use_internal_errors($previous);
+
+            if ($xml === false) {
+                $this->recordSourceStatus(self::SECURITY_ADVISORIES_FEED, false);
+
+                return [];
+            }
+
+            $items = [];
+            foreach ($xml->channel->item ?? [] as $item) {
+                $title = (string)$item->title;
+                $items[] = [
+                    'id' => self::advisoryIdFromTitle($title),
+                    'title' => $title,
+                    'description' => trim((string)$item->description),
+                    'link' => (string)$item->link,
+                    'date' => strtotime((string)$item->pubDate) ?: 0,
+                    'type' => str_starts_with($title, 'TYPO3-EXT-') ? 'extension' : 'core',
+                ];
+            }
+
+            $this->recordSourceStatus(self::SECURITY_ADVISORIES_FEED, true);
+
+            return $items;
+        } catch (\Throwable $e) {
+            $this->logger->warning('TypoVigil: security advisory feed request failed', [
+                'exception' => $e->getMessage(),
+            ]);
+            $this->recordSourceStatus(self::SECURITY_ADVISORIES_FEED, false);
+
+            return [];
+        }
+    }
+
+    private static function advisoryIdFromTitle(string $title): string
+    {
+        return explode(':', $title, 2)[0] ?? $title;
     }
 
     /**

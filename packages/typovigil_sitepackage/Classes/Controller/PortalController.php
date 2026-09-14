@@ -45,7 +45,7 @@ final class PortalController extends ActionController
             // securityAction() as a plain method: $this->view is already bound
             // to List.html at this point, and render() is the supported way to
             // pick a different template within the same request.
-            $this->view->assign('coreVersions', $this->versionCheck->maintainedCoreVersions());
+            $this->assignSecurityOverview();
 
             return $this->htmlResponse($this->view->render('Security'));
         }
@@ -65,9 +65,23 @@ final class PortalController extends ActionController
      */
     public function securityAction(): ResponseInterface
     {
-        $this->view->assign('coreVersions', $this->versionCheck->maintainedCoreVersions());
+        $this->assignSecurityOverview();
 
         return $this->htmlResponse();
+    }
+
+    private function assignSecurityOverview(): void
+    {
+        $page = max(1, (int)($this->request->getQueryParams()['advisoryPage'] ?? 1));
+        $type = (string)($this->request->getQueryParams()['advisoryType'] ?? 'all');
+        if (!in_array($type, ['all', 'core', 'extension'], true)) {
+            $type = 'all';
+        }
+
+        $this->view->assign('coreVersions', $this->versionCheck->maintainedCoreVersions());
+        $this->view->assign('advisories', $this->versionCheck->securityAdvisories($page, $type));
+        $this->view->assign('advisoryPage', $page);
+        $this->view->assign('advisoryType', $type);
     }
 
     public function showAction(int $project): ResponseInterface
