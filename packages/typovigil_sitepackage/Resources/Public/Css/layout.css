@@ -397,6 +397,13 @@ body {
     margin: 0 0 18px;
 }
 
+/* The pagination controls sit below the advisory grid rather than above
+   content like the other .tv-back use (a "back" link), so they need space
+   above instead of below. */
+[data-tv-advisory-pagination] {
+    margin: 24px 0 0;
+}
+
 /* Pagination controls ("Älter →" / "← Neuer"): same pill as the login button,
    not the plain text link the "back" anchors use. */
 .tv-back button {
