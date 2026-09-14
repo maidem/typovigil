@@ -288,19 +288,29 @@ body {
 }
 
 .tv-card__more,
-.tv-back a {
+.tv-back a,
+.tv-back button {
+    background: none;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    font: inherit;
     color: var(--tv-text);
     font-size: 0.9rem;
     font-weight: 600;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .tv-card__more:hover,
-.tv-back a:hover {
+.tv-back a:hover,
+.tv-back button:hover {
     text-decoration: underline;
 }
 
 .tv-back {
+    display: flex;
+    gap: 20px;
     margin: 0 0 18px;
 }
 
