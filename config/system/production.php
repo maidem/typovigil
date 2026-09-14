@@ -22,6 +22,14 @@ $dbUser = getenv('TYPO3_DATABASE_USERNAME') ?: '';
 $dbPassword = getenv('TYPO3_DATABASE_PASSWORD') ?: '';
 $dbName = getenv('TYPO3_DATABASE_NAME') ?: '';
 
+// Copy public extension resources into public/_assets instead of symlinking
+// them. TYPO3 only ever creates such a symlink once (SymlinkPublisher skips
+// links that already exist), so a folder linked while it was still empty keeps
+// serving stale content after a rebuild — which is exactly how the bundled
+// fonts ended up returning 500. Mirroring is what the Core recommends for
+// container builds and read-only deployments.
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['SystemResources']['filesystemPublishingType'] = 'mirror';
+
 $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default'] = array_merge(
     $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default'] ?? [],
     [

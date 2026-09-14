@@ -7,22 +7,27 @@
  * needing its own template override.
  */
 
-/* Self-hosted so the page needs no third-party request. Variable font: one
-   file covers the whole weight range, so no separate 400/600/700 files. */
+/* Self-hosted, so no request ever leaves for a third-party font CDN — a
+   visitor's IP address never reaches Google Fonts and no consent is needed.
+   Variable font: one file covers the whole weight range, so no separate
+   400/600/700 files. Layout mirrors the Core's own webfonts.css (subfolder
+   per family, unicode-range for the latin subset shipped here). */
 @font-face {
-    font-family: "Inter";
-    src: url("../Fonts/Inter-roman.var.woff2") format("woff2-variations");
+    font-family: "Inter Variable";
+    src: url("../Fonts/Inter/inter-latin-wght-normal.woff2") format("woff2-variations");
     font-weight: 100 900;
     font-style: normal;
     font-display: swap;
+    unicode-range: u+00??, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+0304, u+0308, u+0329, u+2000-206f, u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
 }
 
 @font-face {
-    font-family: "Inter";
-    src: url("../Fonts/Inter-italic.var.woff2") format("woff2-variations");
+    font-family: "Inter Variable";
+    src: url("../Fonts/Inter/inter-latin-wght-italic.woff2") format("woff2-variations");
     font-weight: 100 900;
     font-style: italic;
     font-display: swap;
+    unicode-range: u+00??, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+0304, u+0308, u+0329, u+2000-206f, u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
 }
 
 :root {
@@ -87,7 +92,7 @@ body {
     padding: 0;
     background: var(--tv-bg);
     color: var(--tv-text);
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-feature-settings: "cv11", "ss01";
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
