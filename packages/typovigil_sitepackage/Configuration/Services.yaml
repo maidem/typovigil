@@ -18,3 +18,9 @@ services:
       - name: 'console.command'
         command: 'typovigilsitepackage:open-status-page'
         description: 'Removes the login-only restriction from the /status page'
+
+  Maidemde\TypovigilSitepackage\Command\MoveContentToRootPageCommand:
+    tags:
+      - name: 'console.command'
+        command: 'typovigilsitepackage:move-content-to-root'
+        description: 'Moves the portal plugin content element to the root page'
