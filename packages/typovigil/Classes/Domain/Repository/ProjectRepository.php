@@ -201,7 +201,10 @@ final readonly class ProjectRepository
     {
         $this->connectionPool
             ->getConnectionForTable(self::TABLE_PROJECT)
-            ->update(self::TABLE_PROJECT, $values, ['uid' => $uid], [Connection::PARAM_INT]);
+            // No $types: that argument types $values positionally, not the
+            // identifier — PARAM_INT there bound the first value as an integer
+            // and silently wrote 0 over strings like token_hash.
+            ->update(self::TABLE_PROJECT, $values, ['uid' => $uid]);
     }
 
     /**

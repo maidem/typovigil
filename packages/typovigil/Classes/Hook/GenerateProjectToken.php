@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Maidemde\Typovigil\Hook;
 
+use Maidemde\Typovigil\Domain\Repository\ProjectRepository;
 use Maidemde\Typovigil\Service\TokenGenerator;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -50,7 +51,9 @@ final class GenerateProjectToken
 
         $token = GeneralUtility::makeInstance(TokenGenerator::class)->generate();
 
-        $dataHandler->updateDB('tx_typovigil_project', $uid, [
+        // Not $dataHandler->updateDB(): that is protected core API. The
+        // repository writes the same table through the ConnectionPool.
+        GeneralUtility::makeInstance(ProjectRepository::class)->updateProject($uid, [
             'token_hash' => hash('sha256', $token),
         ]);
 
