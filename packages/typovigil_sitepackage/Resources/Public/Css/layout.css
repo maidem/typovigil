@@ -8,10 +8,14 @@
  */
 
 /* Self-hosted so the page needs no third-party request. Variable font: one
-   file covers the whole weight range, so no separate 400/600/700 files. */
+   file covers the whole weight range, so no separate 400/600/700 files.
+   Served from /fonts (a plain public/ path baked into the image) rather than
+   the extension's own Resources/Public/ — TYPO3 publishes that through a
+   runtime-generated _assets/<hash>/ symlink, which 500s for these files in
+   the production container. */
 @font-face {
     font-family: "Inter";
-    src: url("../Fonts/Inter-roman.var.woff2") format("woff2-variations");
+    src: url("/fonts/Inter-roman.var.woff2") format("woff2-variations");
     font-weight: 100 900;
     font-style: normal;
     font-display: swap;
@@ -19,7 +23,7 @@
 
 @font-face {
     font-family: "Inter";
-    src: url("../Fonts/Inter-italic.var.woff2") format("woff2-variations");
+    src: url("/fonts/Inter-italic.var.woff2") format("woff2-variations");
     font-weight: 100 900;
     font-style: italic;
     font-display: swap;
@@ -373,8 +377,7 @@ body {
 }
 
 .tv-card__more,
-.tv-back a,
-.tv-back button {
+.tv-back a {
     background: none;
     border: 0;
     padding: 0;
@@ -388,8 +391,7 @@ body {
 }
 
 .tv-card__more:hover,
-.tv-back a:hover,
-.tv-back button:hover {
+.tv-back a:hover {
     text-decoration: underline;
 }
 
@@ -397,6 +399,24 @@ body {
     display: flex;
     gap: 20px;
     margin: 0 0 18px;
+}
+
+/* Pagination controls ("Älter →" / "← Neuer"): same pill as the login button,
+   not the plain text link the "back" anchors use. */
+.tv-back button {
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--tv-text);
+    padding: 6px 14px;
+    border: 1px solid var(--tv-border);
+    border-radius: var(--tv-radius-pill);
+    background: var(--tv-surface);
+    cursor: pointer;
+}
+
+.tv-back button:hover {
+    border-color: var(--tv-muted);
 }
 
 /* --- inline details ------------------------------------------------------ */
