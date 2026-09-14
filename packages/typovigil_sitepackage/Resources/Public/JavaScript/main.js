@@ -58,6 +58,15 @@ document.addEventListener('click', function (event) {
         .then(function (html) {
             var doc = new DOMParser().parseFromString(html, 'text/html');
             var form = doc.querySelector('form[action*="login"]');
+            if (form) {
+                // felogin renders redirect_url for the /login page itself; submitted
+                // from the dialog on the root page, that would send the visitor back
+                // to /login instead of where they started.
+                var redirectField = form.querySelector('input[name="redirect_url"]');
+                if (redirectField) {
+                    redirectField.value = '/';
+                }
+            }
             content.innerHTML = form ? form.outerHTML : 'Anmeldung konnte nicht geladen werden. <a href="/login">Zur Login-Seite</a>.';
             content.dataset.loaded = 'true';
         })
