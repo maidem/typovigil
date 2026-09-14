@@ -18,24 +18,24 @@
         </f:for>
     </div>
 
-    <h2 class="tv-portal__heading">Security Advisories</h2>
+    <h2 class="tv-portal__heading tv-portal__heading--spaced">Security Advisories</h2>
 
-    <!-- Filter via Links statt Client-JS: die Liste ist ohnehin serverseitig
-         paginiert, ein zweites Filter-System client-seitig wäre doppelt. -->
-    <div class="tv-filter">
-        <f:link.action action="security" arguments="{advisoryType: 'all'}" class="tv-filter__pill{f:if(condition: '{advisoryType} == all', then: ' is-active')}">Alle</f:link.action>
-        <f:link.action action="security" arguments="{advisoryType: 'core'}" class="tv-filter__pill{f:if(condition: '{advisoryType} == core', then: ' is-active')}">TYPO3 Core</f:link.action>
-        <f:link.action action="security" arguments="{advisoryType: 'extension'}" class="tv-filter__pill{f:if(condition: '{advisoryType} == extension', then: ' is-active')}">Extensions</f:link.action>
-    </div>
-
-    <f:if condition="{advisories.items}">
+    <f:if condition="{advisories}">
         <f:then>
-            <div class="tv-cards">
-                <f:for each="{advisories.items}" as="advisory">
-                    <article class="tv-card tv-card--{f:if(condition: '{advisory.type} == core', then: 'critical', else: 'outdated')}">
+            <!-- Alle Advisories kommen mit; Filter und Pagination laufen
+                 client-seitig (security.js) ohne Seiten-Reload. -->
+            <div class="tv-filter" data-tv-advisory-filter>
+                <button type="button" class="tv-filter__pill is-active" data-tv-advisory-type="all">Alle</button>
+                <button type="button" class="tv-filter__pill" data-tv-advisory-type="core">TYPO3 Core</button>
+                <button type="button" class="tv-filter__pill" data-tv-advisory-type="extension">Extensions</button>
+            </div>
+
+            <div class="tv-cards tv-cards--advisories" data-tv-advisory-list>
+                <f:for each="{advisories}" as="advisory">
+                    <article class="tv-card tv-card--{f:if(condition: '{advisory.type} == \'core\'', then: 'critical', else: 'outdated')}" data-tv-advisory-type="{advisory.type}">
                         <header class="tv-card__head">
-                            <span class="tv-chip tv-chip--{f:if(condition: '{advisory.type} == core', then: 'critical', else: 'outdated')}">
-                                <f:if condition="{advisory.type} == core">
+                            <span class="tv-chip tv-chip--{f:if(condition: '{advisory.type} == \'core\'', then: 'critical', else: 'outdated')}">
+                                <f:if condition="{advisory.type} == 'core'">
                                     <f:then>TYPO3 Core</f:then>
                                     <f:else>Extension</f:else>
                                 </f:if>
@@ -55,17 +55,14 @@
                 </f:for>
             </div>
 
-            <div class="tv-back">
-                <f:if condition="{advisoryPage} > 1">
-                    <f:link.action action="security" arguments="{advisoryType: advisoryType, advisoryPage: advisoryPage - 1}">&larr; Neuer</f:link.action>
-                </f:if>
-                <f:if condition="{advisories.hasMore}">
-                    <f:link.action action="security" arguments="{advisoryType: advisoryType, advisoryPage: advisoryPage + 1}">Älter &rarr;</f:link.action>
-                </f:if>
-            </div>
+            <p class="tv-empty tv-empty--filtered" data-tv-advisory-empty hidden>
+                Keine Security Advisories in dieser Auswahl.
+            </p>
+
+            <div class="tv-back" data-tv-advisory-pagination></div>
         </f:then>
         <f:else>
-            <p class="tv-empty">Keine Security Advisories in dieser Auswahl.</p>
+            <p class="tv-empty">Security Advisories derzeit nicht verfügbar.</p>
         </f:else>
     </f:if>
 </div>

@@ -116,3 +116,88 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+/*
+ * Filters and paginates the security advisory list client-side, same reasons
+ * as the project filter above: the whole feed already sits in the page, so
+ * filtering it in JS avoids a round trip per click.
+ */
+document.addEventListener('DOMContentLoaded', function () {
+    var bar = document.querySelector('[data-tv-advisory-filter]');
+    var list = document.querySelector('[data-tv-advisory-list]');
+    if (!bar || !list) {
+        return;
+    }
+
+    var PER_PAGE = 30;
+    var cards = Array.prototype.slice.call(list.querySelectorAll('[data-tv-advisory-type]'));
+    var empty = document.querySelector('[data-tv-advisory-empty]');
+    var pagination = document.querySelector('[data-tv-advisory-pagination]');
+    var type = 'all';
+    var page = 1;
+
+    function matching() {
+        return cards.filter(function (card) {
+            return type === 'all' || card.getAttribute('data-tv-advisory-type') === type;
+        });
+    }
+
+    function render() {
+        var matched = matching();
+        var start = (page - 1) * PER_PAGE;
+        var end = start + PER_PAGE;
+
+        cards.forEach(function (card) {
+            card.hidden = true;
+        });
+        matched.slice(start, end).forEach(function (card) {
+            card.hidden = false;
+        });
+
+        if (empty) {
+            empty.hidden = matched.length > 0;
+        }
+
+        pagination.innerHTML = '';
+        if (page > 1) {
+            var prev = document.createElement('button');
+            prev.type = 'button';
+            prev.className = 'tv-card__more';
+            prev.textContent = '← Neuer';
+            prev.addEventListener('click', function () {
+                page--;
+                render();
+            });
+            pagination.appendChild(prev);
+        }
+        if (end < matched.length) {
+            var next = document.createElement('button');
+            next.type = 'button';
+            next.className = 'tv-card__more';
+            next.textContent = 'Älter →';
+            next.addEventListener('click', function () {
+                page++;
+                render();
+            });
+            pagination.appendChild(next);
+        }
+    }
+
+    bar.addEventListener('click', function (event) {
+        var pill = event.target.closest('[data-tv-advisory-type]');
+        if (!pill || !bar.contains(pill)) {
+            return;
+        }
+
+        type = pill.getAttribute('data-tv-advisory-type');
+        page = 1;
+
+        bar.querySelectorAll('[data-tv-advisory-type]').forEach(function (other) {
+            other.classList.toggle('is-active', other === pill);
+        });
+
+        render();
+    });
+
+    render();
+});

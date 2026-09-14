@@ -100,6 +100,10 @@ body {
     letter-spacing: -0.01em;
 }
 
+.tv-portal__heading--spaced {
+    margin-top: 48px;
+}
+
 /* --- filter pills ------------------------------------------------------- */
 
 .tv-filter {
@@ -138,6 +142,12 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 20px;
     align-items: start;
+}
+
+/* Advisory cards carry no expandable details, so every card in a row can
+   safely stretch to the tallest one instead of starting flush at the top. */
+.tv-cards--advisories {
+    align-items: stretch;
 }
 
 /* An opened card holds dozens of badges, which do not fit a narrow column.

@@ -72,16 +72,8 @@ final class PortalController extends ActionController
 
     private function assignSecurityOverview(): void
     {
-        $page = max(1, (int)($this->request->getQueryParams()['advisoryPage'] ?? 1));
-        $type = (string)($this->request->getQueryParams()['advisoryType'] ?? 'all');
-        if (!in_array($type, ['all', 'core', 'extension'], true)) {
-            $type = 'all';
-        }
-
         $this->view->assign('coreVersions', $this->versionCheck->maintainedCoreVersions());
-        $this->view->assign('advisories', $this->versionCheck->securityAdvisories($page, $type));
-        $this->view->assign('advisoryPage', $page);
-        $this->view->assign('advisoryType', $type);
+        $this->view->assign('advisories', $this->versionCheck->securityAdvisories());
     }
 
     public function showAction(int $project): ResponseInterface

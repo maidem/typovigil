@@ -24,8 +24,6 @@ final readonly class VersionCheckService
     private const TER_EXTENSION = 'https://extensions.typo3.org/api/v1/extension/%s';
     private const SECURITY_ADVISORIES_FEED = 'https://news.typo3.com/security/rss-security';
 
-    private const ADVISORIES_PER_PAGE = 30;
-
     private const CACHE_LIFETIME = 3600;
     private const TIMEOUT = 15;
 
@@ -229,36 +227,31 @@ final readonly class VersionCheckService
     }
 
     /**
-     * Official TYPO3 security advisories, newest first, paginated.
+     * Official TYPO3 security advisories, newest first.
+     *
+     * Filtering and pagination happen client-side (see security.js) so
+     * switching the type filter does not reload the page — the feed is small
+     * enough that shipping it all in one response is cheaper than a second
+     * round trip per filter click.
      *
      * The feed carries no severity field, only enough to tell a core advisory
      * from an extension advisory (the "TYPO3-CORE-SA-" / "TYPO3-EXT-SA-"
      * prefix in the title) — filtering by type rather than a guessed severity.
      *
-     * @return array{items: list<array{id: string, title: string, description: string, link: string, date: int, type: 'core'|'extension'}>, total: int, hasMore: bool}
+     * @return list<array{id: string, title: string, description: string, link: string, date: int, type: 'core'|'extension'}>
      */
-    public function securityAdvisories(int $page = 1, string $type = 'all'): array
+    public function securityAdvisories(): array
     {
         $cacheKey = 'sec_feed';
         $cached = $this->cache->get($cacheKey);
-        if ($cached === false) {
-            $cached = $this->fetchSecurityAdvisories();
-            $this->cache->set($cacheKey, $cached, [], self::CACHE_LIFETIME);
+        if ($cached !== false) {
+            return (array)$cached;
         }
 
-        $items = (array)$cached;
-        if ($type !== 'all') {
-            $items = array_values(array_filter($items, static fn (array $item): bool => $item['type'] === $type));
-        }
+        $items = $this->fetchSecurityAdvisories();
+        $this->cache->set($cacheKey, $items, [], self::CACHE_LIFETIME);
 
-        $total = count($items);
-        $offset = max(0, $page - 1) * self::ADVISORIES_PER_PAGE;
-
-        return [
-            'items' => array_slice($items, $offset, self::ADVISORIES_PER_PAGE),
-            'total' => $total,
-            'hasMore' => $offset + self::ADVISORIES_PER_PAGE < $total,
-        ];
+        return $items;
     }
 
     /**
