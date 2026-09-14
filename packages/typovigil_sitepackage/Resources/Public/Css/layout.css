@@ -119,26 +119,27 @@ body {
     padding-inline: 20px;
 }
 
-/* Wraps every page's main content, plugin included, so this has to stay
-   full-width itself — the readable text measure is applied to plain text
-   (Impressum, Datenschutz) only. A nested .tv-portal (the security plugin)
-   overrides it back to its own grid width. */
+/* Wraps every page's main content, plugin included, so this is the same
+   1180px frame as .tv-portal — a nested .tv-portal simply reuses the same
+   width. The narrower reading measure below applies to plain text
+   (Impressum, Datenschutz) directly, not to a wrapper. */
 .tv-content {
     max-width: 1180px;
     margin-inline: auto;
+    padding-block: 40px 64px;
     padding-inline: 20px;
 }
 
-.tv-content > *:not(.tv-portal) {
+/* Readable text measure, kept on the text elements themselves rather than a
+   wrapper — a wrapper would also catch and narrow the security plugin, which
+   TYPO3 renders inside the same .tv-content. */
+.tv-content h1,
+.tv-content h2,
+.tv-content h3,
+.tv-content p,
+.tv-content ul,
+.tv-content ol {
     max-width: 760px;
-    margin-inline: auto;
-}
-
-.tv-content > :first-child { padding-top: 40px; }
-.tv-content > :last-child { padding-bottom: 64px; }
-
-.tv-content .tv-portal {
-    padding-inline: 0;
 }
 
 .tv-content h1,
