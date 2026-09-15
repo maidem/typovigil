@@ -1,5 +1,6 @@
 CREATE TABLE tx_typovigil_project (
     title varchar(255) DEFAULT '' NOT NULL,
+    site_url varchar(255) DEFAULT '' NOT NULL,
     token_hash varchar(255) DEFAULT '' NOT NULL,
     last_report_at int(11) unsigned DEFAULT 0 NOT NULL,
     core_version varchar(32) DEFAULT '' NOT NULL,

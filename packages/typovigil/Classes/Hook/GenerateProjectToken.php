@@ -44,7 +44,7 @@ final class GenerateProjectToken
             return;
         }
 
-        $record = BackendUtility::getRecord('tx_typovigil_project', $uid, 'token_hash');
+        $record = BackendUtility::getRecord('tx_typovigil_project', $uid, 'token_hash,site_url');
         if (($record['token_hash'] ?? '') !== '') {
             return;
         }
@@ -57,16 +57,41 @@ final class GenerateProjectToken
             'token_hash' => hash('sha256', $token),
         ]);
 
+        $siteUrl = trim((string)($record['site_url'] ?? ''));
+        $setupLink = $siteUrl !== ''
+            ? $this->setupLink($siteUrl, $token)
+            : null;
+
+        $message = $setupLink !== null
+            ? sprintf(
+                'Token: %s — open %s on the monitored site to configure the agent extension automatically. The token is not stored and cannot be shown again.',
+                $token,
+                $setupLink
+            )
+            : sprintf(
+                'Token: %s — copy it now into the agent extension configuration. It is not stored and cannot be shown again.',
+                $token
+            );
+
         GeneralUtility::makeInstance(FlashMessageService::class)
             ->getMessageQueueByIdentifier()
             ->addMessage(new FlashMessage(
-                sprintf(
-                    'Token: %s — copy it now into the agent extension configuration. It is not stored and cannot be shown again.',
-                    $token
-                ),
+                $message,
                 'TypoVigil access token',
                 ContextualFeedbackSeverity::INFO,
                 true
             ));
+    }
+
+    /**
+     * Points at the agent's setup route on the monitored site, carrying this
+     * hub's own address so the agent knows where to send its reports.
+     */
+    private function setupLink(string $siteUrl, string $token): string
+    {
+        return rtrim($siteUrl, '/') . '/typo3/typovigil-agent/setup?' . http_build_query([
+            'hub' => rtrim(GeneralUtility::getIndpEnv('TYPO3_SITE_URL'), '/'),
+            'token' => $token,
+        ]);
     }
 }

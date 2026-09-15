@@ -26,6 +26,15 @@ return [
                 'required' => true,
             ],
         ],
+        'site_url' => [
+            'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.site_url',
+            'description' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.site_url.description',
+            'config' => [
+                'type' => 'input',
+                'size' => 40,
+                'eval' => 'trim',
+            ],
+        ],
         'token_hash' => [
             'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.token_hash',
             'description' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.token_hash.description',
@@ -83,7 +92,7 @@ return [
         '1' => [
             'showitem' => '
                 --div--;LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.general,
-                    title, notes, hidden,
+                    title, site_url, notes, hidden,
                 --div--;LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tab.status,
                     core_version, last_report_at, token_hash,
                 --div--;LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tab.access,

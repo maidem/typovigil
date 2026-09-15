@@ -9,6 +9,12 @@
             <trans-unit id="tx_typovigil_project.title">
                 <source>Title</source>
             </trans-unit>
+            <trans-unit id="tx_typovigil_project.site_url">
+                <source>Site URL</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.site_url.description">
+                <source>Base address of the monitored TYPO3 backend, e.g. https://example.com. Used to build the one-click setup link for the agent extension.</source>
+            </trans-unit>
             <trans-unit id="tx_typovigil_project.token_hash">
                 <source>Token (hash)</source>
             </trans-unit>
