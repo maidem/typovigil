@@ -81,7 +81,7 @@ return [
             ],
         ],
         'hidden' => [
-            'label' => 'LLL:LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
+            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
                 'renderType' => 'checkboxToggle',
@@ -90,11 +90,14 @@ return [
     ],
     'types' => [
         '1' => [
+            // No tab for core_version / last_report_at / token_hash: they are
+            // written by the agent's reports and the token-issue hook, never
+            // by hand, and would otherwise look like fields someone forgot to
+            // fill in. Their values already show in the module (list and
+            // detail view).
             'showitem' => '
-                --div--;LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.general,
+                --div--;LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tab.general,
                     title, site_url, notes, hidden,
-                --div--;LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tab.status,
-                    core_version, last_report_at, token_hash,
                 --div--;LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tab.access,
                     fe_users,
             ',

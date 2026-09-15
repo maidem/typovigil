@@ -1,2 +1,5 @@
 # cat=access; type=int+; label=Agency frontend user group: Members of this frontend user group see every project in the portal, not just the ones assigned to them. 0 disables the role. Set the group uid, not its title — a title can be renamed in the backend and would silently grant access to everyone.
 agencyFeGroupId = 0
+
+# cat=basic; type=int+; label=Project storage page: Page (usually a Sysfolder) where "New project" in the TypoVigil module creates tx_typovigil_project records. 0 refuses to create new records from the module until this is set.
+projectStoragePid = 0

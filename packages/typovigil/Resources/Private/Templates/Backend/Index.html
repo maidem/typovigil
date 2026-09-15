@@ -1,12 +1,68 @@
 <html
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+    xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
     data-namespace-typo3-fluid="true"
 >
 
 <f:layout name="Module" />
 
+<f:section name="Before">
+    <f:asset.module identifier="@typo3/backend/context-menu.js" />
+</f:section>
+
 <f:section name="Content">
     <h1>TypoVigil</h1>
+
+    <f:if condition="{justIssued}">
+        <div class="callout callout-info" id="typovigil-issued-token">
+            <div class="callout-body">
+                <p>
+                    <strong>Token:</strong>
+                    <code>{justIssued.token}</code>
+                    — shown once, it is not stored and cannot be shown again.
+                </p>
+                <f:if condition="{justIssued.setupLink}">
+                    <f:then>
+                        <div class="input-group">
+                            <input type="text" class="form-control" readonly="readonly" value="{justIssued.setupLink}">
+                            <typo3-copy-to-clipboard class="btn btn-default" title="Copy setup link" text="{justIssued.setupLink}">
+                                <core:icon identifier="actions-clipboard" size="small" />
+                            </typo3-copy-to-clipboard>
+                        </div>
+                        <p class="text-muted mt-2 mb-0">
+                            Open this link on the monitored site (as a logged-in admin) to configure the agent extension automatically.
+                        </p>
+                    </f:then>
+                    <f:else>
+                        <p class="mb-0">
+                            No site URL was set, so no setup link could be built. Copy the token into the agent
+                            extension configuration by hand, or fill in the site URL and use "Generate setup link" below.
+                        </p>
+                    </f:else>
+                </f:if>
+            </div>
+        </div>
+        <f:asset.module identifier="@typo3/backend/copy-to-clipboard.js" />
+    </f:if>
+
+    <f:if condition="{projectStoragePid}">
+        <f:then>
+            <p class="mb-3">
+                <be:link.newRecord table="tx_typovigil_project" pid="{projectStoragePid}" class="btn btn-primary">
+                    New project
+                </be:link.newRecord>
+            </p>
+        </f:then>
+        <f:else>
+            <div class="callout callout-warning">
+                <p>
+                    No project storage page configured. Set <em>projectStoragePid</em> in the
+                    extension configuration of <em>typovigil</em> to enable "New project" here.
+                </p>
+            </div>
+        </f:else>
+    </f:if>
 
     <f:if condition="{projects}">
         <f:then>
@@ -18,6 +74,8 @@
                         <th>Status</th>
                         <th>Packages</th>
                         <th>Last report</th>
+                        <th>Setup</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -68,6 +126,34 @@
                                     </f:else>
                                 </f:if>
                             </td>
+                            <td>
+                                <f:if condition="{project.hasReported}">
+                                    <f:else>
+                                        <f:if condition="{project.siteUrl}">
+                                            <f:then>
+                                                <f:link.action action="regenerateSetupLink" arguments="{project: project.uid}" class="btn btn-sm btn-outline-secondary">
+                                                    Generate setup link
+                                                </f:link.action>
+                                            </f:then>
+                                            <f:else>
+                                                <span class="text-muted" title="Fill in the site URL on the project record first">no site URL</span>
+                                            </f:else>
+                                        </f:if>
+                                    </f:else>
+                                </f:if>
+                            </td>
+                            <td>
+                                <button
+                                    type="button"
+                                    class="btn btn-link"
+                                    data-contextmenu-trigger="click"
+                                    data-contextmenu-table="tx_typovigil_project"
+                                    data-contextmenu-uid="{project.uid}"
+                                    aria-label="Open context menu"
+                                >
+                                    <core:icon identifier="actions-menu-alternative" size="small" />
+                                </button>
+                            </td>
                         </tr>
                     </f:for>
                 </tbody>
@@ -76,9 +162,70 @@
         <f:else>
             <div class="callout callout-info">
                 <p>
-                    No projects yet. Create a record of type <em>Monitored project</em>
-                    in the list module; the access token is shown once when you save it.
+                    No projects yet. Use "New project" above; the access token is shown once when you save it.
                 </p>
+            </div>
+        </f:else>
+    </f:if>
+
+    <h2 class="mt-4">Customers</h2>
+
+    <f:if condition="{projectStoragePid}">
+        <p class="mb-3">
+            <be:link.newRecord table="fe_users" pid="{projectStoragePid}" class="btn btn-primary">
+                New customer
+            </be:link.newRecord>
+        </p>
+    </f:if>
+
+    <f:if condition="{customers}">
+        <f:then>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Name</th>
+                        <th>Projects</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <f:for each="{customers}" as="customer">
+                        <tr>
+                            <td>{customer.username}</td>
+                            <td>{customer.name}</td>
+                            <td>
+                                <f:if condition="{customer.projectTitles}">
+                                    <f:then>
+                                        <f:for each="{customer.projectTitles}" as="projectTitle" iteration="i">
+                                            {projectTitle}<f:if condition="!{i.isLast}">, </f:if>
+                                        </f:for>
+                                    </f:then>
+                                    <f:else>
+                                        <span class="text-muted" title="Assign this customer to a project on the project's Access tab">none assigned</span>
+                                    </f:else>
+                                </f:if>
+                            </td>
+                            <td>
+                                <button
+                                    type="button"
+                                    class="btn btn-link"
+                                    data-contextmenu-trigger="click"
+                                    data-contextmenu-table="fe_users"
+                                    data-contextmenu-uid="{customer.uid}"
+                                    aria-label="Open context menu"
+                                >
+                                    <core:icon identifier="actions-menu-alternative" size="small" />
+                                </button>
+                            </td>
+                        </tr>
+                    </f:for>
+                </tbody>
+            </table>
+        </f:then>
+        <f:else>
+            <div class="callout callout-info">
+                <p>No customers yet. Use "New customer" above.</p>
             </div>
         </f:else>
     </f:if>

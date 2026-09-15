@@ -18,6 +18,7 @@ final readonly class ProjectRepository
     private const TABLE_PROJECT = 'tx_typovigil_project';
     private const TABLE_PACKAGE = 'tx_typovigil_package';
     private const TABLE_MM = 'tx_typovigil_project_feuser_mm';
+    private const TABLE_FE_USERS = 'fe_users';
 
     public function __construct(private ConnectionPool $connectionPool) {}
 
@@ -195,6 +196,50 @@ final readonly class ProjectRepository
         foreach ($packages as $package) {
             $connection->insert(self::TABLE_PACKAGE, array_merge($package, ['project' => $projectUid]));
         }
+    }
+
+    /**
+     * All customer logins, each with the titles of the projects assigned to
+     * them — for the module overview, so nobody has to open every fe_users
+     * record just to see who can see what.
+     *
+     * @return list<array{uid: int, username: string, name: string, projectTitles: list<string>}>
+     */
+    public function findAllCustomersWithProjects(): array
+    {
+        $qb = $this->queryBuilder(self::TABLE_FE_USERS);
+
+        $users = $qb->select('uid', 'username', 'name')
+            ->from(self::TABLE_FE_USERS)
+            ->orderBy('username')
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        if ($users === []) {
+            return [];
+        }
+
+        $mmQb = $this->queryBuilder(self::TABLE_MM);
+        $assignments = $mmQb->select('mm.uid_foreign', 'p.title')
+            ->from(self::TABLE_MM, 'mm')
+            ->innerJoin('mm', self::TABLE_PROJECT, 'p', $mmQb->expr()->eq('p.uid', $mmQb->quoteIdentifier('mm.uid_local')))
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        $projectTitlesByUser = [];
+        foreach ($assignments as $assignment) {
+            $projectTitlesByUser[(int)$assignment['uid_foreign']][] = (string)$assignment['title'];
+        }
+
+        return array_map(
+            static fn(array $user): array => [
+                'uid' => (int)$user['uid'],
+                'username' => (string)$user['username'],
+                'name' => (string)$user['name'],
+                'projectTitles' => $projectTitlesByUser[(int)$user['uid']] ?? [],
+            ],
+            $users
+        );
     }
 
     public function updateProject(int $uid, array $values): void

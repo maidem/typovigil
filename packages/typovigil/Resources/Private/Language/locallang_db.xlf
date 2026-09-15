@@ -36,6 +36,9 @@
             <trans-unit id="tx_typovigil_project.notes">
                 <source>Notes</source>
             </trans-unit>
+            <trans-unit id="tab.general">
+                <source>General</source>
+            </trans-unit>
             <trans-unit id="tab.status">
                 <source>Status</source>
             </trans-unit>

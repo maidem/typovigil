@@ -103,6 +103,7 @@ final readonly class StatusReportService
         return [
             'uid' => $uid,
             'title' => (string)($project['title'] ?? ''),
+            'siteUrl' => (string)($project['site_url'] ?? ''),
             'coreVersion' => (string)($project['core_version'] ?? ''),
             'lastReportAt' => $lastReport,
             'isStale' => $isStale,

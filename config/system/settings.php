@@ -43,6 +43,7 @@ return [
         // reset this to its default and silently switch the agency role off.
         'typovigil' => [
             'agencyFeGroupId' => '2',
+            'projectStoragePid' => '8',
         ],
     ],
     'FE' => [

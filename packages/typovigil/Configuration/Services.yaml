@@ -21,6 +21,11 @@ services:
   Maidemde\Typovigil\Service\UpdateChecker:
     public: true
 
+  # The DataHandler hook resolves this via GeneralUtility::makeInstance, which
+  # only works for services that are public.
+  Maidemde\Typovigil\Service\ProjectTokenService:
+    public: true
+
   cache.typovigil:
     class: 'TYPO3\CMS\Core\Cache\Frontend\FrontendInterface'
     factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
