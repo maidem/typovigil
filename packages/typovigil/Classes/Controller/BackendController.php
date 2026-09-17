@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Maidemde\Typovigil\Controller;
 
 use Maidemde\Typovigil\Domain\Repository\ProjectRepository;
+use Maidemde\Typovigil\Service\CustomerStorageService;
 use Maidemde\Typovigil\Service\ProjectTokenService;
 use Maidemde\Typovigil\Service\StatusReportService;
 use Maidemde\Typovigil\Service\VersionCheckService;
@@ -26,6 +27,7 @@ final class BackendController extends ActionController
         private readonly ProjectRepository $projects,
         private readonly ProjectTokenService $projectTokens,
         private readonly ExtensionConfiguration $extensionConfiguration,
+        private readonly CustomerStorageService $customerStorage,
     ) {}
 
     public function indexAction(): ResponseInterface
@@ -34,7 +36,7 @@ final class BackendController extends ActionController
         $moduleTemplate->assign('projects', $this->statusReport->summariesForBackend());
         $moduleTemplate->assign('sources', $this->versionCheck->sourceStatus());
         $moduleTemplate->assign('projectStoragePid', $this->projectStoragePid());
-        $moduleTemplate->assign('customerStoragePid', $this->customerStoragePid());
+        $moduleTemplate->assign('customerStoragePid', $this->customerStorage->storagePid());
         $moduleTemplate->assign('justIssued', $this->projectTokens->takeStashed());
         $moduleTemplate->assign('customers', $this->projects->findAllCustomersWithProjects());
 
@@ -115,15 +117,6 @@ final class BackendController extends ActionController
         GeneralUtility::makeInstance(FlashMessageService::class)
             ->getMessageQueueByIdentifier()
             ->addMessage(new FlashMessage($message, $title, $severity, true));
-    }
-
-    private function customerStoragePid(): int
-    {
-        try {
-            return (int)$this->extensionConfiguration->get('typovigil', 'customerStoragePid');
-        } catch (\Throwable) {
-            return 0;
-        }
     }
 
     private function projectStoragePid(): int

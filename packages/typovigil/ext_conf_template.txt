@@ -3,6 +3,3 @@ agencyFeGroupId = 0
 
 # cat=basic; type=int+; label=Project storage page: Page (usually a Sysfolder) where "New project" in the TypoVigil module creates tx_typovigil_project records. 0 refuses to create new records from the module until this is set.
 projectStoragePid = 0
-
-# cat=basic; type=int+; label=Customer storage page: Page (usually a Sysfolder) where "New customer" in the TypoVigil module creates fe_users records. Must match the storage page configured on the felogin plugin, otherwise customers created here cannot log in. 0 refuses to create new customers from the module until this is set.
-customerStoragePid = 0
