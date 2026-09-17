@@ -968,11 +968,12 @@ body > ul a:hover {
 .tv-login-dialog {
     box-sizing: border-box;
     width: calc(100% - 40px);
+    border-top: 1px solid var(--tv-border);
     box-shadow: 0 20px 60px rgb(16 16 26 / 20%);
 }
 
 .tv-login-dialog::backdrop {
-    background: rgb(16 16 26 / 45%);
+    background: rgb(16 16 26 / 70%);
 }
 
 .tv-login-dialog__close {
