@@ -18,26 +18,25 @@
         <div class="callout callout-info" id="typovigil-issued-token">
             <div class="callout-body">
                 <p>
-                    <strong>Token:</strong>
+                    <strong><f:translate key="backend.token" />:</strong>
                     <code>{justIssued.token}</code>
-                    — shown once, it is not stored and cannot be shown again.
+                    — <f:translate key="backend.tokenShownOnce" />
                 </p>
                 <f:if condition="{justIssued.setupLink}">
                     <f:then>
                         <div class="input-group">
                             <input type="text" class="form-control" readonly="readonly" value="{justIssued.setupLink}">
-                            <typo3-copy-to-clipboard class="btn btn-default" title="Copy setup link" text="{justIssued.setupLink}">
+                            <typo3-copy-to-clipboard class="btn btn-default" title="{f:translate(key: 'backend.copySetupLink')}" text="{justIssued.setupLink}">
                                 <core:icon identifier="actions-clipboard" size="small" />
                             </typo3-copy-to-clipboard>
                         </div>
                         <p class="text-muted mt-2 mb-0">
-                            Open this link on the monitored site (as a logged-in admin) to configure the agent extension automatically.
+                            <f:translate key="backend.setupLinkHint" />
                         </p>
                     </f:then>
                     <f:else>
                         <p class="mb-0">
-                            No site URL was set, so no setup link could be built. Copy the token into the agent
-                            extension configuration by hand, or fill in the site URL and use "Generate setup link" below.
+                            <f:translate key="backend.noSiteUrlHint" />
                         </p>
                     </f:else>
                 </f:if>
@@ -50,15 +49,14 @@
         <f:then>
             <p class="mb-3">
                 <be:link.newRecord table="tx_typovigil_project" pid="{projectStoragePid}" class="btn btn-primary">
-                    New project
+                    <f:translate key="backend.newProject" />
                 </be:link.newRecord>
             </p>
         </f:then>
         <f:else>
             <div class="callout callout-warning">
                 <p>
-                    No project storage page configured. Set <em>projectStoragePid</em> in the
-                    extension configuration of <em>typovigil</em> to enable "New project" here.
+                    <f:translate key="backend.noProjectStoragePid" arguments="{0: '<em>projectStoragePid</em>', 1: '<em>typovigil</em>'}" htmlEscape="false" />
                 </p>
             </div>
         </f:else>
@@ -69,12 +67,12 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>Project</th>
+                        <th><f:translate key="backend.project" /></th>
                         <th>TYPO3</th>
-                        <th>Status</th>
-                        <th>Packages</th>
-                        <th>Last report</th>
-                        <th>Setup</th>
+                        <th><f:translate key="backend.status" /></th>
+                        <th><f:translate key="backend.packages" /></th>
+                        <th><f:translate key="backend.lastReport" /></th>
+                        <th><f:translate key="backend.setup" /></th>
                         <th></th>
                     </tr>
                 </thead>
@@ -95,13 +93,13 @@
                             <td>
                                 <f:switch expression="{project.worstSeverity}">
                                     <f:case value="critical">
-                                        <span class="badge bg-danger">{project.counts.critical} critical</span>
+                                        <span class="badge bg-danger">{project.counts.critical} <f:translate key="backend.critical" /></span>
                                     </f:case>
                                     <f:case value="outdated">
-                                        <span class="badge bg-warning text-dark">{project.counts.outdated} outdated</span>
+                                        <span class="badge bg-warning text-dark">{project.counts.outdated} <f:translate key="backend.outdated" /></span>
                                     </f:case>
                                     <f:defaultCase>
-                                        <span class="badge bg-success">up to date</span>
+                                        <span class="badge bg-success"><f:translate key="backend.upToDate" /></span>
                                     </f:defaultCase>
                                 </f:switch>
                             </td>
@@ -111,8 +109,8 @@
                                     <f:then>
                                         <f:if condition="{project.isStale}">
                                             <f:then>
-                                                <span class="badge bg-danger" title="No report for over 48 hours - the agent may be broken">
-                                                    silent since
+                                                <span class="badge bg-danger" title="{f:translate(key: 'backend.staleReportHint')}">
+                                                    <f:translate key="backend.silentSince" />
                                                     <f:format.date format="d.m.Y H:i">{project.lastReportAt}</f:format.date>
                                                 </span>
                                             </f:then>
@@ -122,7 +120,7 @@
                                         </f:if>
                                     </f:then>
                                     <f:else>
-                                        <span class="badge bg-secondary">never reported</span>
+                                        <span class="badge bg-secondary"><f:translate key="backend.neverReported" /></span>
                                     </f:else>
                                 </f:if>
                             </td>
@@ -132,24 +130,34 @@
                                         <f:if condition="{project.siteUrl}">
                                             <f:then>
                                                 <f:link.action action="regenerateSetupLink" arguments="{project: project.uid}" class="btn btn-sm btn-outline-secondary">
-                                                    Generate setup link
+                                                    <f:translate key="backend.generateSetupLink" />
                                                 </f:link.action>
                                             </f:then>
                                             <f:else>
-                                                <span class="text-muted" title="Fill in the site URL on the project record first">no site URL</span>
+                                                <span class="text-muted" title="{f:translate(key: 'backend.noSiteUrlTitle')}"><f:translate key="backend.noSiteUrl" /></span>
                                             </f:else>
                                         </f:if>
                                     </f:else>
                                 </f:if>
                             </td>
-                            <td>
+                            <td class="col-control">
+                                <be:link.editRecord
+                                    table="tx_typovigil_project"
+                                    uid="{project.uid}"
+                                    returnUrl="{f:uri.action(action: 'index')}"
+                                    class="btn btn-default btn-sm"
+                                    title="{f:translate(key: 'backend.editProject')}"
+                                    role="button"
+                                >
+                                    <core:icon identifier="actions-open" size="small" />
+                                </be:link.editRecord>
                                 <button
                                     type="button"
                                     class="btn btn-link"
                                     data-contextmenu-trigger="click"
                                     data-contextmenu-table="tx_typovigil_project"
                                     data-contextmenu-uid="{project.uid}"
-                                    aria-label="Open context menu"
+                                    aria-label="{f:translate(key: 'backend.openContextMenu')}"
                                 >
                                     <core:icon identifier="actions-menu-alternative" size="small" />
                                 </button>
@@ -162,13 +170,13 @@
         <f:else>
             <div class="callout callout-info">
                 <p>
-                    No projects yet. Use "New project" above; the access token is shown once when you save it.
+                    <f:translate key="backend.noProjectsYet" />
                 </p>
             </div>
         </f:else>
     </f:if>
 
-    <h2 class="mt-4">Customers</h2>
+    <h2 class="mt-4"><f:translate key="backend.customers" /></h2>
 
     <!-- Records are created and edited through FormEngine, not through forms of
          this module: that is where the TCA rules, the permission checks and the
@@ -182,16 +190,14 @@
                     returnUrl="{f:uri.action(action: 'index')}"
                     class="btn btn-primary"
                 >
-                    New customer
+                    <f:translate key="backend.newCustomer" />
                 </be:link.newRecord>
             </p>
         </f:then>
         <f:else>
             <div class="callout callout-warning">
                 <p>
-                    No storage page for customers found. The page is read from the login plugin
-                    in the frontend: add a "Login" content element and set its storage page
-                    ("Website Users" starting point), then customers can be created here.
+                    <f:translate key="backend.noCustomerStoragePid" />
                 </p>
             </div>
         </f:else>
@@ -202,9 +208,9 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>Username</th>
-                        <th>Name</th>
-                        <th>Projects</th>
+                        <th><f:translate key="backend.username" /></th>
+                        <th><f:translate key="backend.name" /></th>
+                        <th><f:translate key="backend.projects" /></th>
                         <th></th>
                     </tr>
                 </thead>
@@ -221,7 +227,7 @@
                                         </f:for>
                                     </f:then>
                                     <f:else>
-                                        <span class="text-muted" title="Assign this customer to a project on the project's Access tab">none assigned</span>
+                                        <span class="text-muted" title="{f:translate(key: 'backend.noneAssignedTitle')}"><f:translate key="backend.noneAssigned" /></span>
                                     </f:else>
                                 </f:if>
                             </td>
@@ -231,7 +237,7 @@
                                     uid="{customer.uid}"
                                     returnUrl="{f:uri.action(action: 'index')}"
                                     class="btn btn-default btn-sm"
-                                    title="Edit customer"
+                                    title="{f:translate(key: 'backend.editCustomer')}"
                                     role="button"
                                 >
                                     <core:icon identifier="actions-open" size="small" />
@@ -245,7 +251,7 @@
                                     data-contextmenu-trigger="click"
                                     data-contextmenu-table="fe_users"
                                     data-contextmenu-uid="{customer.uid}"
-                                    aria-label="Open context menu"
+                                    aria-label="{f:translate(key: 'backend.openContextMenu')}"
                                 >
                                     <core:icon identifier="actions-menu-alternative" size="small" />
                                 </button>
@@ -257,7 +263,7 @@
         </f:then>
         <f:else>
             <div class="callout callout-info">
-                <p>No customers yet. Use "New customer" above.</p>
+                <p><f:translate key="backend.noCustomersYet" /></p>
             </div>
         </f:else>
     </f:if>
@@ -265,22 +271,22 @@
     <!-- Reachability of the upstream sources at their last query. Unknown stays
          neutral: a scheduler that has not run yet is not a broken source. -->
     <p class="text-muted mt-4">
-        <strong class="me-2">Data sources</strong>
+        <strong class="me-2"><f:translate key="backend.dataSources" /></strong>
         <f:for each="{sources}" as="source">
             <f:switch expression="{source.state}">
                 <f:case value="ok">
-                    <span class="badge bg-success me-1" title="Last checked {source.checkedAtLabel}">
+                    <span class="badge bg-success me-1" title="{f:translate(key: 'backend.lastChecked', arguments: '{0: source.checkedAtLabel}')}">
                         {source.label}
                     </span>
                 </f:case>
                 <f:case value="down">
-                    <span class="badge bg-danger me-1" title="No contact at the last check, {source.checkedAtLabel}">
-                        {source.label} &ndash; no contact
+                    <span class="badge bg-danger me-1" title="{f:translate(key: 'backend.noContactAt', arguments: '{0: source.checkedAtLabel}')}">
+                        {source.label} &ndash; <f:translate key="backend.noContact" />
                     </span>
                 </f:case>
                 <f:defaultCase>
-                    <span class="badge bg-secondary me-1" title="Not queried yet">
-                        {source.label} &ndash; not queried yet
+                    <span class="badge bg-secondary me-1" title="{f:translate(key: 'backend.notQueriedYetTitle')}">
+                        {source.label} &ndash; <f:translate key="backend.notQueriedYet" />
                     </span>
                 </f:defaultCase>
             </f:switch>

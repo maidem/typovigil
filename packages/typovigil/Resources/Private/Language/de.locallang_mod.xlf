@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+    <file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2026-09-17T00:00:00Z" product-name="typovigil">
+        <header/>
+        <body>
+            <trans-unit id="mlang_tabs_tab">
+                <source>TypoVigil</source>
+                <target>TypoVigil</target>
+            </trans-unit>
+            <trans-unit id="mlang_labels_tablabel">
+                <source>Update and security monitoring</source>
+                <target>Update- und Sicherheitsüberwachung</target>
+            </trans-unit>
+            <trans-unit id="mlang_labels_tabdescr">
+                <source>Shows which monitored TYPO3 installations need updates and which of those updates close a known security hole.</source>
+                <target>Zeigt, welche überwachten TYPO3-Installationen Updates benötigen und welche dieser Updates eine bekannte Sicherheitslücke schließen.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

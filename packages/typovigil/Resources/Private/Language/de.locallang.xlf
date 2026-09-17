@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+    <file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2026-09-17T00:00:00Z" product-name="typovigil">
+        <header/>
+        <body>
+            <trans-unit id="backend.token">
+                <source>Token</source>
+                <target>Token</target>
+            </trans-unit>
+            <trans-unit id="backend.tokenShownOnce">
+                <source>shown once, it is not stored and cannot be shown again.</source>
+                <target>wird nur einmal angezeigt, es wird nicht gespeichert und kann nicht erneut angezeigt werden.</target>
+            </trans-unit>
+            <trans-unit id="backend.copySetupLink">
+                <source>Copy setup link</source>
+                <target>Setup-Link kopieren</target>
+            </trans-unit>
+            <trans-unit id="backend.setupLinkHint">
+                <source>Open this link on the monitored site (as a logged-in admin) to configure the agent extension automatically.</source>
+                <target>Diesen Link auf der überwachten Website (als eingeloggter Administrator) öffnen, um die Agent-Extension automatisch zu konfigurieren.</target>
+            </trans-unit>
+            <trans-unit id="backend.noSiteUrlHint">
+                <source>No site URL was set, so no setup link could be built. Copy the token into the agent extension configuration by hand, or fill in the site URL and use "Generate setup link" below.</source>
+                <target>Es wurde keine Website-URL angegeben, daher konnte kein Setup-Link erstellt werden. Den Token manuell in die Konfiguration der Agent-Extension eintragen oder die Website-URL ausfüllen und unten "Setup-Link erzeugen" verwenden.</target>
+            </trans-unit>
+            <trans-unit id="backend.newProject">
+                <source>New project</source>
+                <target>Neues Projekt</target>
+            </trans-unit>
+            <trans-unit id="backend.noProjectStoragePid">
+                <source>No project storage page configured. Set %1$s in the extension configuration of %2$s to enable "New project" here.</source>
+                <target>Es ist keine Speicherseite für Projekte konfiguriert. %1$s in der Extension-Konfiguration von %2$s setzen, um "Neues Projekt" hier zu aktivieren.</target>
+            </trans-unit>
+            <trans-unit id="backend.project">
+                <source>Project</source>
+                <target>Projekt</target>
+            </trans-unit>
+            <trans-unit id="backend.status">
+                <source>Status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="backend.packages">
+                <source>Packages</source>
+                <target>Pakete</target>
+            </trans-unit>
+            <trans-unit id="backend.lastReport">
+                <source>Last report</source>
+                <target>Letzter Bericht</target>
+            </trans-unit>
+            <trans-unit id="backend.setup">
+                <source>Setup</source>
+                <target>Setup</target>
+            </trans-unit>
+            <trans-unit id="backend.critical">
+                <source>critical</source>
+                <target>kritisch</target>
+            </trans-unit>
+            <trans-unit id="backend.outdated">
+                <source>outdated</source>
+                <target>veraltet</target>
+            </trans-unit>
+            <trans-unit id="backend.upToDate">
+                <source>up to date</source>
+                <target>aktuell</target>
+            </trans-unit>
+            <trans-unit id="backend.staleReportHint">
+                <source>No report for over 48 hours - the agent may be broken</source>
+                <target>Seit über 48 Stunden kein Bericht - der Agent funktioniert möglicherweise nicht mehr</target>
+            </trans-unit>
+            <trans-unit id="backend.silentSince">
+                <source>silent since</source>
+                <target>still seit</target>
+            </trans-unit>
+            <trans-unit id="backend.neverReported">
+                <source>never reported</source>
+                <target>noch nie gemeldet</target>
+            </trans-unit>
+            <trans-unit id="backend.generateSetupLink">
+                <source>Generate setup link</source>
+                <target>Setup-Link erzeugen</target>
+            </trans-unit>
+            <trans-unit id="backend.noSiteUrl">
+                <source>no site URL</source>
+                <target>keine Website-URL</target>
+            </trans-unit>
+            <trans-unit id="backend.noSiteUrlTitle">
+                <source>Fill in the site URL on the project record first</source>
+                <target>Zuerst die Website-URL im Projektdatensatz eintragen</target>
+            </trans-unit>
+            <trans-unit id="backend.editProject">
+                <source>Edit project</source>
+                <target>Projekt bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="backend.openContextMenu">
+                <source>Open context menu</source>
+                <target>Kontextmenü öffnen</target>
+            </trans-unit>
+            <trans-unit id="backend.noProjectsYet">
+                <source>No projects yet. Use "New project" above; the access token is shown once when you save it.</source>
+                <target>Noch keine Projekte vorhanden. Oben "Neues Projekt" verwenden; der Zugriffstoken wird beim Speichern einmalig angezeigt.</target>
+            </trans-unit>
+            <trans-unit id="backend.customers">
+                <source>Customers</source>
+                <target>Kunden</target>
+            </trans-unit>
+            <trans-unit id="backend.newCustomer">
+                <source>New customer</source>
+                <target>Neuer Kunde</target>
+            </trans-unit>
+            <trans-unit id="backend.noCustomerStoragePid">
+                <source>No storage page for customers found. The page is read from the login plugin in the frontend: add a "Login" content element and set its storage page ("Website Users" starting point), then customers can be created here.</source>
+                <target>Es wurde keine Speicherseite für Kunden gefunden. Die Seite wird aus dem Login-Plugin im Frontend gelesen: ein "Login"-Inhaltselement hinzufügen und dessen Speicherseite ("Website-Benutzer"-Startpunkt) setzen, danach können hier Kunden angelegt werden.</target>
+            </trans-unit>
+            <trans-unit id="backend.username">
+                <source>Username</source>
+                <target>Benutzername</target>
+            </trans-unit>
+            <trans-unit id="backend.name">
+                <source>Name</source>
+                <target>Name</target>
+            </trans-unit>
+            <trans-unit id="backend.projects">
+                <source>Projects</source>
+                <target>Projekte</target>
+            </trans-unit>
+            <trans-unit id="backend.noneAssigned">
+                <source>none assigned</source>
+                <target>keine zugewiesen</target>
+            </trans-unit>
+            <trans-unit id="backend.noneAssignedTitle">
+                <source>Assign this customer to a project on the project's Access tab</source>
+                <target>Diesen Kunden im Reiter "Zugriff" eines Projekts zuweisen</target>
+            </trans-unit>
+            <trans-unit id="backend.editCustomer">
+                <source>Edit customer</source>
+                <target>Kunde bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="backend.noCustomersYet">
+                <source>No customers yet. Use "New customer" above.</source>
+                <target>Noch keine Kunden vorhanden. Oben "Neuer Kunde" verwenden.</target>
+            </trans-unit>
+            <trans-unit id="backend.dataSources">
+                <source>Data sources</source>
+                <target>Datenquellen</target>
+            </trans-unit>
+            <trans-unit id="backend.lastChecked">
+                <source>Last checked %1$s</source>
+                <target>Zuletzt geprüft %1$s</target>
+            </trans-unit>
+            <trans-unit id="backend.noContactAt">
+                <source>No contact at the last check, %1$s</source>
+                <target>Keine Verbindung bei der letzten Prüfung, %1$s</target>
+            </trans-unit>
+            <trans-unit id="backend.noContact">
+                <source>no contact</source>
+                <target>keine Verbindung</target>
+            </trans-unit>
+            <trans-unit id="backend.notQueriedYetTitle">
+                <source>Not queried yet</source>
+                <target>Noch nicht abgefragt</target>
+            </trans-unit>
+            <trans-unit id="backend.notQueriedYet">
+                <source>not queried yet</source>
+                <target>noch nicht abgefragt</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

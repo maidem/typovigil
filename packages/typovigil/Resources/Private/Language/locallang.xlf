@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2026-09-17T00:00:00Z" product-name="typovigil">
+        <header/>
+        <body>
+            <trans-unit id="backend.token">
+                <source>Token</source>
+            </trans-unit>
+            <trans-unit id="backend.tokenShownOnce">
+                <source>shown once, it is not stored and cannot be shown again.</source>
+            </trans-unit>
+            <trans-unit id="backend.copySetupLink">
+                <source>Copy setup link</source>
+            </trans-unit>
+            <trans-unit id="backend.setupLinkHint">
+                <source>Open this link on the monitored site (as a logged-in admin) to configure the agent extension automatically.</source>
+            </trans-unit>
+            <trans-unit id="backend.noSiteUrlHint">
+                <source>No site URL was set, so no setup link could be built. Copy the token into the agent extension configuration by hand, or fill in the site URL and use "Generate setup link" below.</source>
+            </trans-unit>
+            <trans-unit id="backend.newProject">
+                <source>New project</source>
+            </trans-unit>
+            <trans-unit id="backend.noProjectStoragePid">
+                <source>No project storage page configured. Set %1$s in the extension configuration of %2$s to enable "New project" here.</source>
+            </trans-unit>
+            <trans-unit id="backend.project">
+                <source>Project</source>
+            </trans-unit>
+            <trans-unit id="backend.status">
+                <source>Status</source>
+            </trans-unit>
+            <trans-unit id="backend.packages">
+                <source>Packages</source>
+            </trans-unit>
+            <trans-unit id="backend.lastReport">
+                <source>Last report</source>
+            </trans-unit>
+            <trans-unit id="backend.setup">
+                <source>Setup</source>
+            </trans-unit>
+            <trans-unit id="backend.critical">
+                <source>critical</source>
+            </trans-unit>
+            <trans-unit id="backend.outdated">
+                <source>outdated</source>
+            </trans-unit>
+            <trans-unit id="backend.upToDate">
+                <source>up to date</source>
+            </trans-unit>
+            <trans-unit id="backend.staleReportHint">
+                <source>No report for over 48 hours - the agent may be broken</source>
+            </trans-unit>
+            <trans-unit id="backend.silentSince">
+                <source>silent since</source>
+            </trans-unit>
+            <trans-unit id="backend.neverReported">
+                <source>never reported</source>
+            </trans-unit>
+            <trans-unit id="backend.generateSetupLink">
+                <source>Generate setup link</source>
+            </trans-unit>
+            <trans-unit id="backend.noSiteUrl">
+                <source>no site URL</source>
+            </trans-unit>
+            <trans-unit id="backend.noSiteUrlTitle">
+                <source>Fill in the site URL on the project record first</source>
+            </trans-unit>
+            <trans-unit id="backend.editProject">
+                <source>Edit project</source>
+            </trans-unit>
+            <trans-unit id="backend.openContextMenu">
+                <source>Open context menu</source>
+            </trans-unit>
+            <trans-unit id="backend.noProjectsYet">
+                <source>No projects yet. Use "New project" above; the access token is shown once when you save it.</source>
+            </trans-unit>
+            <trans-unit id="backend.customers">
+                <source>Customers</source>
+            </trans-unit>
+            <trans-unit id="backend.newCustomer">
+                <source>New customer</source>
+            </trans-unit>
+            <trans-unit id="backend.noCustomerStoragePid">
+                <source>No storage page for customers found. The page is read from the login plugin in the frontend: add a "Login" content element and set its storage page ("Website Users" starting point), then customers can be created here.</source>
+            </trans-unit>
+            <trans-unit id="backend.username">
+                <source>Username</source>
+            </trans-unit>
+            <trans-unit id="backend.name">
+                <source>Name</source>
+            </trans-unit>
+            <trans-unit id="backend.projects">
+                <source>Projects</source>
+            </trans-unit>
+            <trans-unit id="backend.noneAssigned">
+                <source>none assigned</source>
+            </trans-unit>
+            <trans-unit id="backend.noneAssignedTitle">
+                <source>Assign this customer to a project on the project's Access tab</source>
+            </trans-unit>
+            <trans-unit id="backend.editCustomer">
+                <source>Edit customer</source>
+            </trans-unit>
+            <trans-unit id="backend.noCustomersYet">
+                <source>No customers yet. Use "New customer" above.</source>
+            </trans-unit>
+            <trans-unit id="backend.dataSources">
+                <source>Data sources</source>
+            </trans-unit>
+            <trans-unit id="backend.lastChecked">
+                <source>Last checked %1$s</source>
+            </trans-unit>
+            <trans-unit id="backend.noContactAt">
+                <source>No contact at the last check, %1$s</source>
+            </trans-unit>
+            <trans-unit id="backend.noContact">
+                <source>no contact</source>
+            </trans-unit>
+            <trans-unit id="backend.notQueriedYetTitle">
+                <source>Not queried yet</source>
+            </trans-unit>
+            <trans-unit id="backend.notQueriedYet">
+                <source>not queried yet</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
