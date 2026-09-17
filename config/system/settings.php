@@ -44,6 +44,7 @@ return [
         'typovigil' => [
             'agencyFeGroupId' => '2',
             'projectStoragePid' => '8',
+            'customerStoragePid' => '2',
         ],
     ],
     'FE' => [

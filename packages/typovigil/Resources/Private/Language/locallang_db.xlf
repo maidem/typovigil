@@ -33,6 +33,15 @@
             <trans-unit id="tx_typovigil_project.fe_users.description">
                 <source>These users can see this project's status in the frontend. Without an assignment nobody sees it.</source>
             </trans-unit>
+            <trans-unit id="fe_users.tx_typovigil_projects">
+                <source>Assigned projects</source>
+            </trans-unit>
+            <trans-unit id="fe_users.tx_typovigil_projects.description">
+                <source>The projects this customer can see in the frontend. This is the same assignment as on the project's own access tab, seen from the other side.</source>
+            </trans-unit>
+            <trans-unit id="fe_users.tab.typovigil">
+                <source>TypoVigil</source>
+            </trans-unit>
             <trans-unit id="tx_typovigil_project.notes">
                 <source>Notes</source>
             </trans-unit>

@@ -34,6 +34,7 @@ final class BackendController extends ActionController
         $moduleTemplate->assign('projects', $this->statusReport->summariesForBackend());
         $moduleTemplate->assign('sources', $this->versionCheck->sourceStatus());
         $moduleTemplate->assign('projectStoragePid', $this->projectStoragePid());
+        $moduleTemplate->assign('customerStoragePid', $this->customerStoragePid());
         $moduleTemplate->assign('justIssued', $this->projectTokens->takeStashed());
         $moduleTemplate->assign('customers', $this->projects->findAllCustomersWithProjects());
 
@@ -114,6 +115,15 @@ final class BackendController extends ActionController
         GeneralUtility::makeInstance(FlashMessageService::class)
             ->getMessageQueueByIdentifier()
             ->addMessage(new FlashMessage($message, $title, $severity, true));
+    }
+
+    private function customerStoragePid(): int
+    {
+        try {
+            return (int)$this->extensionConfiguration->get('typovigil', 'customerStoragePid');
+        } catch (\Throwable) {
+            return 0;
+        }
     }
 
     private function projectStoragePid(): int

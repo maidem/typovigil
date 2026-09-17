@@ -170,12 +170,31 @@
 
     <h2 class="mt-4">Customers</h2>
 
-    <f:if condition="{projectStoragePid}">
-        <p class="mb-3">
-            <be:link.newRecord table="fe_users" pid="{projectStoragePid}" class="btn btn-primary">
-                New customer
-            </be:link.newRecord>
-        </p>
+    <!-- Records are created and edited through FormEngine, not through forms of
+         this module: that is where the TCA rules, the permission checks and the
+         change history live. returnUrl brings the editor back here on save. -->
+    <f:if condition="{customerStoragePid}">
+        <f:then>
+            <p class="mb-3">
+                <be:link.newRecord
+                    table="fe_users"
+                    pid="{customerStoragePid}"
+                    returnUrl="{f:uri.action(action: 'index')}"
+                    class="btn btn-primary"
+                >
+                    New customer
+                </be:link.newRecord>
+            </p>
+        </f:then>
+        <f:else>
+            <div class="callout callout-warning">
+                <p>
+                    No customer storage page configured. Set <em>customerStoragePid</em> in the
+                    extension configuration of <em>typovigil</em> to the page the felogin plugin
+                    reads its users from — otherwise customers created here could never log in.
+                </p>
+            </div>
+        </f:else>
     </f:if>
 
     <f:if condition="{customers}">
@@ -206,7 +225,20 @@
                                     </f:else>
                                 </f:if>
                             </td>
-                            <td>
+                            <td class="col-control">
+                                <be:link.editRecord
+                                    table="fe_users"
+                                    uid="{customer.uid}"
+                                    returnUrl="{f:uri.action(action: 'index')}"
+                                    class="btn btn-default btn-sm"
+                                    title="Edit customer"
+                                    role="button"
+                                >
+                                    <core:icon identifier="actions-open" size="small" />
+                                </be:link.editRecord>
+                                <!-- Deleting stays in the context menu: it is the
+                                     one place that already asks for confirmation
+                                     and honours the editor's permissions. -->
                                 <button
                                     type="button"
                                     class="btn btn-link"

@@ -1,0 +1,28 @@
+# Reduces the website-user form to what a TypoVigil customer actually needs.
+#
+# fe_users carries a full address record (company, address, telephone, ...)
+# that this installation never reads: a customer is a login, a name, and the
+# projects they may see. Hiding the rest keeps the form honest about that
+# instead of presenting a dozen fields nobody fills in.
+#
+# Applied unconditionally: this installation serves exactly one site and uses
+# fe_users for nothing but TypoVigil customers. Should that ever change, wrap
+# this in a condition on the customer storage folder rather than deleting it.
+TCEFORM.fe_users {
+    company.disabled = 1
+    title.disabled = 1
+    first_name.disabled = 1
+    middle_name.disabled = 1
+    last_name.disabled = 1
+    address.disabled = 1
+    zip.disabled = 1
+    city.disabled = 1
+    country.disabled = 1
+    telephone.disabled = 1
+    fax.disabled = 1
+    www.disabled = 1
+    image.disabled = 1
+    lastlogin.disabled = 1
+    felogin_redirectPid.disabled = 1
+    felogin_forgotHash.disabled = 1
+}
