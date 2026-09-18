@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Maidemde\Typovigil\Service;
 
+use GuzzleHttp\Exception\ResponseException;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -419,10 +420,13 @@ final readonly class VersionCheckService
 
         try {
             $connection = $this->connectionPool->getConnectionForTable(self::TABLE_SOURCE);
-            // update-then-insert rather than a database-specific upsert: one row
-            // per host, and a failed check must never abort the whole run.
-            $updated = $connection->update(self::TABLE_SOURCE, $values, ['host' => $host]);
-            if ($updated === 0) {
+            // Insert only when the row is really absent: update() also returns 0
+            // when the row exists but already holds these values, and inserting
+            // on that would hit the primary key.
+            $exists = (bool)$connection->count('host', self::TABLE_SOURCE, ['host' => $host]);
+            if ($exists) {
+                $connection->update(self::TABLE_SOURCE, $values, ['host' => $host]);
+            } else {
                 $connection->insert(self::TABLE_SOURCE, $values + ['host' => $host]);
             }
         } catch (\Throwable $e) {
@@ -431,6 +435,11 @@ final readonly class VersionCheckService
                 'exception' => $e->getMessage(),
             ]);
         }
+    }
+
+    private function isNotFound(\Throwable $e): bool
+    {
+        return $e instanceof ResponseException && $e->getResponse()->getStatusCode() === 404;
     }
 
     /**
@@ -444,12 +453,13 @@ final readonly class VersionCheckService
                 'headers' => ['User-Agent' => 'TypoVigil'],
             ]);
 
-            if ($response->getStatusCode() !== 200) {
+            $status = $response->getStatusCode();
+            if ($status !== 200) {
                 $this->logger->warning('TypoVigil: unexpected status from upstream', [
                     'url' => $url,
-                    'status' => $response->getStatusCode(),
+                    'status' => $status,
                 ]);
-                $this->recordSourceStatus($url, false);
+                $this->recordSourceStatus($url, $status === 404);
 
                 return [];
             }
@@ -465,7 +475,10 @@ final readonly class VersionCheckService
                 'url' => $url,
                 'exception' => $e->getMessage(),
             ]);
-            $this->recordSourceStatus($url, false);
+            // A 404 answers the question: the source is up, it just does not know
+            // this package — private and unpublished packages are never there.
+            // Marking the whole source unreachable for that would hide real outages.
+            $this->recordSourceStatus($url, $this->isNotFound($e));
 
             return [];
         }
