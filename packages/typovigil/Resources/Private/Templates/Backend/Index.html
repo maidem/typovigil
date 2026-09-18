@@ -73,7 +73,7 @@
                         <th><f:translate key="backend.packages" /></th>
                         <th><f:translate key="backend.lastReport" /></th>
                         <th><f:translate key="backend.setup" /></th>
-                        <th></th>
+                        <th class="col-control"><span class="visually-hidden"><f:translate key="LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels._CONTROL_" /></span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -141,26 +141,71 @@
                                 </f:if>
                             </td>
                             <td class="col-control">
-                                <be:link.editRecord
-                                    table="tx_typovigil_project"
-                                    uid="{project.uid}"
-                                    returnUrl="{f:uri.action(action: 'index')}"
-                                    class="btn btn-default btn-sm"
-                                    title="{f:translate(key: 'backend.editProject')}"
-                                    role="button"
-                                >
-                                    <core:icon identifier="actions-open" size="small" />
-                                </be:link.editRecord>
-                                <button
-                                    type="button"
-                                    class="btn btn-link"
-                                    data-contextmenu-trigger="click"
-                                    data-contextmenu-table="tx_typovigil_project"
-                                    data-contextmenu-uid="{project.uid}"
-                                    aria-label="{f:translate(key: 'backend.openContextMenu')}"
-                                >
-                                    <core:icon identifier="actions-menu-alternative" size="small" />
-                                </button>
+                                <div class="btn-group" role="group">
+                                    <be:link.editRecord
+                                        table="tx_typovigil_project"
+                                        uid="{project.uid}"
+                                        returnUrl="{f:uri.action(action: 'index')}"
+                                        class="btn btn-default"
+                                        title="{f:translate(key: 'backend.editProject')}"
+                                        role="button"
+                                    >
+                                        <core:icon identifier="actions-open" size="small" />
+                                    </be:link.editRecord>
+                                    <f:if condition="{project.hidden}">
+                                        <f:then>
+                                            <a
+                                                class="btn btn-default"
+                                                href="{be:moduleLink(route: 'tce_db', query: 'data[tx_typovigil_project][{project.uid}][hidden]=0', currentUrlParameterName: 'redirect')}"
+                                                title="{f:translate(key: 'backend.enableProject')}"
+                                                role="button"
+                                            >
+                                                <core:icon identifier="actions-edit-unhide" size="small" />
+                                            </a>
+                                        </f:then>
+                                        <f:else>
+                                            <a
+                                                class="btn btn-default"
+                                                href="{be:moduleLink(route: 'tce_db', query: 'data[tx_typovigil_project][{project.uid}][hidden]=1', currentUrlParameterName: 'redirect')}"
+                                                title="{f:translate(key: 'backend.disableProject')}"
+                                                role="button"
+                                            >
+                                                <core:icon identifier="actions-edit-hide" size="small" />
+                                            </a>
+                                        </f:else>
+                                    </f:if>
+                                    <form
+                                        action="{be:moduleLink(route: 'tce_db', currentUrlParameterName: 'redirect')}"
+                                        name="typovigil_project_remove_{project.uid}"
+                                        id="typovigil_project_remove_{project.uid}"
+                                        method="post"
+                                    >
+                                        <input name="cmd[tx_typovigil_project][{project.uid}][delete]" type="hidden" value="1">
+                                    </form>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-default t3js-modal-trigger"
+                                        data-target-form="typovigil_project_remove_{project.uid}"
+                                        title="{f:translate(key: 'backend.deleteProject')}"
+                                        data-severity="warning"
+                                        data-title="{f:translate(key: 'LLL:EXT:backend/Resources/Private/Language/locallang_alt_doc.xlf:label.confirm.delete_record.title')}"
+                                        data-content="{f:translate(key: 'backend.confirmDeleteProject', arguments: '{0: project.title}')}"
+                                        data-button-close-text="{f:translate(key: 'LLL:EXT:core/Resources/Private/Language/locallang_common.xlf:cancel')}"
+                                        data-button-ok-text="{f:translate(key: 'LLL:EXT:backend/Resources/Private/Language/locallang_alt_doc.xlf:buttons.confirm.delete_record.yes')}"
+                                    >
+                                        <core:icon identifier="actions-edit-delete" size="small" />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="btn btn-default"
+                                        data-contextmenu-trigger="click"
+                                        data-contextmenu-table="tx_typovigil_project"
+                                        data-contextmenu-uid="{project.uid}"
+                                        aria-label="{f:translate(key: 'backend.openContextMenu')}"
+                                    >
+                                        <core:icon identifier="actions-menu-alternative" size="small" />
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     </f:for>
@@ -211,7 +256,7 @@
                         <th><f:translate key="backend.username" /></th>
                         <th><f:translate key="backend.name" /></th>
                         <th><f:translate key="backend.projects" /></th>
-                        <th></th>
+                        <th class="col-control"><span class="visually-hidden"><f:translate key="LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels._CONTROL_" /></span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -232,29 +277,71 @@
                                 </f:if>
                             </td>
                             <td class="col-control">
-                                <be:link.editRecord
-                                    table="fe_users"
-                                    uid="{customer.uid}"
-                                    returnUrl="{f:uri.action(action: 'index')}"
-                                    class="btn btn-default btn-sm"
-                                    title="{f:translate(key: 'backend.editCustomer')}"
-                                    role="button"
-                                >
-                                    <core:icon identifier="actions-open" size="small" />
-                                </be:link.editRecord>
-                                <!-- Deleting stays in the context menu: it is the
-                                     one place that already asks for confirmation
-                                     and honours the editor's permissions. -->
-                                <button
-                                    type="button"
-                                    class="btn btn-link"
-                                    data-contextmenu-trigger="click"
-                                    data-contextmenu-table="fe_users"
-                                    data-contextmenu-uid="{customer.uid}"
-                                    aria-label="{f:translate(key: 'backend.openContextMenu')}"
-                                >
-                                    <core:icon identifier="actions-menu-alternative" size="small" />
-                                </button>
+                                <div class="btn-group" role="group">
+                                    <be:link.editRecord
+                                        table="fe_users"
+                                        uid="{customer.uid}"
+                                        returnUrl="{f:uri.action(action: 'index')}"
+                                        class="btn btn-default"
+                                        title="{f:translate(key: 'backend.editCustomer')}"
+                                        role="button"
+                                    >
+                                        <core:icon identifier="actions-open" size="small" />
+                                    </be:link.editRecord>
+                                    <f:if condition="{customer.hidden}">
+                                        <f:then>
+                                            <a
+                                                class="btn btn-default"
+                                                href="{be:moduleLink(route: 'tce_db', query: 'data[fe_users][{customer.uid}][disable]=0', currentUrlParameterName: 'redirect')}"
+                                                title="{f:translate(key: 'backend.enableCustomer')}"
+                                                role="button"
+                                            >
+                                                <core:icon identifier="actions-edit-unhide" size="small" />
+                                            </a>
+                                        </f:then>
+                                        <f:else>
+                                            <a
+                                                class="btn btn-default"
+                                                href="{be:moduleLink(route: 'tce_db', query: 'data[fe_users][{customer.uid}][disable]=1', currentUrlParameterName: 'redirect')}"
+                                                title="{f:translate(key: 'backend.disableCustomer')}"
+                                                role="button"
+                                            >
+                                                <core:icon identifier="actions-edit-hide" size="small" />
+                                            </a>
+                                        </f:else>
+                                    </f:if>
+                                    <form
+                                        action="{be:moduleLink(route: 'tce_db', currentUrlParameterName: 'redirect')}"
+                                        name="typovigil_customer_remove_{customer.uid}"
+                                        id="typovigil_customer_remove_{customer.uid}"
+                                        method="post"
+                                    >
+                                        <input name="cmd[fe_users][{customer.uid}][delete]" type="hidden" value="1">
+                                    </form>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-default t3js-modal-trigger"
+                                        data-target-form="typovigil_customer_remove_{customer.uid}"
+                                        title="{f:translate(key: 'backend.deleteCustomer')}"
+                                        data-severity="warning"
+                                        data-title="{f:translate(key: 'LLL:EXT:backend/Resources/Private/Language/locallang_alt_doc.xlf:label.confirm.delete_record.title')}"
+                                        data-content="{f:translate(key: 'backend.confirmDeleteCustomer', arguments: '{0: customer.username}')}"
+                                        data-button-close-text="{f:translate(key: 'LLL:EXT:core/Resources/Private/Language/locallang_common.xlf:cancel')}"
+                                        data-button-ok-text="{f:translate(key: 'LLL:EXT:backend/Resources/Private/Language/locallang_alt_doc.xlf:buttons.confirm.delete_record.yes')}"
+                                    >
+                                        <core:icon identifier="actions-edit-delete" size="small" />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="btn btn-default"
+                                        data-contextmenu-trigger="click"
+                                        data-contextmenu-table="fe_users"
+                                        data-contextmenu-uid="{customer.uid}"
+                                        aria-label="{f:translate(key: 'backend.openContextMenu')}"
+                                    >
+                                        <core:icon identifier="actions-menu-alternative" size="small" />
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     </f:for>

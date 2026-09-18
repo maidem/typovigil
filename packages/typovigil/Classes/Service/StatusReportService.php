@@ -105,6 +105,7 @@ final readonly class StatusReportService
             'title' => (string)($project['title'] ?? ''),
             'siteUrl' => (string)($project['site_url'] ?? ''),
             'coreVersion' => (string)($project['core_version'] ?? ''),
+            'hidden' => (bool)($project['hidden'] ?? false),
             'lastReportAt' => $lastReport,
             'isStale' => $isStale,
             'hasReported' => $lastReport > 0,

@@ -164,16 +164,16 @@
                 <target>noch nicht abgefragt</target>
             </trans-unit>
             <trans-unit id="backend.allProjects">
-                <source>&larr; All projects</source>
-                <target>&larr; Alle Projekte</target>
+                <source>← All projects</source>
+                <target>← Alle Projekte</target>
             </trans-unit>
             <trans-unit id="backend.projectStaleWarning">
                 <source>This project has not reported recently.</source>
                 <target>Dieses Projekt hat sich zuletzt nicht mehr gemeldet.</target>
             </trans-unit>
             <trans-unit id="backend.projectStaleWarningHint">
-                <source>The figures below may be out of date &mdash; check whether the agent extension is still installed and its scheduler task is running.</source>
-                <target>Die untenstehenden Werte könnten veraltet sein &mdash; prüfen Sie, ob die Agent-Extension noch installiert ist und der Scheduler-Task läuft.</target>
+                <source>The figures below may be out of date — check whether the agent extension is still installed and its scheduler task is running.</source>
+                <target>Die untenstehenden Werte könnten veraltet sein — prüfen Sie, ob die Agent-Extension noch installiert ist und der Scheduler-Task läuft.</target>
             </trans-unit>
             <trans-unit id="backend.coreVersion">
                 <source>TYPO3 version</source>
@@ -218,6 +218,38 @@
             <trans-unit id="backend.noPackagesYet">
                 <source>No packages reported yet for this project.</source>
                 <target>Für dieses Projekt wurden noch keine Pakete gemeldet.</target>
+            </trans-unit>
+            <trans-unit id="backend.deleteProject">
+                <source>Delete project</source>
+                <target>Projekt löschen</target>
+            </trans-unit>
+            <trans-unit id="backend.confirmDeleteProject">
+                <source>Are you sure you want to delete project "%1$s"?</source>
+                <target>Soll das Projekt "%1$s" wirklich gelöscht werden?</target>
+            </trans-unit>
+            <trans-unit id="backend.deleteCustomer">
+                <source>Delete customer</source>
+                <target>Kunde löschen</target>
+            </trans-unit>
+            <trans-unit id="backend.confirmDeleteCustomer">
+                <source>Are you sure you want to delete customer "%1$s"?</source>
+                <target>Soll der Kunde "%1$s" wirklich gelöscht werden?</target>
+            </trans-unit>
+            <trans-unit id="backend.enableProject">
+                <source>Enable project</source>
+                <target>Projekt aktivieren</target>
+            </trans-unit>
+            <trans-unit id="backend.disableProject">
+                <source>Disable project</source>
+                <target>Projekt deaktivieren</target>
+            </trans-unit>
+            <trans-unit id="backend.enableCustomer">
+                <source>Enable customer</source>
+                <target>Kunde aktivieren</target>
+            </trans-unit>
+            <trans-unit id="backend.disableCustomer">
+                <source>Disable customer</source>
+                <target>Kunde deaktivieren</target>
             </trans-unit>
         </body>
     </file>

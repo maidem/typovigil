@@ -55,11 +55,11 @@
 
     --tv-shadow: 0 1px 2px rgb(16 16 26 / 4%);
 
-    /* One accent, used sparingly (login dialog, focus rings) — the rest of
-       the page stays on the neutral/status palette above on purpose.
-       Matches the Jobmanager brand violet, shared across the agency's tools. */
-    --tv-accent: #783cfe;
-    --tv-accent-bg: #f1ebff;
+    /* Monochrome on purpose: the terminal look reads better without a bright
+       brand colour breaking the black/white/grey palette. Same tv-text used
+       for links, focus rings and the login button. */
+    --tv-accent: var(--tv-text);
+    --tv-accent-bg: color-mix(in srgb, var(--tv-text) 12%, transparent);
 
     /* $-prompt marker in front of headings/labels, terminal-style. */
     --tv-prompt: #2e9e4f;
@@ -79,9 +79,6 @@
         --tv-ok-bg: #132a1c;
         --tv-outdated-bg: #2c2413;
         --tv-critical-bg: #2e1917;
-
-        --tv-accent: #9155ff;
-        --tv-accent-bg: #2a1f4d;
 
         --tv-shadow: none;
 
@@ -704,59 +701,58 @@ body {
 /* --- felogin ------------------------------------------------------------
    Styled by class rather than replaced by a template override: felogin's own
    markup already carries everything needed, and an override would have to be
-   kept in step with the extension on every update. */
+   kept in step with the extension on every update. Own page (not a dialog),
+   same terminal-window titlebar/dots as .tv-card. */
 
-/* Both selectors target the same felogin markup: .frame-type-felogin_login on
-   its own page, .tv-login-dialog when the same form is fetched into the
-   dialog (see main.js) — the markup is identical, only the wrapper differs. */
-.frame-type-felogin_login,
-.tv-login-dialog {
+.frame-type-felogin_login {
+    position: relative;
     max-width: 420px;
-    padding: 28px;
+    margin: 64px auto;
+    padding: 44px 28px 28px;
     border: 1px solid var(--tv-border);
-    border-top: 3px solid var(--tv-accent);
     border-radius: var(--tv-radius);
     background: var(--tv-surface);
-    /* <dialog> does not inherit the page colour — the UA sheet pins it to
-       CanvasText, which lands dark-on-dark in the dark scheme. */
-    color: var(--tv-text);
     box-shadow: var(--tv-shadow);
+    overflow: hidden;
 }
 
-.frame-type-felogin_login { margin: 48px auto; }
+.frame-type-felogin_login::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: var(--tv-chrome-bg);
+    border-bottom: 1px solid var(--tv-border);
+}
+
+.frame-type-felogin_login::after {
+    content: "";
+    position: absolute;
+    top: 11px;
+    left: 14px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--tv-chrome-red);
+    box-shadow: 16px 0 0 var(--tv-chrome-yellow), 32px 0 0 var(--tv-chrome-green);
+}
 
 .frame-type-felogin_login h2,
-.frame-type-felogin_login h3,
-.tv-login-dialog h2,
-.tv-login-dialog h3 {
+.frame-type-felogin_login h3 {
     margin: 0 0 6px;
     font-size: 1.25rem;
     font-weight: 700;
 }
 
-.frame-type-felogin_login p,
-.tv-login-dialog p {
+.frame-type-felogin_login p {
     margin: 0 0 18px;
     color: var(--tv-muted);
     font-size: 0.9rem;
 }
 
-/* felogin's own <fieldset>/<legend> add a default border and inline label the
-   card layout does not want — reset() them down to plain grouping. */
-.tv-login-dialog fieldset {
-    margin: 0;
-    padding: 0;
-    border: 0;
-}
-
-.tv-login-dialog legend {
-    padding: 0;
-    font-size: 1.25rem;
-    font-weight: 700;
-}
-
-.frame-type-felogin_login label,
-.tv-login-dialog label {
+.frame-type-felogin_login label {
     display: block;
     margin-bottom: 5px;
     font-size: 0.84rem;
@@ -764,9 +760,7 @@ body {
 }
 
 .frame-type-felogin_login input[type="text"],
-.frame-type-felogin_login input[type="password"],
-.tv-login-dialog input[type="text"],
-.tv-login-dialog input[type="password"] {
+.frame-type-felogin_login input[type="password"] {
     box-sizing: border-box;
     width: 100%;
     margin-bottom: 16px;
@@ -779,47 +773,59 @@ body {
 }
 
 .frame-type-felogin_login input[type="text"]:focus,
-.frame-type-felogin_login input[type="password"]:focus,
-.tv-login-dialog input[type="text"]:focus,
-.tv-login-dialog input[type="password"]:focus {
+.frame-type-felogin_login input[type="password"]:focus {
     border-color: var(--tv-accent);
     outline: 3px solid var(--tv-accent-bg);
     outline-offset: 0;
 }
 
 .frame-type-felogin_login input[type="submit"],
-.frame-type-felogin_login button[type="submit"],
-.tv-login-dialog input[type="submit"],
-.tv-login-dialog button[type="submit"] {
+.frame-type-felogin_login button[type="submit"] {
     width: 100%;
     padding: 12px 18px;
     border: 0;
     border-radius: var(--tv-radius-pill);
     background: var(--tv-accent);
-    color: #fff;
+    color: var(--tv-surface);
     font: inherit;
     font-weight: 600;
     cursor: pointer;
 }
 
 .frame-type-felogin_login input[type="submit"]:hover,
-.frame-type-felogin_login button[type="submit"]:hover,
-.tv-login-dialog input[type="submit"]:hover,
-.tv-login-dialog button[type="submit"]:hover {
+.frame-type-felogin_login button[type="submit"]:hover {
     opacity: 0.88;
 }
 
 /* felogin renders the failure notice as a heading, not as a dedicated class. */
 .frame-type-felogin_login .alert,
-.frame-type-felogin_login .typo3-messages,
-.tv-login-dialog .alert,
-.tv-login-dialog .typo3-messages {
+.frame-type-felogin_login .typo3-messages {
     margin-bottom: 16px;
     padding: 11px 13px;
     border-radius: 10px;
     background: var(--tv-critical-bg);
     color: var(--tv-critical);
     font-size: 0.86rem;
+}
+
+/* Full-width strip above the header, every page, while logged out (see
+   Layouts/Default.html) — not tied to any one page's layout. */
+.tv-demo-bar {
+    width: 100%;
+    padding: 8px 20px;
+    background: var(--tv-chrome-bg);
+    border-bottom: 1px solid var(--tv-border);
+    color: var(--tv-muted);
+    font-size: 0.82rem;
+    text-align: center;
+}
+
+.tv-demo-bar code {
+    padding: 1px 6px;
+    border: 1px solid var(--tv-border);
+    border-radius: 4px;
+    background: var(--tv-surface);
+    color: var(--tv-text);
 }
 
 /* --- user area ----------------------------------------------------------
@@ -1013,37 +1019,6 @@ body > ul a:hover {
 
 .tv-login-link:hover {
     border-color: var(--tv-muted);
-}
-
-/* Sizing/positioning specific to the dialog — colours, spacing and form
-   styling for its content come from the combined felogin rules above. */
-.tv-login-dialog {
-    box-sizing: border-box;
-    width: calc(100% - 40px);
-    border-top: 1px solid var(--tv-border);
-    box-shadow: 0 20px 60px rgb(16 16 26 / 20%);
-}
-
-.tv-login-dialog::backdrop {
-    background: rgb(16 16 26 / 70%);
-}
-
-.tv-login-dialog__close {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 32px;
-    height: 32px;
-    border: 0;
-    background: transparent;
-    font-size: 1.4rem;
-    line-height: 1;
-    cursor: pointer;
-    color: var(--tv-muted);
-}
-
-.tv-login-dialog__close:hover {
-    color: var(--tv-text);
 }
 
 .tv-legal {

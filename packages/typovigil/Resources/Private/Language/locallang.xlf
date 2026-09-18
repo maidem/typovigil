@@ -124,13 +124,13 @@
                 <source>not queried yet</source>
             </trans-unit>
             <trans-unit id="backend.allProjects">
-                <source>&larr; All projects</source>
+                <source>← All projects</source>
             </trans-unit>
             <trans-unit id="backend.projectStaleWarning">
                 <source>This project has not reported recently.</source>
             </trans-unit>
             <trans-unit id="backend.projectStaleWarningHint">
-                <source>The figures below may be out of date &mdash; check whether the agent extension is still installed and its scheduler task is running.</source>
+                <source>The figures below may be out of date — check whether the agent extension is still installed and its scheduler task is running.</source>
             </trans-unit>
             <trans-unit id="backend.coreVersion">
                 <source>TYPO3 version</source>
@@ -164,6 +164,30 @@
             </trans-unit>
             <trans-unit id="backend.noPackagesYet">
                 <source>No packages reported yet for this project.</source>
+            </trans-unit>
+            <trans-unit id="backend.deleteProject">
+                <source>Delete project</source>
+            </trans-unit>
+            <trans-unit id="backend.confirmDeleteProject">
+                <source>Are you sure you want to delete project "%1$s"?</source>
+            </trans-unit>
+            <trans-unit id="backend.deleteCustomer">
+                <source>Delete customer</source>
+            </trans-unit>
+            <trans-unit id="backend.confirmDeleteCustomer">
+                <source>Are you sure you want to delete customer "%1$s"?</source>
+            </trans-unit>
+            <trans-unit id="backend.enableProject">
+                <source>Enable project</source>
+            </trans-unit>
+            <trans-unit id="backend.disableProject">
+                <source>Disable project</source>
+            </trans-unit>
+            <trans-unit id="backend.enableCustomer">
+                <source>Enable customer</source>
+            </trans-unit>
+            <trans-unit id="backend.disableCustomer">
+                <source>Disable customer</source>
             </trans-unit>
         </body>
     </file>

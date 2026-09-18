@@ -203,13 +203,13 @@ final readonly class ProjectRepository
      * them — for the module overview, so nobody has to open every fe_users
      * record just to see who can see what.
      *
-     * @return list<array{uid: int, username: string, name: string, projectTitles: list<string>}>
+     * @return list<array{uid: int, username: string, name: string, hidden: bool, projectTitles: list<string>}>
      */
     public function findAllCustomersWithProjects(): array
     {
         $qb = $this->queryBuilder(self::TABLE_FE_USERS);
 
-        $users = $qb->select('uid', 'username', 'name')
+        $users = $qb->select('uid', 'username', 'name', 'disable')
             ->from(self::TABLE_FE_USERS)
             ->orderBy('username')
             ->executeQuery()
@@ -236,6 +236,7 @@ final readonly class ProjectRepository
                 'uid' => (int)$user['uid'],
                 'username' => (string)$user['username'],
                 'name' => (string)$user['name'],
+                'hidden' => (bool)($user['disable'] ?? false),
                 'projectTitles' => $projectTitlesByUser[(int)$user['uid']] ?? [],
             ],
             $users
