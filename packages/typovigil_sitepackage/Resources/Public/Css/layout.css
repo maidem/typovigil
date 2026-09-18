@@ -811,6 +811,10 @@ body {
 /* Full-width strip above the header, every page, while logged out (see
    Layouts/Default.html) — not tied to any one page's layout. */
 .tv-demo-bar {
+    /* box-sizing: border-box, weil width:100% sonst durch das eigene
+       padding-inline horizontalen Overflow auf der ganzen Seite verursacht
+       (kein globales border-box im Projekt). */
+    box-sizing: border-box;
     width: 100%;
     margin: 0;
     padding: 8px 20px;
