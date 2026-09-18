@@ -812,6 +812,7 @@ body {
    Layouts/Default.html) — not tied to any one page's layout. */
 .tv-demo-bar {
     width: 100%;
+    margin: 0;
     padding: 8px 20px;
     background: var(--tv-chrome-bg);
     border-bottom: 1px solid var(--tv-border);
