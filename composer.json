@@ -14,6 +14,7 @@
         "sort-packages": true
     },
     "require": {
+        "friendsoftypo3/content-blocks": "^2.4",
         "maidemde/typovigil": "@dev",
         "maidemde/typovigil-sitepackage": "@dev",
         "typo3/cms-backend": "^14.3",

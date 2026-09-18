@@ -60,5 +60,6 @@ page {
 
     includeJSFooter {
         typovigil_sitepackage_scripts = EXT:typovigil_sitepackage/Resources/Public/JavaScript/main.js
+        typovigil_sitepackage_metro = EXT:typovigil_sitepackage/Resources/Public/JavaScript/metro.js
     }
 }

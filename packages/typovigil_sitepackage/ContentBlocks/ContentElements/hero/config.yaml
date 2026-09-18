@@ -1,0 +1,12 @@
+name: typovigil/hero
+title: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/hero/language/labels.xlf:title
+group: common
+description: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/hero/language/labels.xlf:description
+prefixFields: true
+prefixType: full
+fields:
+  - identifier: teaser
+    type: Text
+    label: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/hero/language/labels.xlf:teaser.label
+    description: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/hero/language/labels.xlf:teaser.description
+    required: true
