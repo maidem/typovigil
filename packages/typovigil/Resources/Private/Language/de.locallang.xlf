@@ -163,6 +163,62 @@
                 <source>not queried yet</source>
                 <target>noch nicht abgefragt</target>
             </trans-unit>
+            <trans-unit id="backend.allProjects">
+                <source>&larr; All projects</source>
+                <target>&larr; Alle Projekte</target>
+            </trans-unit>
+            <trans-unit id="backend.projectStaleWarning">
+                <source>This project has not reported recently.</source>
+                <target>Dieses Projekt hat sich zuletzt nicht mehr gemeldet.</target>
+            </trans-unit>
+            <trans-unit id="backend.projectStaleWarningHint">
+                <source>The figures below may be out of date &mdash; check whether the agent extension is still installed and its scheduler task is running.</source>
+                <target>Die untenstehenden Werte könnten veraltet sein &mdash; prüfen Sie, ob die Agent-Extension noch installiert ist und der Scheduler-Task läuft.</target>
+            </trans-unit>
+            <trans-unit id="backend.coreVersion">
+                <source>TYPO3 version</source>
+                <target>TYPO3-Version</target>
+            </trans-unit>
+            <trans-unit id="backend.never">
+                <source>never</source>
+                <target>nie</target>
+            </trans-unit>
+            <trans-unit id="backend.updatesAvailable">
+                <source>Updates available</source>
+                <target>Updates verfügbar</target>
+            </trans-unit>
+            <trans-unit id="backend.updatesAvailableCount">
+                <source>%1$d of %2$d</source>
+                <target>%1$d von %2$d</target>
+            </trans-unit>
+            <trans-unit id="backend.installed">
+                <source>Installed</source>
+                <target>Installiert</target>
+            </trans-unit>
+            <trans-unit id="backend.available">
+                <source>Available</source>
+                <target>Verfügbar</target>
+            </trans-unit>
+            <trans-unit id="backend.unknown">
+                <source>unknown</source>
+                <target>unbekannt</target>
+            </trans-unit>
+            <trans-unit id="backend.security">
+                <source>security</source>
+                <target>Sicherheit</target>
+            </trans-unit>
+            <trans-unit id="backend.outdatedBadge">
+                <source>outdated</source>
+                <target>veraltet</target>
+            </trans-unit>
+            <trans-unit id="backend.ok">
+                <source>ok</source>
+                <target>ok</target>
+            </trans-unit>
+            <trans-unit id="backend.noPackagesYet">
+                <source>No packages reported yet for this project.</source>
+                <target>Für dieses Projekt wurden noch keine Pakete gemeldet.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

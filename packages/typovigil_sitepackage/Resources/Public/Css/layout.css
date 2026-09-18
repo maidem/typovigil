@@ -9,43 +9,49 @@
 
 /* Self-hosted, so no request ever leaves for a third-party font CDN — a
    visitor's IP address never reaches Google Fonts and no consent is needed.
-   Variable font: one file covers the whole weight range, so no separate
-   400/600/700 files. Layout mirrors the Core's own webfonts.css (subfolder
-   per family, unicode-range for the latin subset shipped here). */
+   Same family as the agency's portfolio-v10 site, two static weights (the
+   ones this stylesheet actually uses: 400 body text, 600 for headings — the
+   browser synthesizes 700 from 600 rather than needing a separate file). */
 @font-face {
-    font-family: "Inter Variable";
-    src: url("../Fonts/Inter/inter-latin-wght-normal.woff2") format("woff2-variations");
-    font-weight: 100 900;
+    font-family: "JetBrains Mono";
+    src: url("../Fonts/JetBrainsMono/jetbrains-mono-latin-400.woff2") format("woff2");
+    font-weight: 400;
     font-style: normal;
     font-display: swap;
-    unicode-range: u+00??, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+0304, u+0308, u+0329, u+2000-206f, u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
 }
 
 @font-face {
-    font-family: "Inter Variable";
-    src: url("../Fonts/Inter/inter-latin-wght-italic.woff2") format("woff2-variations");
-    font-weight: 100 900;
-    font-style: italic;
+    font-family: "JetBrains Mono";
+    src: url("../Fonts/JetBrainsMono/jetbrains-mono-latin-600.woff2") format("woff2");
+    font-weight: 600 700;
+    font-style: normal;
     font-display: swap;
-    unicode-range: u+00??, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+0304, u+0308, u+0329, u+2000-206f, u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
 }
 
 :root {
-    --tv-bg: #f6f6f7;
-    --tv-surface: #fff;
-    --tv-border: #e3e3e6;
-    --tv-text: #16161a;
-    --tv-muted: #6b6b73;
-    --tv-radius: 14px;
+    /* Terminal look: a near-black/near-white pair rather than the previous
+       light grey, so cards read like a shell window instead of a paper card. */
+    --tv-bg: #f4f4f2;
+    --tv-surface: #fdfdfc;
+    --tv-border: #d8d8d4;
+    --tv-text: #131316;
+    --tv-muted: #6b6b6b;
+    --tv-radius: 10px;
     --tv-radius-pill: 999px;
 
-    --tv-ok: #2e9e4f;
-    --tv-outdated: #e0a713;
-    --tv-critical: #d93a36;
+    /* Window chrome dots (traffic lights), used by .tv-card__titlebar. */
+    --tv-chrome-red: #ff5f57;
+    --tv-chrome-yellow: #febc2e;
+    --tv-chrome-green: #28c840;
+    --tv-chrome-bg: #ebebe8;
 
-    --tv-ok-bg: #eaf6ee;
-    --tv-outdated-bg: #fdf4e0;
-    --tv-critical-bg: #fbeceb;
+    --tv-ok: #1f8b4c;
+    --tv-outdated: #b8860b;
+    --tv-critical: #c62f2b;
+
+    --tv-ok-bg: #e7f5ec;
+    --tv-outdated-bg: #faf1dc;
+    --tv-critical-bg: #fbeae9;
 
     --tv-shadow: 0 1px 2px rgb(16 16 26 / 4%);
 
@@ -54,17 +60,23 @@
        Matches the Jobmanager brand violet, shared across the agency's tools. */
     --tv-accent: #783cfe;
     --tv-accent-bg: #f1ebff;
+
+    /* $-prompt marker in front of headings/labels, terminal-style. */
+    --tv-prompt: #2e9e4f;
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --tv-bg: #121214;
-        --tv-surface: #1b1b1f;
-        --tv-border: #2e2e34;
-        --tv-text: #f2f2f4;
-        --tv-muted: #a0a0aa;
+        /* Close to a real terminal's near-black, not a plain dark grey. */
+        --tv-bg: #0c0c0e;
+        --tv-surface: #17171a;
+        --tv-border: #2c2c30;
+        --tv-text: #e8e8ea;
+        --tv-muted: #8b8b93;
 
-        --tv-ok-bg: #16281c;
+        --tv-chrome-bg: #2c2c30;
+
+        --tv-ok-bg: #132a1c;
         --tv-outdated-bg: #2c2413;
         --tv-critical-bg: #2e1917;
 
@@ -72,6 +84,8 @@
         --tv-accent-bg: #2a1f4d;
 
         --tv-shadow: none;
+
+        --tv-prompt: #4fd67a;
     }
 }
 
@@ -92,8 +106,9 @@ body {
     padding: 0;
     background: var(--tv-bg);
     color: var(--tv-text);
-    font-family: "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    font-feature-settings: "cv11", "ss01";
+    /* Terminal look: same JetBrains Mono as the agency's portfolio-v10,
+       self-hosted above; system monospace stacks as fallback. */
+    font-family: "JetBrains Mono", ui-monospace, "SF Mono", Consolas, "Roboto Mono", monospace;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
 }
@@ -185,9 +200,15 @@ body {
 
 .tv-portal__heading {
     margin: 0 0 24px;
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     font-weight: 700;
     letter-spacing: -0.01em;
+}
+
+/* "$ " prompt marker, terminal-style, in front of section headings. */
+.tv-portal__heading::before {
+    content: "$ ";
+    color: var(--tv-prompt);
 }
 
 .tv-portal__heading--spaced {
@@ -250,11 +271,12 @@ body {
     display: flex;
     flex-direction: column;
     gap: 14px;
-    padding: 22px;
+    padding: 0 22px 22px;
     border: 1px solid var(--tv-border);
     border-radius: var(--tv-radius);
     background: var(--tv-surface);
     box-shadow: var(--tv-shadow);
+    overflow: hidden;
 }
 
 .tv-card[hidden] {
@@ -265,12 +287,42 @@ body {
     max-width: 640px;
 }
 
+/* Mac-style window chrome above the card head: three dots, no function, just
+   the terminal-window framing from the reference design. The dots sit in
+   their own fixed-height titlebar strip; the chip below gets its own row
+   with normal spacing instead of crowding the dots. */
 .tv-card__head {
+    position: relative;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 8px;
-    padding-bottom: 14px;
+    margin: 0 -22px 0;
+    padding: 44px 22px 16px;
     border-bottom: 1px solid var(--tv-border);
+}
+
+.tv-card__head::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: var(--tv-chrome-bg);
+    border-bottom: 1px solid var(--tv-border);
+}
+
+.tv-card__head::after {
+    content: "";
+    position: absolute;
+    top: 11px;
+    left: 14px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--tv-chrome-red);
+    box-shadow: 16px 0 0 var(--tv-chrome-yellow), 32px 0 0 var(--tv-chrome-green);
 }
 
 .tv-card__title {

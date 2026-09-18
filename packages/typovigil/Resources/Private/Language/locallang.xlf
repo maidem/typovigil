@@ -123,6 +123,48 @@
             <trans-unit id="backend.notQueriedYet">
                 <source>not queried yet</source>
             </trans-unit>
+            <trans-unit id="backend.allProjects">
+                <source>&larr; All projects</source>
+            </trans-unit>
+            <trans-unit id="backend.projectStaleWarning">
+                <source>This project has not reported recently.</source>
+            </trans-unit>
+            <trans-unit id="backend.projectStaleWarningHint">
+                <source>The figures below may be out of date &mdash; check whether the agent extension is still installed and its scheduler task is running.</source>
+            </trans-unit>
+            <trans-unit id="backend.coreVersion">
+                <source>TYPO3 version</source>
+            </trans-unit>
+            <trans-unit id="backend.never">
+                <source>never</source>
+            </trans-unit>
+            <trans-unit id="backend.updatesAvailable">
+                <source>Updates available</source>
+            </trans-unit>
+            <trans-unit id="backend.updatesAvailableCount">
+                <source>%1$d of %2$d</source>
+            </trans-unit>
+            <trans-unit id="backend.installed">
+                <source>Installed</source>
+            </trans-unit>
+            <trans-unit id="backend.available">
+                <source>Available</source>
+            </trans-unit>
+            <trans-unit id="backend.unknown">
+                <source>unknown</source>
+            </trans-unit>
+            <trans-unit id="backend.security">
+                <source>security</source>
+            </trans-unit>
+            <trans-unit id="backend.outdatedBadge">
+                <source>outdated</source>
+            </trans-unit>
+            <trans-unit id="backend.ok">
+                <source>ok</source>
+            </trans-unit>
+            <trans-unit id="backend.noPackagesYet">
+                <source>No packages reported yet for this project.</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

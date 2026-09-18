@@ -9,31 +9,30 @@
     <h1>{project.title}</h1>
 
     <p>
-        <f:link.action action="index" class="btn btn-default">&larr; All projects</f:link.action>
+        <f:link.action action="index" class="btn btn-default"><f:translate key="backend.allProjects" /></f:link.action>
     </p>
 
     <f:if condition="{project.isStale}">
         <div class="callout callout-warning">
             <p>
-                <strong>This project has not reported recently.</strong>
-                The figures below may be out of date &mdash; check whether the agent
-                extension is still installed and its scheduler task is running.
+                <strong><f:translate key="backend.projectStaleWarning" /></strong>
+                <f:translate key="backend.projectStaleWarningHint" />
             </p>
         </div>
     </f:if>
 
     <dl class="row">
-        <dt class="col-sm-3">TYPO3 version</dt>
+        <dt class="col-sm-3"><f:translate key="backend.coreVersion" /></dt>
         <dd class="col-sm-9">{project.coreVersion}</dd>
-        <dt class="col-sm-3">Last report</dt>
+        <dt class="col-sm-3"><f:translate key="backend.lastReport" /></dt>
         <dd class="col-sm-9">
             <f:if condition="{project.hasReported}">
                 <f:then><f:format.date format="d.m.Y H:i">{project.lastReportAt}</f:format.date></f:then>
-                <f:else>never</f:else>
+                <f:else><f:translate key="backend.never" /></f:else>
             </f:if>
         </dd>
-        <dt class="col-sm-3">Updates available</dt>
-        <dd class="col-sm-9">{project.updatesAvailable} of {project.packageCount}</dd>
+        <dt class="col-sm-3"><f:translate key="backend.updatesAvailable" /></dt>
+        <dd class="col-sm-9"><f:translate key="backend.updatesAvailableCount" arguments="{0: project.updatesAvailable, 1: project.packageCount}" /></dd>
     </dl>
 
     <f:if condition="{project.packages}">
@@ -41,10 +40,10 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>Package</th>
-                        <th>Installed</th>
-                        <th>Available</th>
-                        <th>Status</th>
+                        <th><f:translate key="backend.packages" /></th>
+                        <th><f:translate key="backend.installed" /></th>
+                        <th><f:translate key="backend.available" /></th>
+                        <th><f:translate key="backend.status" /></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,19 +62,19 @@
                             <td>
                                 <f:if condition="{package.latest_version}">
                                     <f:then>{package.latest_version}</f:then>
-                                    <f:else><span class="text-muted">unknown</span></f:else>
+                                    <f:else><span class="text-muted"><f:translate key="backend.unknown" /></span></f:else>
                                 </f:if>
                             </td>
                             <td>
                                 <f:switch expression="{package.severity}">
                                     <f:case value="critical">
-                                        <span class="badge bg-danger">security</span>
+                                        <span class="badge bg-danger"><f:translate key="backend.security" /></span>
                                     </f:case>
                                     <f:case value="outdated">
-                                        <span class="badge bg-warning text-dark">outdated</span>
+                                        <span class="badge bg-warning text-dark"><f:translate key="backend.outdatedBadge" /></span>
                                     </f:case>
                                     <f:defaultCase>
-                                        <span class="badge bg-success">ok</span>
+                                        <span class="badge bg-success"><f:translate key="backend.ok" /></span>
                                     </f:defaultCase>
                                 </f:switch>
                             </td>
@@ -86,7 +85,7 @@
         </f:then>
         <f:else>
             <div class="callout callout-info">
-                <p>No packages reported yet for this project.</p>
+                <p><f:translate key="backend.noPackagesYet" /></p>
             </div>
         </f:else>
     </f:if>

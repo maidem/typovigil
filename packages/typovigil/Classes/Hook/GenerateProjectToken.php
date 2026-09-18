@@ -19,8 +19,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * hash goes into the database, so a leaked dump cannot be replayed against the
  * report endpoint.
  *
- * A DataHandler hook rather than a PSR-14 listener: no event carries the uid of
- * a newly created record.
+ * A DataHandler hook rather than a PSR-14 listener: verified against TYPO3 v14's
+ * DataHandler::insertDB() — it dispatches no event there, so no listener can
+ * receive the new record's uid at that point.
  */
 final class GenerateProjectToken
 {
