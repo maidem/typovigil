@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+    <file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2026-09-20T00:00:00Z" product-name="typovigil">
+        <header/>
+        <body>
+            <trans-unit id="tx_typovigil_project">
+                <source>Monitored project</source>
+                <target>Überwachtes Projekt</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.title">
+                <source>Title</source>
+                <target>Titel</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.site_url">
+                <source>Site URL</source>
+                <target>Website-URL</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.site_url.description">
+                <source>Base address of the monitored TYPO3 backend, e.g. https://example.com. Used to build the one-click setup link for the agent extension.</source>
+                <target>Basisadresse des überwachten TYPO3-Backends, z. B. https://example.com. Wird für den Ein-Klick-Setup-Link der Agent-Extension verwendet.</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.token_hash">
+                <source>Token (hash)</source>
+                <target>Token (Hash)</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.token_hash.description">
+                <source>Only the hash is stored. The token itself is shown once when the project is created and cannot be recovered afterwards.</source>
+                <target>Es wird nur der Hash gespeichert. Das Token selbst wird einmalig beim Anlegen des Projekts angezeigt und kann danach nicht wiederhergestellt werden.</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.core_version">
+                <source>TYPO3 version</source>
+                <target>TYPO3-Version</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.last_report_at">
+                <source>Last report</source>
+                <target>Letzte Meldung</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.coolify_application_uuid">
+                <source>Coolify application UUID</source>
+                <target>Coolify-Anwendungs-UUID</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.coolify_application_uuid.description">
+                <source>UUID of the application in Coolify, from its detail page URL. Leave empty for a project that is not hosted on Coolify — it stays plain monitoring.</source>
+                <target>UUID der Anwendung in Coolify, aus der URL der Detailseite. Für ein Projekt, das nicht auf Coolify läuft, leer lassen — es bleibt dann reines Monitoring.</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.coolify_storage_uuid">
+                <source>Coolify storage backup schedule UUID</source>
+                <target>UUID des Coolify-Storage-Backup-Zeitplans</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.coolify_storage_uuid.description">
+                <source>UUID of the application's volume backup schedule (Persistent Storage → Backups). Required to trigger a storage backup before an update.</source>
+                <target>UUID des Backup-Zeitplans für das Volume der Anwendung (Persistent Storage → Backups). Wird benötigt, um vor einem Update ein Storage-Backup auszulösen.</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.coolify_database_uuid">
+                <source>Coolify database UUID</source>
+                <target>Coolify-Datenbank-UUID</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.coolify_database_uuid.description">
+                <source>UUID of the database resource in Coolify that belongs to this application.</source>
+                <target>UUID der Datenbank-Ressource in Coolify, die zu dieser Anwendung gehört.</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.coolify_db_scheduled_backup_uuid">
+                <source>Coolify database backup schedule UUID</source>
+                <target>UUID des Coolify-Datenbank-Backup-Zeitplans</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.coolify_db_scheduled_backup_uuid.description">
+                <source>UUID of the database's scheduled backup configuration. Used to check whether the last automatic backup is recent enough — Coolify has no on-demand database backup endpoint.</source>
+                <target>UUID der geplanten Backup-Konfiguration der Datenbank. Wird genutzt, um zu prüfen, ob das letzte automatische Backup aktuell genug ist — Coolify hat keinen Endpunkt für ein sofortiges Datenbank-Backup.</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.last_backup_at">
+                <source>Last backup check</source>
+                <target>Letzte Backup-Prüfung</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.last_backup_status">
+                <source>Last backup status</source>
+                <target>Letzter Backup-Status</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.fe_users">
+                <source>Visible to frontend users</source>
+                <target>Sichtbar für Frontend-Benutzer</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.fe_users.description">
+                <source>These users can see this project's status in the frontend. Without an assignment nobody sees it.</source>
+                <target>Diese Benutzer können den Status dieses Projekts im Frontend sehen. Ohne Zuordnung sieht es niemand.</target>
+            </trans-unit>
+            <trans-unit id="fe_users.tx_typovigil_projects">
+                <source>Assigned projects</source>
+                <target>Zugeordnete Projekte</target>
+            </trans-unit>
+            <trans-unit id="fe_users.tx_typovigil_projects.description">
+                <source>The projects this customer can see in the frontend. This is the same assignment as on the project's own access tab, seen from the other side.</source>
+                <target>Die Projekte, die dieser Kunde im Frontend sehen kann. Das ist dieselbe Zuordnung wie auf dem Access-Tab des Projekts, nur von der anderen Seite betrachtet.</target>
+            </trans-unit>
+            <trans-unit id="fe_users.tab.typovigil">
+                <source>TypoVigil</source>
+                <target>TypoVigil</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.notes">
+                <source>Notes</source>
+                <target>Notizen</target>
+            </trans-unit>
+            <trans-unit id="tab.general">
+                <source>General</source>
+                <target>Allgemein</target>
+            </trans-unit>
+            <trans-unit id="tab.status">
+                <source>Status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="tab.access">
+                <source>Access</source>
+                <target>Zugriff</target>
+            </trans-unit>
+            <trans-unit id="tab.coolify">
+                <source>Coolify</source>
+                <target>Coolify</target>
+            </trans-unit>
+            <trans-unit id="task.updateCheck.title">
+                <source>TypoVigil: check for updates</source>
+                <target>TypoVigil: Auf Updates prüfen</target>
+            </trans-unit>
+            <trans-unit id="task.updateCheck.description">
+                <source>Matches all reported packages against Packagist, get.typo3.org and the security advisories.</source>
+                <target>Gleicht alle gemeldeten Pakete mit Packagist, get.typo3.org und den Sicherheitsmeldungen ab.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
