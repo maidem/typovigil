@@ -183,6 +183,26 @@ final readonly class ProjectRepository
     }
 
     /**
+     * UIDs of projects that currently have at least one package at
+     * Severity::Critical — for triggering an automatic backup right after
+     * an update check finds one, before anyone applies the update by hand.
+     *
+     * @return list<int>
+     */
+    public function findProjectUidsWithCriticalPackages(): array
+    {
+        $qb = $this->connectionPool->getQueryBuilderForTable(self::TABLE_PACKAGE);
+
+        $rows = $qb->selectLiteral('DISTINCT project')
+            ->from(self::TABLE_PACKAGE)
+            ->where($qb->expr()->eq('severity', $qb->createNamedParameter('critical')))
+            ->executeQuery()
+            ->fetchFirstColumn();
+
+        return array_map('intval', $rows);
+    }
+
+    /**
      * Replaces a project's package list wholesale, so uninstalled extensions
      * disappear instead of lingering as phantom entries.
      *

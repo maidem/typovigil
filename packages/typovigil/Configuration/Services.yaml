@@ -54,3 +54,9 @@ services:
       - name: 'console.command'
         command: 'typovigil:onboard-coolify'
         description: "Create a project's Coolify backup schedules from its linked UUIDs"
+
+  Maidemde\Typovigil\Command\CheckAndAutoBackupCommand:
+    tags:
+      - name: 'console.command'
+        command: 'typovigil:check-and-backup'
+        description: 'Run the update check and back up every Coolify-linked project that now has a critical package'
