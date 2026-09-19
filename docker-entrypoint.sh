@@ -50,6 +50,15 @@ fi
 su -s /bin/bash www-data -c \
     "php vendor/bin/typo3 cache:flush 2>/dev/null || true"
 
+# Language packs live under var/cache, which the rm -rf above just wiped —
+# without this, every backend user on a non-English UI language sees
+# "[ Missing label ]" after each deploy until someone reinstalls the
+# language manually in the backend. Idempotent and quick when already
+# current, so running it on every start is fine.
+su -s /bin/bash www-data -c \
+    "php vendor/bin/typo3 language:update de 2>&1" || \
+    echo "[docker-entrypoint] WARNING: language:update failed - check output above"
+
 # Adds missing tables and columns from extensions. Safe on every start: it only
 # adds, never drops. stderr is kept so failures show up in the container logs.
 su -s /bin/bash www-data -c \
