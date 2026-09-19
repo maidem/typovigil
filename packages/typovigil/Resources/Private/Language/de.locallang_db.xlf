@@ -36,36 +36,36 @@
                 <target>Letzte Meldung</target>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_application_uuid">
-                <source>Coolify application UUID</source>
-                <target>Coolify-Anwendungs-UUID</target>
+                <source>Hosting platform application UUID</source>
+                <target>Anwendungs-UUID der Hosting-Plattform</target>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_application_uuid.description">
-                <source>UUID of the application in Coolify, from its detail page URL. Leave empty for a project that is not hosted on Coolify — it stays plain monitoring.</source>
-                <target>UUID der Anwendung in Coolify, aus der URL der Detailseite. Für ein Projekt, das nicht auf Coolify läuft, leer lassen — es bleibt dann reines Monitoring.</target>
+                <source>UUID of the application on the hosting platform, from its detail page URL. Leave empty for a project that is not hosted there — it stays plain monitoring.</source>
+                <target>UUID der Anwendung auf der Hosting-Plattform, aus der URL der Detailseite. Für ein Projekt, das dort nicht läuft, leer lassen — es bleibt dann reines Monitoring.</target>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_storage_uuid">
-                <source>Coolify storage backup schedule UUID</source>
-                <target>UUID des Coolify-Storage-Backup-Zeitplans</target>
+                <source>Hosting platform storage backup schedule UUID</source>
+                <target>UUID des Storage-Backup-Zeitplans der Hosting-Plattform</target>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_storage_uuid.description">
                 <source>UUID of the application's volume backup schedule (Persistent Storage → Backups). Required to trigger a storage backup before an update.</source>
                 <target>UUID des Backup-Zeitplans für das Volume der Anwendung (Persistent Storage → Backups). Wird benötigt, um vor einem Update ein Storage-Backup auszulösen.</target>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_database_uuid">
-                <source>Coolify database UUID</source>
-                <target>Coolify-Datenbank-UUID</target>
+                <source>Hosting platform database UUID</source>
+                <target>Datenbank-UUID der Hosting-Plattform</target>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_database_uuid.description">
-                <source>UUID of the database resource in Coolify that belongs to this application.</source>
-                <target>UUID der Datenbank-Ressource in Coolify, die zu dieser Anwendung gehört.</target>
+                <source>UUID of the database resource on the hosting platform that belongs to this application.</source>
+                <target>UUID der Datenbank-Ressource auf der Hosting-Plattform, die zu dieser Anwendung gehört.</target>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_db_scheduled_backup_uuid">
-                <source>Coolify database backup schedule UUID</source>
-                <target>UUID des Coolify-Datenbank-Backup-Zeitplans</target>
+                <source>Hosting platform database backup schedule UUID</source>
+                <target>UUID des Datenbank-Backup-Zeitplans der Hosting-Plattform</target>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_db_scheduled_backup_uuid.description">
-                <source>UUID of the database's scheduled backup configuration. Used to check whether the last automatic backup is recent enough — Coolify has no on-demand database backup endpoint.</source>
-                <target>UUID der geplanten Backup-Konfiguration der Datenbank. Wird genutzt, um zu prüfen, ob das letzte automatische Backup aktuell genug ist — Coolify hat keinen Endpunkt für ein sofortiges Datenbank-Backup.</target>
+                <source>UUID of the database's scheduled backup configuration. Used to check whether the last automatic backup is recent enough — the hosting platform has no on-demand database backup endpoint.</source>
+                <target>UUID der geplanten Backup-Konfiguration der Datenbank. Wird genutzt, um zu prüfen, ob das letzte automatische Backup aktuell genug ist — die Hosting-Plattform hat keinen Endpunkt für ein sofortiges Datenbank-Backup.</target>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.last_backup_at">
                 <source>Last backup check</source>
@@ -112,8 +112,8 @@
                 <target>Zugriff</target>
             </trans-unit>
             <trans-unit id="tab.coolify">
-                <source>Coolify</source>
-                <target>Coolify</target>
+                <source>Hosting platform</source>
+                <target>Hosting-Plattform</target>
             </trans-unit>
             <trans-unit id="task.updateCheck.title">
                 <source>TypoVigil: check for updates</source>

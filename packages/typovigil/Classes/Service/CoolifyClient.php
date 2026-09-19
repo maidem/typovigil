@@ -9,16 +9,16 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\RequestFactory;
 
 /**
- * Talks to a Coolify instance's REST API.
+ * Talks to the hosting platform's REST API.
  *
  * Only the two backup-related actions TypoVigil needs, not a general-purpose
- * Coolify wrapper — this extension backs up projects before an update, it
- * does not manage Coolify.
+ * platform wrapper — this extension backs up projects before an update, it
+ * does not manage the hosting platform.
  *
  * Base URL and token come from the extension configuration (same place as
  * projectStoragePid), not the database: credentials do not belong on a
- * project record, and every monitored project talks to the same Coolify
- * instance.
+ * project record, and every monitored project talks to the same hosting
+ * platform instance.
  */
 final readonly class CoolifyClient
 {
@@ -38,9 +38,9 @@ final readonly class CoolifyClient
     /**
      * Queues an immediate backup of an application's storage (volume).
      *
-     * There is no separate status endpoint for this on the Coolify API — a
-     * 200 response means the backup was queued, not that it has finished.
-     * Completion shows up in the Coolify UI only.
+     * There is no separate status endpoint for this on the hosting platform's
+     * API — a 200 response means the backup was queued, not that it has finished.
+     * Completion shows up in the hosting platform's own UI only.
      */
     public function triggerStorageBackup(string $applicationUuid, string $storageUuid): bool
     {
@@ -56,9 +56,9 @@ final readonly class CoolifyClient
      * Newest execution of a database's scheduled backup, or null when there
      * is none or the request failed.
      *
-     * Coolify has no on-demand database backup endpoint (unlike application
-     * storages) — this is how "was the database backed up recently enough"
-     * has to be answered instead.
+     * The hosting platform has no on-demand database backup endpoint (unlike
+     * application storages) — this is how "was the database backed up
+     * recently enough" has to be answered instead.
      *
      * @return array{status: string, created_at: string, filename: string}|null
      */
@@ -95,9 +95,9 @@ final readonly class CoolifyClient
      * and returns the new schedule's UUID.
      *
      * $storageUuid here is the volume's own identifier (e.g.
-     * "{app_uuid}-fileadmin"), not a schedule id — Coolify only assigns a
-     * separate schedule UUID once this call creates one, which is what
-     * this method returns.
+     * "{app_uuid}-fileadmin"), not a schedule id — the hosting platform only
+     * assigns a separate schedule UUID once this call creates one, which is
+     * what this method returns.
      */
     public function createStorageBackupSchedule(string $applicationUuid, string $storageUuid, string $frequency): ?string
     {
@@ -127,14 +127,15 @@ final readonly class CoolifyClient
 
     /**
      * @param array<string, mixed> $body
-     * @return array<string, mixed>|null null on any failure — a failing Coolify
-     *     call must never break the caller's flow, it just reports "not done".
+     * @return array<string, mixed>|null null on any failure — a failing
+     *     platform call must never break the caller's flow, it just reports
+     *     "not done".
      */
     private function request(string $method, string $path, array $body = []): ?array
     {
         $baseUrl = $this->baseUrl();
         if ($baseUrl === '' || $this->apiToken() === '') {
-            $this->logger->warning('TypoVigil: Coolify API not configured, skipping request', ['path' => $path]);
+            $this->logger->warning('TypoVigil: hosting platform API not configured, skipping request', ['path' => $path]);
 
             return null;
         }
@@ -157,7 +158,7 @@ final readonly class CoolifyClient
 
             $status = $response->getStatusCode();
             if ($status < 200 || $status >= 300) {
-                $this->logger->warning('TypoVigil: unexpected status from Coolify', [
+                $this->logger->warning('TypoVigil: unexpected status from hosting platform', [
                     'url' => $url,
                     'status' => $status,
                 ]);
@@ -174,7 +175,7 @@ final readonly class CoolifyClient
 
             return is_array($decoded) ? $decoded : [];
         } catch (\Throwable $e) {
-            $this->logger->warning('TypoVigil: Coolify request failed', [
+            $this->logger->warning('TypoVigil: hosting platform request failed', [
                 'url' => $url,
                 'exception' => $e->getMessage(),
             ]);

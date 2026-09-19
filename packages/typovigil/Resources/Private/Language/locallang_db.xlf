@@ -28,28 +28,28 @@
                 <source>Last report</source>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_application_uuid">
-                <source>Coolify application UUID</source>
+                <source>Hosting platform application UUID</source>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_application_uuid.description">
-                <source>UUID of the application in Coolify, from its detail page URL. Leave empty for a project that is not hosted on Coolify — it stays plain monitoring.</source>
+                <source>UUID of the application on the hosting platform, from its detail page URL. Leave empty for a project that is not hosted there — it stays plain monitoring.</source>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_storage_uuid">
-                <source>Coolify storage backup schedule UUID</source>
+                <source>Hosting platform storage backup schedule UUID</source>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_storage_uuid.description">
                 <source>UUID of the application's volume backup schedule (Persistent Storage → Backups). Required to trigger a storage backup before an update.</source>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_database_uuid">
-                <source>Coolify database UUID</source>
+                <source>Hosting platform database UUID</source>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_database_uuid.description">
-                <source>UUID of the database resource in Coolify that belongs to this application.</source>
+                <source>UUID of the database resource on the hosting platform that belongs to this application.</source>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_db_scheduled_backup_uuid">
-                <source>Coolify database backup schedule UUID</source>
+                <source>Hosting platform database backup schedule UUID</source>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_db_scheduled_backup_uuid.description">
-                <source>UUID of the database's scheduled backup configuration. Used to check whether the last automatic backup is recent enough — Coolify has no on-demand database backup endpoint.</source>
+                <source>UUID of the database's scheduled backup configuration. Used to check whether the last automatic backup is recent enough — the hosting platform has no on-demand database backup endpoint.</source>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.last_backup_at">
                 <source>Last backup check</source>
@@ -85,7 +85,7 @@
                 <source>Access</source>
             </trans-unit>
             <trans-unit id="tab.coolify">
-                <source>Coolify</source>
+                <source>Hosting platform</source>
             </trans-unit>
             <trans-unit id="task.updateCheck.title">
                 <source>TypoVigil: check for updates</source>

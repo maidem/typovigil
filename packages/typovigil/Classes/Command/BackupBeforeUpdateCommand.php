@@ -11,8 +11,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Backs a project up on Coolify — run this by hand before applying an
- * update to that project, never automatically on every check.
+ * Backs a project up on its hosting platform — run this by hand before
+ * applying an update to that project, never automatically on every check.
  */
 final class BackupBeforeUpdateCommand extends Command
 {

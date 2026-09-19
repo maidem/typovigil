@@ -10,8 +10,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Runs the update check and immediately backs up any Coolify-linked project
- * that came out of it with a critical package.
+ * Runs the update check and immediately backs up any project linked to a
+ * hosting platform that came out of it with a critical package.
  *
  * Meant to replace typovigil:check on the hourly cron — that command still
  * exists on its own for anyone who wants the check without the side

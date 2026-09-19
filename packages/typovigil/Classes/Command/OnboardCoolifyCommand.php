@@ -11,11 +11,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Turns a project's raw Coolify UUIDs into working backup schedules. Run
- * once after entering coolify_application_uuid, coolify_storage_uuid
- * (the volume) and coolify_database_uuid in the project's Coolify tab —
- * this is what the rest of the onboarding steps in the plan call
- * "typovigil:onboard-coolify".
+ * Turns a project's raw hosting platform UUIDs into working backup
+ * schedules. Run once after entering coolify_application_uuid,
+ * coolify_storage_uuid (the volume) and coolify_database_uuid in the
+ * project's platform tab.
  */
 final class OnboardCoolifyCommand extends Command
 {
@@ -35,7 +34,7 @@ final class OnboardCoolifyCommand extends Command
         $result = $this->onboarding->run($projectUid);
 
         if (!$result['linked']) {
-            $output->writeln('<comment>Project has no coolify_application_uuid / coolify_database_uuid set — nothing to onboard.</comment>');
+            $output->writeln('<comment>Project has no hosting platform application/database UUID set — nothing to onboard.</comment>');
 
             return Command::SUCCESS;
         }

@@ -4,8 +4,8 @@ agencyFeGroupId = 0
 # cat=basic; type=int+; label=Project storage page: Page (usually a Sysfolder) where "New project" in the TypoVigil module creates tx_typovigil_project records. 0 refuses to create new records from the module until this is set.
 projectStoragePid = 0
 
-# cat=coolify; type=string; label=Coolify API URL: Base URL of the Coolify instance's API, e.g. http://100.99.227.54:8000/api/v1. Empty disables every Coolify backup feature — projects stay plain monitoring.
+# cat=hosting; type=string; label=Hosting platform API URL: Base URL of the hosting platform's API, e.g. http://100.99.227.54:8000/api/v1. Empty disables every backup feature — projects stay plain monitoring.
 coolifyApiUrl =
 
-# cat=coolify; type=string; label=Coolify API token: Bearer token for the Coolify API. Generated in Coolify under Keys & Tokens.
+# cat=hosting; type=string; label=Hosting platform API token: Bearer token for the hosting platform's API. Generated there under Keys & Tokens.
 coolifyApiToken =

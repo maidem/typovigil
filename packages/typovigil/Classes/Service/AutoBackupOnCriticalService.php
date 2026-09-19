@@ -15,9 +15,9 @@ use Psr\Log\LoggerInterface;
  *
  * Deliberately separate from UpdateChecker: that service stays pure
  * observation (see its own docblock), this one adds the side effect on top,
- * so a plain `typovigil:check` still never touches Coolify.
+ * so a plain `typovigil:check` still never touches the hosting platform.
  *
- * Only ever backs projects that are actually linked to Coolify —
+ * Only ever backs projects that are actually linked to a hosting platform —
  * BackupBeforeUpdateService already refuses silently for the rest, so a
  * critical finding on a plain-monitoring project just does not trigger
  * anything here, same as before this existed.
@@ -46,7 +46,7 @@ final readonly class AutoBackupOnCriticalService
 
             if (!$result['linked']) {
                 // Plain monitoring project with a critical package: nothing
-                // to back up on Coolify, and nothing wrong either.
+                // to back up on a hosting platform, and nothing wrong either.
                 continue;
             }
 

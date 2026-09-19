@@ -145,7 +145,7 @@
                 <source>%1$d of %2$d</source>
             </trans-unit>
             <trans-unit id="backend.lastBackup">
-                <source>Last Coolify backup</source>
+                <source>Last hosting platform backup</source>
             </trans-unit>
             <trans-unit id="backend.backupHint">
                 <source>Run `typovigil:backup %1$d` before applying an update to this project.</source>

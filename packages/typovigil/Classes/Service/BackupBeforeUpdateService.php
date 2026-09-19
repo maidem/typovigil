@@ -7,13 +7,14 @@ namespace Maidemde\Typovigil\Service;
 use Maidemde\Typovigil\Domain\Repository\ProjectRepository;
 
 /**
- * Backs a project up on Coolify before an update is applied there.
+ * Backs a project up on its hosting platform before an update is applied
+ * there.
  *
  * Opt-in per project: only projects with coolify_application_uuid and
  * coolify_database_uuid filled in are touched. A project without those
  * stays plain monitoring — this service does not migrate or require them.
  *
- * Two different guarantees, because the Coolify API offers two different
+ * Two different guarantees, because the platform's API offers two different
  * things: the storage (volume) backup can be triggered right now, the
  * database backup can only be checked for freshness against its own
  * schedule. See CoolifyClient for why.
@@ -54,7 +55,7 @@ final readonly class BackupBeforeUpdateService
                 'storageQueued' => false,
                 'databaseFresh' => false,
                 'secured' => false,
-                'message' => 'Project is not linked to Coolify.',
+                'message' => 'Project is not linked to a hosting platform.',
             ];
         }
 
@@ -79,7 +80,7 @@ final readonly class BackupBeforeUpdateService
             'secured' => $secured,
             'message' => $secured
                 ? 'Storage backup queued and database backup is fresh — safe to update.'
-                : 'Not fully secured: ' . $status . '. Check Coolify before updating.',
+                : 'Not fully secured: ' . $status . '. Check the hosting platform before updating.',
         ];
     }
 
@@ -109,8 +110,8 @@ final readonly class BackupBeforeUpdateService
 
     public static function executionIsFresh(array $execution, int $maxAge, int $now): bool
     {
-        // Coolify's own backup status wording; anything else (failed,
-        // running from a stale run, …) does not count as a safe backup.
+        // The hosting platform's own backup status wording; anything else
+        // (failed, running from a stale run, …) does not count as a safe backup.
         if (!in_array($execution['status'], ['success', 'ok'], true)) {
             return false;
         }

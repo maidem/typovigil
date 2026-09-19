@@ -7,14 +7,14 @@ namespace Maidemde\Typovigil\Service;
 use Maidemde\Typovigil\Domain\Repository\ProjectRepository;
 
 /**
- * Turns a project's raw Coolify UUIDs (application, volume, database — all
- * entered by hand, see the project's Coolify tab) into working backup
- * schedules, so BackupBeforeUpdateService has something to trigger and
- * check.
+ * Turns a project's raw hosting platform UUIDs (application, volume,
+ * database — all entered by hand, see the project's platform tab) into
+ * working backup schedules, so BackupBeforeUpdateService has something to
+ * trigger and check.
  *
  * Run once per project, via `typovigil:onboard-coolify`, not automatically:
- * onboarding changes infrastructure (creates schedules in Coolify), which
- * should be an explicit action, not a side effect of saving a record.
+ * onboarding changes infrastructure (creates schedules on the platform),
+ * which should be an explicit action, not a side effect of saving a record.
  */
 final readonly class BackupOnboardingService
 {
@@ -61,10 +61,11 @@ final readonly class BackupOnboardingService
         }
 
         // A field already holding a value other than the raw volume UUID
-        // means a schedule was created before — Coolify does not deduplicate
-        // schedules for us, so re-running this must not create a second one.
-        // The raw volume UUID looks like "{app_uuid}-something"; a schedule
-        // UUID Coolify hands back does not share that shape.
+        // means a schedule was created before — the hosting platform does
+        // not deduplicate schedules for us, so re-running this must not
+        // create a second one. The raw volume UUID looks like
+        // "{app_uuid}-something"; a schedule UUID the platform hands back
+        // does not share that shape.
         if (!str_starts_with($storageUuid, $applicationUuid)) {
             return 'skipped';
         }
