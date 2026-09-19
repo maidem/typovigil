@@ -60,6 +60,58 @@ return [
                 'readOnly' => true,
             ],
         ],
+        'coolify_application_uuid' => [
+            'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.coolify_application_uuid',
+            'description' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.coolify_application_uuid.description',
+            'config' => [
+                'type' => 'input',
+                'size' => 40,
+                'eval' => 'trim',
+            ],
+        ],
+        'coolify_storage_uuid' => [
+            'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.coolify_storage_uuid',
+            'description' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.coolify_storage_uuid.description',
+            'config' => [
+                'type' => 'input',
+                'size' => 40,
+                'eval' => 'trim',
+            ],
+        ],
+        'coolify_database_uuid' => [
+            'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.coolify_database_uuid',
+            'description' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.coolify_database_uuid.description',
+            'config' => [
+                'type' => 'input',
+                'size' => 40,
+                'eval' => 'trim',
+            ],
+        ],
+        'coolify_db_scheduled_backup_uuid' => [
+            'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.coolify_db_scheduled_backup_uuid',
+            'description' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.coolify_db_scheduled_backup_uuid.description',
+            'config' => [
+                'type' => 'input',
+                'size' => 40,
+                'eval' => 'trim',
+            ],
+        ],
+        'last_backup_at' => [
+            'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.last_backup_at',
+            'config' => [
+                'type' => 'datetime',
+                'format' => 'datetime',
+                'readOnly' => true,
+            ],
+        ],
+        'last_backup_status' => [
+            'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.last_backup_status',
+            'config' => [
+                'type' => 'input',
+                'size' => 40,
+                'readOnly' => true,
+            ],
+        ],
         'fe_users' => [
             'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.fe_users',
             'description' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.fe_users.description',
@@ -100,6 +152,9 @@ return [
                     title, site_url, notes, hidden,
                 --div--;LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tab.access,
                     fe_users,
+                --div--;LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tab.coolify,
+                    coolify_application_uuid, coolify_storage_uuid,
+                    coolify_database_uuid, coolify_db_scheduled_backup_uuid,
             ',
         ],
     ],

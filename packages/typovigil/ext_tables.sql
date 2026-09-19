@@ -7,6 +7,16 @@ CREATE TABLE tx_typovigil_project (
     notes text,
     fe_users int(11) unsigned DEFAULT 0 NOT NULL,
 
+    -- Optional Coolify linkage: empty on every project until someone fills it
+    -- in for one that actually runs there. A project without these stays
+    -- plain monitoring, exactly as before.
+    coolify_application_uuid varchar(64) DEFAULT '' NOT NULL,
+    coolify_storage_uuid varchar(64) DEFAULT '' NOT NULL,
+    coolify_database_uuid varchar(64) DEFAULT '' NOT NULL,
+    coolify_db_scheduled_backup_uuid varchar(64) DEFAULT '' NOT NULL,
+    last_backup_at int(11) unsigned DEFAULT 0 NOT NULL,
+    last_backup_status varchar(255) DEFAULT '' NOT NULL,
+
     KEY token_hash (token_hash)
 );
 

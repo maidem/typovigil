@@ -27,6 +27,36 @@
             <trans-unit id="tx_typovigil_project.last_report_at">
                 <source>Last report</source>
             </trans-unit>
+            <trans-unit id="tx_typovigil_project.coolify_application_uuid">
+                <source>Coolify application UUID</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.coolify_application_uuid.description">
+                <source>UUID of the application in Coolify, from its detail page URL. Leave empty for a project that is not hosted on Coolify — it stays plain monitoring.</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.coolify_storage_uuid">
+                <source>Coolify storage backup schedule UUID</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.coolify_storage_uuid.description">
+                <source>UUID of the application's volume backup schedule (Persistent Storage → Backups). Required to trigger a storage backup before an update.</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.coolify_database_uuid">
+                <source>Coolify database UUID</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.coolify_database_uuid.description">
+                <source>UUID of the database resource in Coolify that belongs to this application.</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.coolify_db_scheduled_backup_uuid">
+                <source>Coolify database backup schedule UUID</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.coolify_db_scheduled_backup_uuid.description">
+                <source>UUID of the database's scheduled backup configuration. Used to check whether the last automatic backup is recent enough — Coolify has no on-demand database backup endpoint.</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.last_backup_at">
+                <source>Last backup check</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.last_backup_status">
+                <source>Last backup status</source>
+            </trans-unit>
             <trans-unit id="tx_typovigil_project.fe_users">
                 <source>Visible to frontend users</source>
             </trans-unit>
@@ -53,6 +83,9 @@
             </trans-unit>
             <trans-unit id="tab.access">
                 <source>Access</source>
+            </trans-unit>
+            <trans-unit id="tab.coolify">
+                <source>Coolify</source>
             </trans-unit>
             <trans-unit id="task.updateCheck.title">
                 <source>TypoVigil: check for updates</source>

@@ -33,6 +33,20 @@
         </dd>
         <dt class="col-sm-3"><f:translate key="backend.updatesAvailable" /></dt>
         <dd class="col-sm-9"><f:translate key="backend.updatesAvailableCount" arguments="{0: project.updatesAvailable, 1: project.packageCount}" /></dd>
+
+        <f:if condition="{project.coolifyApplicationUuid}">
+            <dt class="col-sm-3"><f:translate key="backend.lastBackup" /></dt>
+            <dd class="col-sm-9">
+                <f:if condition="{project.lastBackupAt}">
+                    <f:then>
+                        <f:format.date format="d.m.Y H:i">{project.lastBackupAt}</f:format.date>
+                        (<code>{project.lastBackupStatus}</code>)
+                    </f:then>
+                    <f:else><f:translate key="backend.never" /></f:else>
+                </f:if>
+                <p class="text-muted"><small><f:translate key="backend.backupHint" arguments="{0: project.uid}" /></small></p>
+            </dd>
+        </f:if>
     </dl>
 
     <f:if condition="{project.packages}">

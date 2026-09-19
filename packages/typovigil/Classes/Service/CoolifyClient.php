@@ -1,0 +1,203 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Maidemde\Typovigil\Service;
+
+use Psr\Log\LoggerInterface;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Http\RequestFactory;
+
+/**
+ * Talks to a Coolify instance's REST API.
+ *
+ * Only the two backup-related actions TypoVigil needs, not a general-purpose
+ * Coolify wrapper — this extension backs up projects before an update, it
+ * does not manage Coolify.
+ *
+ * Base URL and token come from the extension configuration (same place as
+ * projectStoragePid), not the database: credentials do not belong on a
+ * project record, and every monitored project talks to the same Coolify
+ * instance.
+ */
+final readonly class CoolifyClient
+{
+    private const TIMEOUT = 15;
+
+    public function __construct(
+        private RequestFactory $requestFactory,
+        private LoggerInterface $logger,
+        private ExtensionConfiguration $extensionConfiguration,
+    ) {}
+
+    public function isConfigured(): bool
+    {
+        return $this->baseUrl() !== '' && $this->apiToken() !== '';
+    }
+
+    /**
+     * Queues an immediate backup of an application's storage (volume).
+     *
+     * There is no separate status endpoint for this on the Coolify API — a
+     * 200 response means the backup was queued, not that it has finished.
+     * Completion shows up in the Coolify UI only.
+     */
+    public function triggerStorageBackup(string $applicationUuid, string $storageUuid): bool
+    {
+        $response = $this->request(
+            'POST',
+            sprintf('/applications/%s/storages/%s/backups/run', $applicationUuid, $storageUuid)
+        );
+
+        return $response !== null;
+    }
+
+    /**
+     * Newest execution of a database's scheduled backup, or null when there
+     * is none or the request failed.
+     *
+     * Coolify has no on-demand database backup endpoint (unlike application
+     * storages) — this is how "was the database backed up recently enough"
+     * has to be answered instead.
+     *
+     * @return array{status: string, created_at: string, filename: string}|null
+     */
+    public function latestDatabaseBackupExecution(string $databaseUuid, string $scheduledBackupUuid): ?array
+    {
+        $data = $this->request(
+            'GET',
+            sprintf('/databases/%s/backups/%s/executions', $databaseUuid, $scheduledBackupUuid)
+        );
+
+        $executions = $data['executions'] ?? [];
+        if (!is_array($executions) || $executions === []) {
+            return null;
+        }
+
+        // Executions are not documented as sorted, so pick the newest by
+        // created_at explicitly rather than assuming index 0 is it.
+        usort(
+            $executions,
+            static fn(array $a, array $b): int => strcmp((string)($b['created_at'] ?? ''), (string)($a['created_at'] ?? ''))
+        );
+
+        $newest = $executions[0];
+
+        return [
+            'status' => (string)($newest['status'] ?? ''),
+            'created_at' => (string)($newest['created_at'] ?? ''),
+            'filename' => (string)($newest['filename'] ?? ''),
+        ];
+    }
+
+    /**
+     * Creates (or replaces) the backup schedule for an application's volume
+     * and returns the new schedule's UUID.
+     *
+     * $storageUuid here is the volume's own identifier (e.g.
+     * "{app_uuid}-fileadmin"), not a schedule id — Coolify only assigns a
+     * separate schedule UUID once this call creates one, which is what
+     * this method returns.
+     */
+    public function createStorageBackupSchedule(string $applicationUuid, string $storageUuid, string $frequency): ?string
+    {
+        $data = $this->request(
+            'PUT',
+            sprintf('/applications/%s/storages/%s/backups', $applicationUuid, $storageUuid),
+            ['frequency' => $frequency]
+        );
+
+        $uuid = $data['uuid'] ?? null;
+
+        return is_string($uuid) && $uuid !== '' ? $uuid : null;
+    }
+
+    /**
+     * Creates a backup schedule for a database and returns the new
+     * schedule's UUID.
+     */
+    public function createDatabaseBackupSchedule(string $databaseUuid, string $frequency): ?string
+    {
+        $data = $this->request('POST', sprintf('/databases/%s/backups', $databaseUuid), ['frequency' => $frequency]);
+
+        $uuid = $data['uuid'] ?? null;
+
+        return is_string($uuid) && $uuid !== '' ? $uuid : null;
+    }
+
+    /**
+     * @param array<string, mixed> $body
+     * @return array<string, mixed>|null null on any failure — a failing Coolify
+     *     call must never break the caller's flow, it just reports "not done".
+     */
+    private function request(string $method, string $path, array $body = []): ?array
+    {
+        $baseUrl = $this->baseUrl();
+        if ($baseUrl === '' || $this->apiToken() === '') {
+            $this->logger->warning('TypoVigil: Coolify API not configured, skipping request', ['path' => $path]);
+
+            return null;
+        }
+
+        $url = rtrim($baseUrl, '/') . $path;
+
+        try {
+            $options = [
+                'timeout' => self::TIMEOUT,
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->apiToken(),
+                    'Accept' => 'application/json',
+                ],
+            ];
+            if ($body !== []) {
+                $options['json'] = $body;
+            }
+
+            $response = $this->requestFactory->request($url, $method, $options);
+
+            $status = $response->getStatusCode();
+            if ($status < 200 || $status >= 300) {
+                $this->logger->warning('TypoVigil: unexpected status from Coolify', [
+                    'url' => $url,
+                    'status' => $status,
+                ]);
+
+                return null;
+            }
+
+            $raw = (string)$response->getBody();
+            if ($raw === '') {
+                return [];
+            }
+
+            $decoded = json_decode($raw, true, 64, JSON_THROW_ON_ERROR);
+
+            return is_array($decoded) ? $decoded : [];
+        } catch (\Throwable $e) {
+            $this->logger->warning('TypoVigil: Coolify request failed', [
+                'url' => $url,
+                'exception' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
+    }
+
+    private function baseUrl(): string
+    {
+        try {
+            return (string)$this->extensionConfiguration->get('typovigil', 'coolifyApiUrl');
+        } catch (\Throwable) {
+            return '';
+        }
+    }
+
+    private function apiToken(): string
+    {
+        try {
+            return (string)$this->extensionConfiguration->get('typovigil', 'coolifyApiToken');
+        } catch (\Throwable) {
+            return '';
+        }
+    }
+}

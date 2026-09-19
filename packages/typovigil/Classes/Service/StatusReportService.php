@@ -113,6 +113,12 @@ final readonly class StatusReportService
             'packageCount' => count($packages),
             'updatesAvailable' => $counts[Severity::Outdated->value] + $counts[Severity::Critical->value],
             'worstSeverity' => $this->worstSeverity($counts),
+            // Empty coolifyApplicationUuid means this project is plain
+            // monitoring — the template hides the backup block entirely
+            // rather than showing a button that would fail on every click.
+            'coolifyApplicationUuid' => (string)($project['coolify_application_uuid'] ?? ''),
+            'lastBackupAt' => (int)($project['last_backup_at'] ?? 0),
+            'lastBackupStatus' => (string)($project['last_backup_status'] ?? ''),
         ];
     }
 

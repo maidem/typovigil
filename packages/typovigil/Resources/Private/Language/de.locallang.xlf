@@ -191,6 +191,14 @@
                 <source>%1$d of %2$d</source>
                 <target>%1$d von %2$d</target>
             </trans-unit>
+            <trans-unit id="backend.lastBackup">
+                <source>Last Coolify backup</source>
+                <target>Letztes Coolify-Backup</target>
+            </trans-unit>
+            <trans-unit id="backend.backupHint">
+                <source>Run `typovigil:backup %1$d` before applying an update to this project.</source>
+                <target>Vor einem Update dieses Projekts `typovigil:backup %1$d` ausführen.</target>
+            </trans-unit>
             <trans-unit id="backend.installed">
                 <source>Installed</source>
                 <target>Installiert</target>

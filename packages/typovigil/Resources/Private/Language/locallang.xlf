@@ -144,6 +144,12 @@
             <trans-unit id="backend.updatesAvailableCount">
                 <source>%1$d of %2$d</source>
             </trans-unit>
+            <trans-unit id="backend.lastBackup">
+                <source>Last Coolify backup</source>
+            </trans-unit>
+            <trans-unit id="backend.backupHint">
+                <source>Run `typovigil:backup %1$d` before applying an update to this project.</source>
+            </trans-unit>
             <trans-unit id="backend.installed">
                 <source>Installed</source>
             </trans-unit>
