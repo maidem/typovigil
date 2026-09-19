@@ -101,6 +101,7 @@ Prüfroutinen:
 
 ```bash
 ddev exec php packages/typovigil/Tests/SeverityResolverTest.php
+ddev exec php packages/typovigil/Tests/BackupBeforeUpdateServiceTest.php
 ddev exec php packages/typovigil/Tests/access-separation-check.php
 ddev exec php packages/typovigil/Tests/config-check.php
 ddev exec php packages/typovigil/Tests/autoload-check.php
@@ -139,6 +140,57 @@ Für einen neuen Kunden kommt ein Frontend-Benutzer im Ordner *Kunden* hinzu, de
 über Schritt 3 seinen Projekten zugeordnet wird. Wer alle Projekte sehen soll,
 kommt stattdessen in die Agentur-Gruppe; deren Nummer trägt man einmalig in den
 Einstellungen der Erweiterung ein.
+
+## Coolify-Backup vor Updates
+
+Läuft ein überwachtes Projekt auf Coolify, kann TypoVigil vor einem Update
+automatisch ein Backup anstoßen — optional, pro Projekt einzeln.
+
+Das gilt nur für Projekte, bei denen das eingerichtet wurde. Ohne diese
+Verknüpfung bleibt ein Projekt beim reinen Monitoring, genau wie zuvor.
+
+### Einmalig einrichten
+
+1. In der Extension-Konfiguration von `typovigil` (Admin-Tools →
+   Einstellungen → Extension-Konfiguration) `coolifyApiUrl` und
+   `coolifyApiToken` eintragen. Das Token braucht in Coolify unter
+   *Keys & Tokens* mindestens die Berechtigung *Write* (in der Praxis meist
+   *Root*, wie bei den übrigen Tokens der Instanz).
+2. Beim Projekt im Reiter *Coolify* die Application- und Datenbank-UUID
+   eintragen (aus der jeweiligen Detailseiten-URL in Coolify), sowie die
+   UUID des Storage-Backup-Zeitplans, falls in Coolify unter *Persistent
+   Storage → Backups* schon einer angelegt wurde. Das Feld für den
+   Datenbank-Backup-Zeitplan bleibt leer — das übernimmt der nächste
+   Schritt.
+3. Einmalig im Container ausführen:
+
+   ```bash
+   php vendor/bin/typo3 typovigil:onboard-coolify <projekt-uid>
+   ```
+
+   Legt die fehlenden Backup-Zeitpläne (täglich) in Coolify an und trägt
+   deren UUIDs automatisch ins Projekt ein. Mehrfacher Aufruf schadet
+   nicht — vorhandene Zeitpläne werden übersprungen, nicht verdoppelt.
+
+### Laufender Betrieb
+
+Der stündliche Abgleich (`typovigil:check-and-backup`, siehe unten) sichert
+jedes Coolify-verknüpfte Projekt automatisch, sobald es ein Paket mit
+Einstufung *kritisch* meldet — ein Sofort-Backup des Storage-Volumes, dazu
+eine Prüfung, ob das letzte automatische Datenbank-Backup aktuell genug
+ist. Coolify bietet für Datenbanken selbst keinen Sofort-Trigger, nur
+geplante Backups — TypoVigil prüft deshalb nur deren Aktualität, statt eins
+zu erzwingen.
+
+Zusätzlich lässt sich das jederzeit von Hand anstoßen, etwa kurz vor einem
+geplanten Update:
+
+```bash
+php vendor/bin/typo3 typovigil:backup <projekt-uid>
+```
+
+Der Status des letzten Backups steht danach auch in der Projektansicht im
+Backend.
 
 ## Deploying
 
