@@ -16,5 +16,5 @@ edenAiApiUrl =
 # cat=ai; type=string; label=Eden AI API token: Bearer token for Eden AI. Generated in the Eden AI dashboard.
 edenAiApiToken =
 
-# cat=ai; type=string; label=Eden AI model: Provider/model string passed to Eden AI, e.g. anthropic/claude-sonnet-latest.
-edenAiModel = anthropic/claude-sonnet-latest
+# cat=ai; type=string; label=Eden AI model: Provider/model string passed to Eden AI, e.g. google/gemini-2.5-flash.
+edenAiModel = google/gemini-2.5-flash
