@@ -1083,11 +1083,14 @@ body > ul a:hover {
 
 .tv-metro {
     width: 100%;
-    height: 220px;
+    /* Four graph rows now (backup/status/analysis branch off the hub, plus
+       the sources row below) instead of the previous three — taller so the
+       bottom row's label does not get clipped. */
+    height: 320px;
 }
 
 @media (min-width: 768px) {
-    .tv-metro { height: 280px; }
+    .tv-metro { height: 380px; }
 }
 
 .tv-metro__svg {
