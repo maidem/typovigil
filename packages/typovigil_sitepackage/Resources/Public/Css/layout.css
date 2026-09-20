@@ -202,12 +202,6 @@ body {
     letter-spacing: -0.01em;
 }
 
-/* "$ " prompt marker, terminal-style, in front of section headings. */
-.tv-portal__heading::before {
-    content: "$ ";
-    color: var(--tv-prompt);
-}
-
 .tv-portal__heading--spaced {
     margin-top: 48px;
 }
