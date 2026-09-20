@@ -275,7 +275,7 @@ final readonly class VersionCheckService
                 continue;
             }
             $items[] = [
-                'id' => self::advisoryIdFromTitle($title),
+                'id' => (string)($advisory['cve'] ?? $advisory['advisoryId'] ?? ''),
                 'title' => $title,
                 'link' => (string)($advisory['link'] ?? ''),
                 'date' => strtotime((string)($advisory['reportedAt'] ?? '')) ?: 0,
@@ -286,11 +286,6 @@ final readonly class VersionCheckService
         usort($items, static fn (array $a, array $b): int => $b['date'] <=> $a['date']);
 
         return $items;
-    }
-
-    private static function advisoryIdFromTitle(string $title): string
-    {
-        return explode(':', $title, 2)[0] ?? $title;
     }
 
     /**

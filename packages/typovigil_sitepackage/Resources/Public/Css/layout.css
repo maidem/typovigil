@@ -296,7 +296,6 @@ body {
     gap: 8px;
     margin: 0 -22px 0;
     padding: 44px 22px 16px;
-    border-bottom: 1px solid var(--tv-border);
 }
 
 .tv-card__head::before {
@@ -307,7 +306,6 @@ body {
     right: 0;
     height: 30px;
     background: var(--tv-chrome-bg);
-    border-bottom: 1px solid var(--tv-border);
 }
 
 .tv-card__head::after {
@@ -426,7 +424,6 @@ body {
 .tv-card__foot {
     margin-top: auto;
     padding-top: 14px;
-    border-top: 1px solid var(--tv-border);
 }
 
 .tv-card__more,
@@ -440,10 +437,12 @@ body {
     font-size: 0.9rem;
     font-weight: 600;
     text-decoration: none;
+}
+
+.tv-back a {
     cursor: pointer;
 }
 
-.tv-card__more:hover,
 .tv-back a:hover {
     text-decoration: underline;
 }
