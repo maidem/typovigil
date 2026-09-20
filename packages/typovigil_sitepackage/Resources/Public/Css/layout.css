@@ -324,7 +324,10 @@ body {
 
 .tv-card__title {
     margin: 0;
-    font-size: 1.15rem;
+    /* 1.5rem against a 1rem body is a 1.5× step — the dominant heading on
+       the detail page needs to clear that line, not sit only fractionally
+       above the surrounding text. */
+    font-size: 1.5rem;
     font-weight: 700;
 }
 
@@ -544,7 +547,10 @@ body {
 
 .tv-packages__heading {
     margin: 0 0 14px;
-    font-size: 1.05rem;
+    /* 1.2rem: a clear step below .tv-card__title (1.5rem) but still a real
+       step above the 1rem body text, not the previous 1.05rem that read as
+       barely distinct from surrounding copy. */
+    font-size: 1.2rem;
     font-weight: 700;
 }
 
@@ -1156,13 +1162,12 @@ body > ul a:hover {
     border-color: color-mix(in srgb, var(--tv-ok) 35%, var(--tv-border));
 }
 
-/* Sits below .tv-packages__heading (1.05rem) in the size scale, but clearly
-   above the report body text — the existing headings step down in roughly
-   0.1rem increments, this keeps that rhythm instead of falling back to the
-   browser's unstyled <h3> size. */
+/* Same level as .tv-packages__heading (1.2rem): both are section headings
+   within the card, not a sub-level of it — a smaller size here would read
+   as less important than "Komponenten" without reason to be. */
 .tv-ai-report__heading {
     margin: 0 0 10px;
-    font-size: 0.95rem;
+    font-size: 1.2rem;
     font-weight: 700;
 }
 
