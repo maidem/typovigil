@@ -37,6 +37,14 @@ CREATE TABLE tx_typovigil_package (
     checked_at int(11) unsigned DEFAULT 0 NOT NULL,
     is_core tinyint(1) unsigned DEFAULT 0 NOT NULL,
 
+    -- AI risk report for a critical finding. Written by the automatic
+    -- analysis run, shown only to the agency role in the customer portal,
+    -- approved there by a click — no technical update execution yet, see
+    -- AnalyzeCriticalPackageService.
+    ai_report_json text,
+    ai_report_status varchar(16) DEFAULT '' NOT NULL,
+    ai_report_created_at int(11) unsigned DEFAULT 0 NOT NULL,
+
     KEY project (project),
     KEY project_package (project, composer_name),
     KEY severity (severity)

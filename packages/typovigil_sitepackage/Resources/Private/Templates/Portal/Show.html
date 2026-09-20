@@ -98,6 +98,30 @@
             </p>
         </section>
     </f:if>
+
+    <!-- Agency-only: showAction() already strips ai_report_* for anyone
+         else, this condition is a second, template-level safeguard. -->
+    <f:if condition="{seesAllProjects}">
+        <f:for each="{project.packages}" as="package">
+            <f:if condition="{package.ai_report_status}">
+                <section class="tv-ai-report tv-ai-report--{package.ai_report_status}">
+                    <h3 class="tv-ai-report__heading">
+                        KI-Risikobericht: {package.composer_name}
+                    </h3>
+                    <p class="tv-ai-report__text">{package.ai_report_text}</p>
+
+                    <f:if condition="{package.ai_report_status} == 'pending'">
+                        <f:form action="approveAiReport" arguments="{project: project.uid, composerName: package.composer_name}" class="tv-ai-report__form">
+                            <f:form.submit value="Freigeben" class="tv-btn" />
+                        </f:form>
+                    </f:if>
+                    <f:if condition="{package.ai_report_status} == 'approved'">
+                        <p class="tv-ai-report__approved">Freigegeben.</p>
+                    </f:if>
+                </section>
+            </f:if>
+        </f:for>
+    </f:if>
 </div>
 
 </html>

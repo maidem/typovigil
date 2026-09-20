@@ -203,6 +203,24 @@ final readonly class ProjectRepository
     }
 
     /**
+     * Full rows of every package currently at Severity::Critical — for the
+     * automatic AI risk analysis, which needs the advisory text and
+     * versions, not just which projects are affected.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function findCriticalPackages(): array
+    {
+        $qb = $this->connectionPool->getQueryBuilderForTable(self::TABLE_PACKAGE);
+
+        return $qb->select('*')
+            ->from(self::TABLE_PACKAGE)
+            ->where($qb->expr()->eq('severity', $qb->createNamedParameter('critical')))
+            ->executeQuery()
+            ->fetchAllAssociative();
+    }
+
+    /**
      * Replaces a project's package list wholesale, so uninstalled extensions
      * disappear instead of lingering as phantom entries.
      *

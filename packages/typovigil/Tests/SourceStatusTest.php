@@ -45,9 +45,9 @@ function statesByLabel(array $rows): array
 }
 
 // Nothing queried yet: every source is unknown, not broken. A fresh install
-// must not look like four dead upstreams.
+// must not look like every upstream is dead.
 $states = statesByLabel([]);
-check('four sources are reported', count($states) === 4);
+check('five sources are reported', count($states) === 5);
 check('unqueried source is "unknown"', ($states['Packagist'] ?? '') === 'unknown');
 check('no source is "down" before the first run', !in_array('down', $states, true));
 

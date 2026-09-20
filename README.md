@@ -179,9 +179,21 @@ Der stündliche Abgleich (`typovigil:check-and-backup`, siehe unten) sichert
 jedes verknüpfte Projekt automatisch, sobald es ein Paket mit Einstufung
 *kritisch* meldet — ein Sofort-Backup des Storage-Volumes, dazu eine
 Prüfung, ob das letzte automatische Datenbank-Backup aktuell genug ist.
-Die Plattform bietet für Datenbanken selbst keinen Sofort-Trigger, nur
-geplante Backups — TypoVigil prüft deshalb nur deren Aktualität, statt eins
-zu erzwingen.
+
+**Wichtig:** Die Datenbank wird trotzdem regelmäßig automatisch gesichert —
+über den in `typovigil:onboard-coolify` angelegten täglichen Zeitplan auf
+der Plattform selbst. Was fehlt, ist nur ein *sofortiges* Backup auf Klick:
+die Plattform-API bietet für Datenbanken keinen Endpunkt, um außerhalb des
+Zeitplans ein Backup sofort auszulösen (anders als beim Storage-Volume).
+TypoVigil prüft deshalb bei einem kritischen Fund nur, ob das letzte
+planmäßige Datenbank-Backup aktuell genug ist, statt eins zu erzwingen —
+ist es zu alt, wird das als Warnung gemeldet, damit das nicht unbemerkt
+bleibt.
+
+**Ohne einen eingerichteten Zeitplan gibt es dagegen tatsächlich kein
+automatisches Datenbank-Backup** — der Onboarding-Schritt oben ist dafür
+keine Kür, sondern Voraussetzung. Das lässt sich in der Plattform-UI unter
+der jeweiligen Datenbank → *Backups* prüfen ("Schedules" > 0).
 
 Zusätzlich lässt sich das jederzeit von Hand anstoßen, etwa kurz vor einem
 geplanten Update:

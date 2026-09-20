@@ -52,6 +52,7 @@ final readonly class VersionCheckService
         'repo.packagist.org' => 'Packagist',
         'packagist.org' => 'Sicherheitsmeldungen',
         'extensions.typo3.org' => 'TYPO3 Extension Repository',
+        'api.github.com' => 'GitHub',
     ];
 
     public function __construct(
@@ -290,6 +291,86 @@ final readonly class VersionCheckService
     private static function advisoryIdFromTitle(string $title): string
     {
         return explode(':', $title, 2)[0] ?? $title;
+    }
+
+    /**
+     * Commit messages between two versions of a package, for the AI risk
+     * analysis — the closest thing to a changelog every GitHub-hosted
+     * package has, unlike CHANGELOG.md which not every repository keeps.
+     *
+     * Returns '' when the package's source is not on GitHub, the versions
+     * cannot be compared (e.g. tag names do not match the version numbers),
+     * or the request fails — a missing changelog degrades the AI report,
+     * it must never break the analysis run.
+     *
+     * No auth: GitHub's public rate limit (60 requests/hour) is shared with
+     * every other unauthenticated caller from this server's IP, but this
+     * only runs on a critical finding, cached per (package, version) pair
+     * like every other lookup here.
+     */
+    public function changelogBetween(string $composerName, string $installedVersion, string $latestVersion): string
+    {
+        if ($composerName === '' || $installedVersion === '' || $latestVersion === '') {
+            return '';
+        }
+
+        $cacheKey = 'changelog_' . md5($composerName . '|' . $installedVersion . '|' . $latestVersion);
+        $cached = $this->cache->get($cacheKey);
+        if ($cached !== false) {
+            return (string)$cached;
+        }
+
+        $repository = $this->githubRepositoryFor($composerName);
+        if ($repository === '') {
+            return '';
+        }
+
+        $compareUrl = sprintf(
+            'https://api.github.com/repos/%s/compare/%s...%s',
+            $repository,
+            rawurlencode(ltrim($installedVersion, 'vV')),
+            rawurlencode(ltrim($latestVersion, 'vV'))
+        );
+        $data = $this->fetchJson($compareUrl);
+        $commits = $data['commits'] ?? [];
+        if (!is_array($commits) || $commits === []) {
+            return '';
+        }
+
+        $messages = [];
+        foreach (array_slice($commits, -30) as $commit) {
+            $message = (string)($commit['commit']['message'] ?? '');
+            // Only the summary line: full commit bodies would bloat the
+            // prompt without adding much the AI needs for a risk estimate.
+            $firstLine = strtok($message, "\n");
+            if (is_string($firstLine) && $firstLine !== '') {
+                $messages[] = '- ' . $firstLine;
+            }
+        }
+
+        $changelog = implode("\n", $messages);
+        $this->cache->set($cacheKey, $changelog, [], self::CACHE_LIFETIME);
+
+        return $changelog;
+    }
+
+    /**
+     * "owner/repo" for a package's GitHub source, or '' when it is not
+     * hosted there. Reuses the same p2 endpoint latestVersion() already
+     * queries — Packagist includes a source.url per version.
+     */
+    private function githubRepositoryFor(string $composerName): string
+    {
+        $data = $this->fetchJson(sprintf(self::PACKAGIST_PACKAGE, $composerName));
+        $versions = $data['packages'][$composerName] ?? [];
+        $firstVersion = is_array($versions) ? reset($versions) : false;
+        $sourceUrl = (string)($firstVersion['source']['url'] ?? '');
+
+        if (!preg_match('#github\.com[:/]([^/]+/[^/.]+)#', $sourceUrl, $matches)) {
+            return '';
+        }
+
+        return $matches[1];
     }
 
     /**

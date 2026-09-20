@@ -9,3 +9,12 @@ coolifyApiUrl =
 
 # cat=hosting; type=string; label=Hosting platform API token: Bearer token for the hosting platform's API. Generated there under Keys & Tokens.
 coolifyApiToken =
+
+# cat=ai; type=string; label=Eden AI API URL: Base URL of the Eden AI chat completions endpoint, e.g. https://api.edenai.run/v3/chat/completions. Empty disables the automatic risk analysis feature.
+edenAiApiUrl =
+
+# cat=ai; type=string; label=Eden AI API token: Bearer token for Eden AI. Generated in the Eden AI dashboard.
+edenAiApiToken =
+
+# cat=ai; type=string; label=Eden AI model: Provider/model string passed to Eden AI, e.g. anthropic/claude-sonnet-latest.
+edenAiModel = anthropic/claude-sonnet-latest

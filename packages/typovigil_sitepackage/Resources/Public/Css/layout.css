@@ -1137,3 +1137,61 @@ body > ul a:hover {
     .tv-metro__line { stroke-dashoffset: 0 !important; }
     .tv-metro__station { opacity: 1 !important; animation: none !important; }
 }
+
+/* --- AI risk report (agency only) ---------------------------------------- */
+
+.tv-ai-report {
+    margin-top: 20px;
+    padding: 16px;
+    border: 1px solid var(--tv-border);
+    border-radius: var(--tv-radius);
+    background: var(--tv-surface);
+}
+
+.tv-ai-report--pending {
+    border-color: color-mix(in srgb, var(--tv-critical) 35%, var(--tv-border));
+}
+
+.tv-ai-report--approved {
+    border-color: color-mix(in srgb, var(--tv-ok) 35%, var(--tv-border));
+}
+
+/* Sits below .tv-packages__heading (1.05rem) in the size scale, but clearly
+   above the report body text — the existing headings step down in roughly
+   0.1rem increments, this keeps that rhythm instead of falling back to the
+   browser's unstyled <h3> size. */
+.tv-ai-report__heading {
+    margin: 0 0 10px;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.tv-ai-report__text {
+    margin: 0 0 12px;
+    color: var(--tv-muted);
+    white-space: pre-line;
+}
+
+.tv-ai-report__approved {
+    margin: 0;
+    color: var(--tv-ok);
+    font-weight: 600;
+}
+
+/* Reusable version of the login form's submit-button styling
+   (.frame-type-felogin_login button[type="submit"]) — same pill shape and
+   accent fill, but not full-width and not scoped to that one form. */
+.tv-btn {
+    padding: 10px 18px;
+    border: 0;
+    border-radius: var(--tv-radius-pill);
+    background: var(--tv-accent);
+    color: var(--tv-surface);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.tv-btn:hover {
+    opacity: 0.88;
+}

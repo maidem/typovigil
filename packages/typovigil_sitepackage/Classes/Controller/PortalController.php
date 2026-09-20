@@ -100,9 +100,66 @@ final class PortalController extends ActionController
         // customer account. Showing it is a deliberate decision by the operator,
         // not an oversight — the trade-off is that this page now names the exact
         // version of every component, including the vulnerable ones.
+        $seesAll = $this->seesAllProjects();
+        $detail['packages'] = array_map(
+            fn(array $package): array => $this->withAiReportVisibility($package, $seesAll),
+            $detail['packages'] ?? []
+        );
+
         $this->view->assign('project', $detail);
+        $this->view->assign('seesAllProjects', $seesAll);
 
         return $this->htmlResponse();
+    }
+
+    /**
+     * Strips the AI report fields for anyone but the agency role.
+     *
+     * Not even a "pending" placeholder is shown to a customer — that alone
+     * would reveal a critical finding exists beyond what the severity
+     * badge already shows. The unpacked ai_report_text field exists so the
+     * template never has to json_decode ai_report_json itself.
+     *
+     * @param array<string, mixed> $package
+     * @return array<string, mixed>
+     */
+    private function withAiReportVisibility(array $package, bool $seesAll): array
+    {
+        if (!$seesAll) {
+            unset($package['ai_report_json'], $package['ai_report_status'], $package['ai_report_created_at']);
+
+            return $package;
+        }
+
+        $decoded = json_decode((string)($package['ai_report_json'] ?? ''), true);
+        $package['ai_report_text'] = is_array($decoded) ? (string)($decoded['report'] ?? '') : '';
+
+        return $package;
+    }
+
+    /**
+     * Sets a critical package's AI report to "approved" — a status flag
+     * only. Does not trigger any actual update; the technical execution
+     * path (hosting platform redeploy vs. a git push) is not decided yet.
+     */
+    public function approveAiReportAction(int $project, string $composerName): ResponseInterface
+    {
+        $userId = $this->frontendUserId();
+        // Both checks matter: isVisibleToFrontendUser() alone would let a
+        // customer approve a report on their own project — seesAllProjects()
+        // is the independent, second condition that restricts this to the
+        // agency, same as the report's visibility in showAction() above.
+        if ($userId === 0 || !$this->seesAllProjects()) {
+            return $this->accessDenied('Not allowed.');
+        }
+
+        if (!$this->projects->isVisibleToFrontendUser($project, $userId, true)) {
+            return $this->accessDenied('This project is not available to your account.');
+        }
+
+        $this->projects->updatePackage($project, $composerName, '', ['ai_report_status' => 'approved']);
+
+        return $this->redirect('show', null, null, ['project' => $project]);
     }
 
     private function frontendUserId(): int
