@@ -562,6 +562,12 @@ body {
     list-style: none;
 }
 
+/* The li is a flex item itself, so the badge fills it exactly — as a block the
+   inline badge sat on a text baseline and rows came out different heights. */
+.tv-badges > li {
+    display: flex;
+}
+
 /* Fixed height rather than padding alone: the badges carry a varying number of
    spans (name, version, and an optional update target), and baseline alignment
    let those rows end up visibly different heights. */
