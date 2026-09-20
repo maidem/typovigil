@@ -757,6 +757,23 @@ body {
     font-size: 0.9rem;
 }
 
+/* felogin wraps the fields in a <fieldset legend="Login">; without a reset
+   the browser default border/legend shows through. */
+.frame-type-felogin_login fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+/* Redundant with the h2/h3 above it — kept for screen readers, hidden visually. */
+.frame-type-felogin_login legend {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+}
+
 .frame-type-felogin_login label {
     display: block;
     margin-bottom: 5px;
@@ -1067,6 +1084,7 @@ body > ul a:hover {
 }
 
 .tv-hero__teaser {
+    margin: 0 0 20px;
     font-size: 1.1rem;
     font-weight: 700;
     letter-spacing: -0.01em;
@@ -1086,6 +1104,11 @@ body > ul a:hover {
        the sources row below) instead of the previous three — taller so the
        bottom row's label does not get clipped. */
     height: 320px;
+    /* ponytail: SVG scales to fit width via preserveAspectRatio — with 4
+       columns that squeezes labels into unreadable soup below ~480px. Scroll
+       horizontally on narrow screens instead of shrinking the graphic. */
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 @media (min-width: 768px) {
@@ -1094,9 +1117,19 @@ body > ul a:hover {
 
 .tv-metro__svg {
     display: block;
-    width: 100%;
     height: 100%;
     font-family: "JetBrains Mono", monospace;
+}
+
+@media (max-width: 479px) {
+    .tv-metro__svg {
+        width: auto;
+        min-width: 620px;
+    }
+}
+
+@media (min-width: 480px) {
+    .tv-metro__svg { width: 100%; }
 }
 
 .tv-metro--play .tv-metro__line {

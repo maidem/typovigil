@@ -12,6 +12,19 @@ declare(strict_types=1);
  * Everything here is skipped inside ddev, which configures itself.
  */
 
+// Backend language pack downloads (see docker-entrypoint.sh) refuse any
+// locale not listed here — normally set once via the backend's language
+// module, which writes it into this very file, but that file is rebuilt
+// fresh from the repo on every deploy (no persistent volume for
+// config/system), so the setting silently reverted after every deploy.
+// Set before the ddev return below: ddev has the same local install-fresh
+// problem (docker-entrypoint.sh does not run there), so this needs to apply
+// there too, not only in production.
+$GLOBALS['TYPO3_CONF_VARS']['LANG']['availableLocales'] = array_unique(array_merge(
+    $GLOBALS['TYPO3_CONF_VARS']['LANG']['availableLocales'] ?? ['en'],
+    ['de']
+));
+
 if (getenv('IS_DDEV_PROJECT') === 'true') {
     return;
 }
@@ -29,18 +42,6 @@ $dbName = getenv('TYPO3_DATABASE_NAME') ?: '';
 // fonts ended up returning 500. Mirroring is what the Core recommends for
 // container builds and read-only deployments.
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['SystemResources']['filesystemPublishingType'] = 'mirror';
-
-// Backend language pack downloads (see docker-entrypoint.sh) refuse any
-// locale not listed here — normally set once via the backend's language
-// module, which writes it into this very file, but that file is rebuilt
-// fresh from the repo on every deploy (no persistent volume for
-// config/system), so the setting silently reverted after every deploy.
-// Setting it here makes it survive deploys instead of only surviving until
-// the next one.
-$GLOBALS['TYPO3_CONF_VARS']['LANG']['availableLocales'] = array_unique(array_merge(
-    $GLOBALS['TYPO3_CONF_VARS']['LANG']['availableLocales'] ?? ['en'],
-    ['de']
-));
 
 $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default'] = array_merge(
     $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default'] ?? [],
