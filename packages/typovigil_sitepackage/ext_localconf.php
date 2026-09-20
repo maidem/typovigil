@@ -7,6 +7,9 @@ defined('TYPO3') or die('Access denied.');
 // Add default RTE configuration
 $GLOBALS['TYPO3_CONF_VARS']['RTE']['Presets']['typovigil_sitepackage'] = 'EXT:typovigil_sitepackage/Configuration/RTE/Default.yaml';
 
+// Use the frontend favicon for the whole backend (incl. login)
+$GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['backend']['backendFavicon'] = 'EXT:typovigil_sitepackage/Resources/Public/Icons/favicon.svg';
+
 // Customer-facing status view. Uncached: it renders data tied to the logged-in
 // frontend user, which must never be served from a shared page cache.
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
