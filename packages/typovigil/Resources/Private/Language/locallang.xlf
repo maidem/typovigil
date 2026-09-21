@@ -156,6 +156,12 @@
             <trans-unit id="backend.backupHint">
                 <source>Also available on the command line as `typovigil:backup %1$d`.</source>
             </trans-unit>
+            <trans-unit id="backend.backupCurrent">
+                <source>covers the current state</source>
+            </trans-unit>
+            <trans-unit id="backend.backupOutdated">
+                <source>older than the current state</source>
+            </trans-unit>
             <trans-unit id="backend.backupNow">
                 <source>Back up now</source>
             </trans-unit>
@@ -185,6 +191,9 @@
             </trans-unit>
             <trans-unit id="update.blocked.noBackup">
                 <source>Not linked to a hosting platform, so it cannot be backed up.</source>
+            </trans-unit>
+            <trans-unit id="update.blocked.backupMissing">
+                <source>No current backup. Press "Back up now" first — the update is only possible once that has succeeded.</source>
             </trans-unit>
             <trans-unit id="update.result.requested">
                 <source>Update requested for %1$d package(s). A pull request will appear in %2$s.</source>

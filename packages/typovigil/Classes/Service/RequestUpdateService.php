@@ -61,17 +61,15 @@ final readonly class RequestUpdateService
             return ['key' => 'blocked.pendingReports', 'argument' => $pending];
         }
 
-        // Backup capability, not a backup run: this only opens a pull
-        // request, and the installation is not touched until someone merges
-        // and deploys. Backing up now would mean a backup that is already
-        // days old by the time it matters.
-        //
-        // ponytail: capability check only — the backup itself belongs in the
-        // deploy, via a hub endpoint the deploy workflow calls before it
-        // triggers the platform. Until that exists, a project can be updated
-        // with a backup that is merely possible, not taken.
+        // A backup that was actually taken, against this exact package state
+        // — not merely the ability to take one. The operator presses the
+        // backup button, and only a successful run unlocks the update.
         if (!self::canBeBackedUp($project)) {
             return ['key' => 'blocked.noBackup', 'argument' => 0];
+        }
+
+        if (!self::hasCurrentBackup($project, $packages)) {
+            return ['key' => 'blocked.backupMissing', 'argument' => 0];
         }
 
         return null;
@@ -84,6 +82,47 @@ final readonly class RequestUpdateService
     {
         return trim((string)($project['coolify_application_uuid'] ?? '')) !== ''
             && trim((string)($project['coolify_database_uuid'] ?? '')) !== '';
+    }
+
+    /**
+     * Whether a successful backup covers the state that is about to be
+     * updated.
+     *
+     * Deliberately not a time window: a backup from an hour ago is worthless
+     * if the agent has reported different versions since, and one from last
+     * week is fine if nothing has moved. What matters is whether the backup
+     * contains what the update is about to change.
+     *
+     * @param array<string, mixed> $project
+     * @param list<array<string, mixed>> $packages
+     */
+    public static function hasCurrentBackup(array $project, array $packages): bool
+    {
+        $recorded = (string)($project['last_backup_state'] ?? '');
+
+        return $recorded !== '' && $recorded === self::packageState($packages);
+    }
+
+    /**
+     * A fingerprint of what is installed right now.
+     *
+     * Hashed rather than listed: this only ever gets compared, never read,
+     * and a project with 200 packages would not fit a sane column otherwise.
+     * Sorted first so the same state always yields the same fingerprint,
+     * whatever order the rows come back in.
+     *
+     * @param list<array<string, mixed>> $packages
+     */
+    public static function packageState(array $packages): string
+    {
+        $parts = [];
+        foreach ($packages as $package) {
+            $parts[] = ($package['composer_name'] ?: $package['extension_key'] ?? '')
+                . '@' . ($package['installed_version'] ?? '');
+        }
+        sort($parts);
+
+        return hash('xxh128', implode("\n", $parts));
     }
 
     /**

@@ -88,6 +88,13 @@
                     <f:then>
                         <f:format.date format="d.m.Y H:i">{project.lastBackupAt}</f:format.date>
                         (<code>{project.lastBackupStatus}</code>)
+                        <!-- Whether it still covers what is installed now,
+                             which is what the update button asks. A date
+                             alone does not answer that. -->
+                        <f:if condition="{project.hasCurrentBackup}">
+                            <f:then><span class="badge bg-success"><f:translate key="backend.backupCurrent" /></span></f:then>
+                            <f:else><span class="badge bg-warning text-dark"><f:translate key="backend.backupOutdated" /></span></f:else>
+                        </f:if>
                     </f:then>
                     <f:else><f:translate key="backend.never" /></f:else>
                 </f:if>

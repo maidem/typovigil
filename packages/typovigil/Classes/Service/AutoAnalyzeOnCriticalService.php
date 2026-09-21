@@ -9,12 +9,11 @@ use Maidemde\Typovigil\Domain\Repository\ProjectRepository;
 /**
  * Runs an AI risk analysis for every package currently at Severity::Critical.
  *
- * Deliberately separate from AutoBackupOnCriticalService, same reasoning as
- * storage vs. database backup in BackupBeforeUpdateService: two independent
- * actions that both run "on a critical finding" but fail independently and
- * have different prerequisites (backup needs a hosting platform link, the
- * AI analysis only needs Eden AI configured). One service per action, one
- * command orchestrates both — see CheckAndAutoBackupCommand.
+ * The only thing that still happens automatically on a critical finding.
+ * Backups used to as well; they are now taken deliberately with the backup
+ * button, because a successful backup is what unlocks the update and that
+ * decision should be someone's, not a cron job's. Generating a report costs
+ * an AI call and blocks nothing, so it stays automatic.
  *
  * Iterates packages, not projects: a project can have several critical
  * packages, and the report is per package, not per project.

@@ -66,12 +66,24 @@ final readonly class BackupBeforeUpdateService
         $databaseFresh = $scheduledBackupUuid !== '' && $this->isDatabaseBackupFresh($databaseUuid, $scheduledBackupUuid, $maxDatabaseBackupAge);
 
         $status = self::statusString($storageQueued, $databaseFresh);
-        $this->projects->updateProject($projectUid, [
+        $secured = $storageQueued && $databaseFresh;
+
+        $values = [
             'last_backup_at' => time(),
             'last_backup_status' => $status,
-        ]);
+        ];
 
-        $secured = $storageQueued && $databaseFresh;
+        // Only a successful backup records the state it covers — that
+        // fingerprint is what unlocks the update button, so a half-failed
+        // run must not leave one behind. See
+        // RequestUpdateService::hasCurrentBackup().
+        if ($secured) {
+            $values['last_backup_state'] = RequestUpdateService::packageState(
+                $this->projects->findPackagesByProject($projectUid)
+            );
+        }
+
+        $this->projects->updateProject($projectUid, $values);
 
         return [
             'linked' => true,

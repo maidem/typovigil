@@ -27,16 +27,18 @@ function check(bool $condition, string $message): void
     }
 }
 
+$approvedPackages = [
+    ['composer_name' => 'typo3/cms-core', 'severity' => 'critical', 'ai_report_status' => 'approved', 'installed_version' => '14.3.5'],
+    ['composer_name' => 'acme/news', 'severity' => 'outdated', 'ai_report_status' => '', 'installed_version' => '1.0.0'],
+    ['composer_name' => 'acme/stable', 'severity' => 'ok', 'ai_report_status' => '', 'installed_version' => '2.0.0'],
+];
+
 $linkedProject = [
     'github_repo' => 'maidem/example',
     'coolify_application_uuid' => 'app-uuid',
     'coolify_database_uuid' => 'db-uuid',
-];
-
-$approvedPackages = [
-    ['composer_name' => 'typo3/cms-core', 'severity' => 'critical', 'ai_report_status' => 'approved'],
-    ['composer_name' => 'acme/news', 'severity' => 'outdated', 'ai_report_status' => ''],
-    ['composer_name' => 'acme/stable', 'severity' => 'ok', 'ai_report_status' => ''],
+    // A backup was taken against exactly this package state.
+    'last_backup_state' => RequestUpdateService::packageState($approvedPackages),
 ];
 
 check(RequestUpdateService::appliesTo($linkedProject), 'a project with a repository can use the button');
@@ -76,6 +78,36 @@ check(
 check(
     RequestUpdateService::blockedBecause($unlinked, $withPending)['key'] === 'blocked.pendingReports',
     'the pending report is reported before the missing backup link'
+);
+
+// The backup gate proper: linked to the platform, reports approved, but no
+// backup taken yet.
+$neverBackedUp = $linkedProject;
+$neverBackedUp['last_backup_state'] = '';
+check(
+    RequestUpdateService::blockedBecause($neverBackedUp, $approvedPackages)['key'] === 'blocked.backupMissing',
+    'without a successful backup the update is blocked'
+);
+
+// And the point of fingerprinting it: a backup taken against a different
+// package state does not cover what is about to be updated.
+$movedOn = $approvedPackages;
+$movedOn[0]['installed_version'] = '14.3.6';
+check(
+    RequestUpdateService::blockedBecause($linkedProject, $movedOn)['key'] === 'blocked.backupMissing',
+    'a backup taken before the versions changed no longer counts'
+);
+
+check(
+    RequestUpdateService::hasCurrentBackup($linkedProject, $approvedPackages),
+    'a backup against the current state counts'
+);
+
+// The fingerprint must not depend on the order rows come back in.
+check(
+    RequestUpdateService::packageState($approvedPackages)
+        === RequestUpdateService::packageState(array_reverse($approvedPackages)),
+    'the package state fingerprint is order-independent'
 );
 
 // The findings behind a request: what has somewhere to go. This describes

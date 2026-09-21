@@ -82,6 +82,7 @@ final readonly class StatusReportService
         $summary['updatablePackageCount'] = count(RequestUpdateService::updatablePackages($packages));
         $summary['updateRequestedAt'] = (int)($project['update_requested_at'] ?? 0);
         $summary['githubRepo'] = trim((string)($project['github_repo'] ?? ''));
+        $summary['hasCurrentBackup'] = RequestUpdateService::hasCurrentBackup($project, $packages);
 
         return $summary;
     }

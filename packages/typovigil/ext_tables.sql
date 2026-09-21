@@ -16,6 +16,11 @@ CREATE TABLE tx_typovigil_project (
     coolify_db_scheduled_backup_uuid varchar(64) DEFAULT '' NOT NULL,
     last_backup_at int(11) unsigned DEFAULT 0 NOT NULL,
     last_backup_status varchar(255) DEFAULT '' NOT NULL,
+    -- Fingerprint of the package state the last successful backup was taken
+    -- against. An update is only allowed while this still matches: once the
+    -- agent reports different versions, that backup no longer contains what
+    -- is about to be updated, so it has to be taken again.
+    last_backup_state varchar(64) DEFAULT '' NOT NULL,
 
     -- Optional GitHub linkage, "owner/repo". Empty means the update button
     -- stays hidden for this project: without a repository there is nowhere to

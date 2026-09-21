@@ -94,7 +94,7 @@ chown www-data:www-data /var/www/html/var/cron-env.sh
 printf '%s\n' \
     'SHELL=/bin/bash' \
     'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' \
-    '17 * * * * www-data . /var/www/html/var/cron-env.sh && cd /var/www/html && php vendor/bin/typo3 typovigil:check-and-backup >> /var/log/typovigil-check.log 2>&1' \
+    '17 * * * * www-data . /var/www/html/var/cron-env.sh && cd /var/www/html && php vendor/bin/typo3 typovigil:check-and-analyze >> /var/log/typovigil-check.log 2>&1' \
     '' \
     > /etc/cron.d/typovigil
 chmod 0644 /etc/cron.d/typovigil
