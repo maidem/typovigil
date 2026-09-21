@@ -173,11 +173,12 @@ Agent danach andere Versionen, ist es verbraucht und muss erneut angestoßen
 werden — ein Backup, das den zu aktualisierenden Zustand nicht enthält, nützt
 beim Zurückrollen nichts.
 
-**3. Dann erst das Update.** Und auch das greift nicht in die laufende
-Installation ein: TypoVigil startet einen Workflow im Repository des Projekts,
-der `composer update` ausführt und einen Pull Request mit der geänderten
-`composer.lock` öffnet. Die Installation ändert sich erst, wenn dieser Pull
-Request gemergt und deployt wird.
+**3. Dann erst das Update.** TypoVigil startet einen Workflow im Repository
+des Projekts, der `composer update` ausführt, einen Pull Request mit der
+geänderten `composer.lock` öffnet und ihn sofort selbst mergt — eine zweite
+Freigabe für den Merge gibt es nicht, der Klick auf *Update beauftragen* war
+sie bereits. Der Merge löst den Deploy-Workflow des Projekts aus; erst dabei
+ändert sich die laufende Installation.
 
 Das ist der entscheidende Unterschied zu einem Update direkt auf dem Server:
 Git bleibt die maßgebliche Quelle. Eine lokale Arbeitskopie holt denselben

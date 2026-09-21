@@ -3,8 +3,10 @@
 # Copy this file to .github/workflows/ in every repository TypoVigil should be
 # able to update. Started by the hub through the GitHub API when someone
 # presses "Update beauftragen" there. The update happens in the repository, so
-# composer.lock stays in git: the live installation only changes when the
-# resulting pull request is merged and the project's own deploy workflow runs.
+# composer.lock stays in git — but the pull request is merged by this
+# workflow itself, right after it opens: pressing the button is the approval,
+# there is no separate review step. The project's own deploy workflow then
+# builds and deploys as it does for any push to main.
 #
 # Requires in Settings → Actions → General → Workflow permissions:
 #   - "Read and write permissions"
@@ -67,6 +69,7 @@ jobs:
 
             - name: Open a pull request
               if: steps.update.outputs.changed == 'yes'
+              id: pr
               uses: peter-evans/create-pull-request@v7
               with:
                   # A fixed branch means a second run updates the open pull
@@ -75,7 +78,7 @@ jobs:
                   title: 'TypoVigil: Abhängigkeiten aktualisieren'
                   commit-message: 'Update dependencies (requested by TypoVigil)'
                   body: |
-                      Von TypoVigil beauftragt.
+                      Von TypoVigil beauftragt und automatisch gemergt.
 
                       Auslösende Funde: `${{ inputs.findings || 'keine genannt' }}`
 
@@ -85,6 +88,15 @@ jobs:
                       sich tatsächlich ändert, steht im Diff von
                       `composer.lock`.
 
-                      Der Merge löst den Deploy-Workflow des Projekts aus —
-                      erst danach ändert sich die Installation.
+                      Der Merge löst den Deploy-Workflow des Projekts aus.
                   delete-branch: true
+
+            # No review step: "Update beauftragen" on the hub already
+            # required an approved AI report and a fresh backup, so pressing
+            # it there IS the approval. Merging here is what makes that one
+            # click actually reach the live installation.
+            - name: Merge the pull request
+              if: steps.update.outputs.changed == 'yes'
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: gh pr merge "${{ steps.pr.outputs.pull-request-number }}" --squash --delete-branch
