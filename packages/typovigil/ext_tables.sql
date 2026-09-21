@@ -11,7 +11,13 @@ CREATE TABLE tx_typovigil_project (
     -- in for one that actually runs there. A project without these stays
     -- plain monitoring, exactly as before.
     coolify_application_uuid varchar(64) DEFAULT '' NOT NULL,
+    -- The volume's own uuid on the platform (Persistent Storage), which is
+    -- what both the backup trigger and the schedule creation address.
     coolify_storage_uuid varchar(64) DEFAULT '' NOT NULL,
+    -- The schedule created from it by typovigil:onboard-coolify. Kept apart
+    -- from the volume so re-running the onboarding can tell "already done"
+    -- from "not yet" without guessing at the shape of a uuid.
+    coolify_storage_backup_uuid varchar(64) DEFAULT '' NOT NULL,
     coolify_database_uuid varchar(64) DEFAULT '' NOT NULL,
     coolify_db_scheduled_backup_uuid varchar(64) DEFAULT '' NOT NULL,
     last_backup_at int(11) unsigned DEFAULT 0 NOT NULL,

@@ -44,12 +44,20 @@
                 <target>UUID der Anwendung auf der Hosting-Plattform, aus der URL der Detailseite. Für ein Projekt, das dort nicht läuft, leer lassen — es bleibt dann reines Monitoring.</target>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_storage_uuid">
-                <source>Hosting platform volume name</source>
-                <target>Volume-Name auf der Hosting-Plattform</target>
+                <source>Hosting platform volume UUID</source>
+                <target>Volume-UUID auf der Hosting-Plattform</target>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_storage_uuid.description">
-                <source>Name of the volume holding fileadmin, e.g. "{app-uuid}-fileadmin" (Persistent Storage on the application). Not a schedule id — the schedule is created from this by typovigil:onboard-coolify. Required for a storage backup.</source>
-                <target>Name des Volumes mit dem fileadmin, z. B. „{app-uuid}-fileadmin“ (Persistent Storage der Anwendung). Kein Zeitplan — den legt typovigil:onboard-coolify daraus an. Wird für ein Storage-Backup benötigt.</target>
+                <source>UUID of the volume holding fileadmin, from the platform API (GET /applications/{uuid}/storages) — not the volume name shown in the UI, which the API rejects with "Storage not found". Required for a storage backup.</source>
+                <target>UUID des Volumes mit dem fileadmin, aus der Plattform-API (GET /applications/{uuid}/storages) — nicht der in der Oberfläche angezeigte Volume-Name, den die API mit „Storage not found“ ablehnt. Wird für ein Storage-Backup benötigt.</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.coolify_storage_backup_uuid">
+                <source>Hosting platform storage backup schedule UUID</source>
+                <target>UUID des Storage-Backup-Zeitplans</target>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.coolify_storage_backup_uuid.description">
+                <source>Written by typovigil:onboard-coolify, not by hand.</source>
+                <target>Wird von typovigil:onboard-coolify geschrieben, nicht manuell.</target>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_database_uuid">
                 <source>Hosting platform database UUID</source>

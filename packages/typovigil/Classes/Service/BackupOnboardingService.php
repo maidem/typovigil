@@ -44,7 +44,13 @@ final readonly class BackupOnboardingService
 
         return [
             'linked' => true,
-            'storage' => $this->onboardStorage($projectUid, $applicationUuid, (string)($project['coolify_storage_uuid'] ?? ''), $frequency),
+            'storage' => $this->onboardStorage(
+                $projectUid,
+                $applicationUuid,
+                (string)($project['coolify_storage_uuid'] ?? ''),
+                (string)($project['coolify_storage_backup_uuid'] ?? ''),
+                $frequency
+            ),
             'database' => $this->onboardDatabase($projectUid, $databaseUuid, (string)($project['coolify_db_scheduled_backup_uuid'] ?? ''), $frequency),
         ];
     }
@@ -52,30 +58,37 @@ final readonly class BackupOnboardingService
     /**
      * @return 'created'|'skipped'|'failed'|'not-configured'
      */
-    private function onboardStorage(int $projectUid, string $applicationUuid, string $storageUuid, string $frequency): string
-    {
+    private function onboardStorage(
+        int $projectUid,
+        string $applicationUuid,
+        string $storageUuid,
+        string $scheduleUuid,
+        string $frequency,
+    ): string {
         if ($storageUuid === '') {
-            // Nothing to onboard: the volume UUID itself has to be entered
-            // by hand first, TypoVigil cannot guess which volume matters.
+            // Nothing to onboard: the volume has to be named by hand first,
+            // TypoVigil cannot guess which one matters (an application
+            // usually has several, and only some are worth backing up).
             return 'not-configured';
         }
 
-        // A field already holding a value other than the raw volume UUID
-        // means a schedule was created before — the hosting platform does
-        // not deduplicate schedules for us, so re-running this must not
-        // create a second one. The raw volume UUID looks like
-        // "{app_uuid}-something"; a schedule UUID the platform hands back
-        // does not share that shape.
-        if (!str_starts_with($storageUuid, $applicationUuid)) {
+        if ($scheduleUuid !== '') {
+            // Already onboarded. The platform does not deduplicate
+            // schedules, so re-running must not create a second one.
             return 'skipped';
         }
 
-        $scheduleUuid = $this->coolify->createStorageBackupSchedule($applicationUuid, $storageUuid, $frequency);
-        if ($scheduleUuid === null) {
+        $created = $this->coolify->createStorageBackupSchedule($applicationUuid, $storageUuid, $frequency);
+        if ($created === null) {
             return 'failed';
         }
 
-        $this->projects->updateProject($projectUid, ['coolify_storage_uuid' => $scheduleUuid]);
+        // Into its own field, leaving the volume where it is. This used to
+        // overwrite the volume with the schedule and tell the two apart by
+        // their shape ("does it start with the application uuid?") — which
+        // broke as soon as a real volume uuid went in, because the
+        // platform's own uuids do not follow that shape either.
+        $this->projects->updateProject($projectUid, ['coolify_storage_backup_uuid' => $created]);
 
         return 'created';
     }
