@@ -27,6 +27,10 @@ function check(bool $condition, string $message): void
     }
 }
 
+// The environment wins over the configured key, so the checks below have to
+// start from a known state — otherwise they would silently test whatever the
+// machine happens to have set.
+putenv('TYPO3_ENCRYPTION_KEY');
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = str_repeat('a', 96);
 
 // No constructor arguments on purpose: a DataHandler hook reaches this
@@ -79,5 +83,20 @@ try {
     $refused = true;
 }
 check($refused, 'encrypting without a key is refused rather than silently skipped');
+
+// The environment key wins over the configured one. They are not the same
+// key: config/system is rebuilt on every container deploy, so a password
+// encrypted with the configured key would be unreadable afterwards. This is
+// what made the first stored password undecryptable.
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = str_repeat('c', 96);
+putenv('TYPO3_ENCRYPTION_KEY=' . str_repeat('d', 96));
+$fromEnv = $cipher->encrypt('secret');
+
+putenv('TYPO3_ENCRYPTION_KEY');
+check($cipher->decrypt($fromEnv) === '', 'the configured key cannot read what the environment key wrote');
+
+putenv('TYPO3_ENCRYPTION_KEY=' . str_repeat('d', 96));
+check($cipher->decrypt($fromEnv) === 'secret', 'the environment key reads it back');
+putenv('TYPO3_ENCRYPTION_KEY');
 
 fwrite(STDOUT, "OK: {$checks} checks passed\n");

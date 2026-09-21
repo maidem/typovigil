@@ -101,8 +101,22 @@ final readonly class SecretCipher
         return $plaintext === false ? '' : $plaintext;
     }
 
+    /**
+     * TYPO3_ENCRYPTION_KEY first, the configured key only as a fallback.
+     *
+     * Not interchangeable, however much they look it: config/system is
+     * rebuilt from the image on every container deploy, so the key in
+     * settings.php is a different one after each — and anything encrypted
+     * with the old one is lost. The environment variable survives, which is
+     * the only reason a stored password is still readable tomorrow.
+     */
     private static function key(): string
     {
+        $env = getenv('TYPO3_ENCRYPTION_KEY');
+        if ($env !== false && $env !== '') {
+            return $env;
+        }
+
         return (string)($GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] ?? '');
     }
 }
