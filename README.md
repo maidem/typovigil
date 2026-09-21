@@ -27,8 +27,15 @@ entgegen, vergleicht die gemeldeten Versionen mit den offiziellen Quellen und
 stellt das Ergebnis dar.
 
 Wichtig ist die Richtung: Die überwachten Seiten melden sich von sich aus bei
-der Zentrale. Die Zentrale greift umgekehrt nie auf sie zu. Dadurch braucht
-keine der überwachten Installationen eine von außen erreichbare Schnittstelle.
+der Zentrale. Für das Monitoring greift die Zentrale nie auf sie zu — keine
+überwachte Installation braucht dafür eine von außen erreichbare
+Schnittstelle.
+
+Zwei Ausnahmen gibt es, beide nur auf ausdrückliche Anforderung und nur für
+Projekte, bei denen das eingerichtet wurde: Für ein Backup verbindet sich die
+Zentrale zur Datenbank des Projekts, und für ein Update startet sie einen
+Workflow in dessen Repository. Die laufende Installation selbst wird auch
+dabei nicht angefasst.
 
 ### Warum TYPO3 als Grundlage
 
@@ -141,58 +148,86 @@ Für einen neuen Kunden kommt ein Frontend-Benutzer im Ordner *Kunden* hinzu, de
 kommt stattdessen in die Agentur-Gruppe; deren Nummer trägt man einmalig in den
 Einstellungen der Erweiterung ein.
 
-## Backup vor Updates
+Damit läuft das Monitoring. Soll das Projekt darüber hinaus auch gesichert und
+aktualisiert werden können, kommen die Reiter *Datenbank* und *Repository*
+hinzu — siehe nächster Abschnitt.
 
-Läuft ein überwachtes Projekt auf einer unterstützten Hosting-Plattform,
-kann TypoVigil vor einem Update automatisch ein Backup anstoßen —
-optional, pro Projekt einzeln.
+## Updates: Freigabe, Backup, Pull Request
 
-Das gilt nur für Projekte, bei denen das eingerichtet wurde. Ohne diese
-Verknüpfung bleibt ein Projekt beim reinen Monitoring, genau wie zuvor.
+Ein Update anzustoßen ist an drei Bedingungen geknüpft, die nacheinander
+erfüllt sein müssen. Der Knopf *Update beauftragen* bleibt gesperrt, solange
+eine davon offen ist, und nennt jeweils, welche.
 
-### Einmalig einrichten
+**1. Die KI-Berichte sind freigegeben.** Zu jedem kritischen Fund schreibt
+TypoVigil eine Risikoeinschätzung. Solange eine davon nicht gelesen und
+freigegeben wurde, geht es nicht weiter — die Freigabe ist die Stelle, an der
+ein Mensch die Einschätzung bestätigt.
 
-1. In der Extension-Konfiguration von `typovigil` (Admin-Tools →
-   Einstellungen → Extension-Konfiguration) API-URL und API-Token der
-   Hosting-Plattform eintragen. Das Token braucht dort mindestens die
-   Berechtigung *Write* (in der Praxis meist die höchste verfügbare Stufe,
-   wie bei den übrigen Tokens der Instanz).
-2. Beim Projekt im Reiter *Hosting-Plattform* die Application- und
-   Datenbank-UUID eintragen (aus der jeweiligen Detailseiten-URL), sowie
-   die UUID des Storage-Backup-Zeitplans, falls dort schon einer angelegt
-   wurde. Das Feld für den Datenbank-Backup-Zeitplan bleibt leer — das
-   übernimmt der nächste Schritt.
-3. Einmalig im Container ausführen:
+**2. Ein Backup wurde gemacht.** Nicht geplant, nicht geprüft: gemacht, auf
+Knopfdruck. TypoVigil erstellt den Datenbank-Dump selbst und stößt zusätzlich
+das Backup des Storage-Volumes auf der Hosting-Plattform an, falls dort eines
+verknüpft ist. Erst wenn beides erfolgreich war, zählt es.
 
-   ```bash
-   php vendor/bin/typo3 typovigil:onboard-coolify <projekt-uid>
-   ```
+Das Backup gilt für den Paketstand, gegen den es gemacht wurde. Meldet der
+Agent danach andere Versionen, ist es verbraucht und muss erneut angestoßen
+werden — ein Backup, das den zu aktualisierenden Zustand nicht enthält, nützt
+beim Zurückrollen nichts.
 
-   Legt die fehlenden Backup-Zeitpläne (täglich) auf der Plattform an und
-   trägt deren UUIDs automatisch ins Projekt ein. Mehrfacher Aufruf
-   schadet nicht — vorhandene Zeitpläne werden übersprungen, nicht
-   verdoppelt.
+**3. Dann erst das Update.** Und auch das greift nicht in die laufende
+Installation ein: TypoVigil startet einen Workflow im Repository des Projekts,
+der `composer update` ausführt und einen Pull Request mit der geänderten
+`composer.lock` öffnet. Die Installation ändert sich erst, wenn dieser Pull
+Request gemergt und deployt wird.
 
-### Laufender Betrieb
+Das ist der entscheidende Unterschied zu einem Update direkt auf dem Server:
+Git bleibt die maßgebliche Quelle. Eine lokale Arbeitskopie holt denselben
+Stand mit `git pull`, und beim nächsten Deploy wird nichts überschrieben.
 
-Der stündliche Abgleich (`typovigil:check-and-backup`, siehe unten) sichert
-jedes verknüpfte Projekt automatisch, sobald es ein Paket mit Einstufung
-*kritisch* meldet — ein Sofort-Backup des Storage-Volumes, dazu eine
-Prüfung, ob das letzte automatische Datenbank-Backup aktuell genug ist.
-Die Plattform bietet für Datenbanken keinen Endpunkt, um außerhalb des
-eingerichteten Zeitplans ein Backup sofort auszulösen (anders als beim
-Storage-Volume) — TypoVigil prüft deshalb nur die Aktualität und meldet
-es als Warnung, wenn das letzte Backup zu alt ist.
+### Einrichten
 
-Zusätzlich lässt sich das jederzeit von Hand anstoßen, etwa kurz vor einem
-geplanten Update:
+Am Projekt, Reiter *Datenbank*: Host, Port, Name, Benutzer und Passwort der
+überwachten Installation. Das Passwort wird verschlüsselt gespeichert
+(AES-256-GCM, Schlüssel ist `TYPO3_ENCRYPTION_KEY`) und ist nötig, weil
+TypoVigil den Dump selbst erstellt — die Hosting-Plattform kann
+Datenbank-Backups nur planen, nicht sofort auslösen.
+
+Reiter *Hosting-Plattform*, optional: Application-UUID und Volume-UUID, wenn
+zusätzlich das Dateiverzeichnis gesichert werden soll. Die Volume-UUID stammt
+aus der API (`GET /applications/{uuid}/storages`), nicht aus dem in der
+Oberfläche angezeigten Namen. Ohne diese Angaben wird nur die Datenbank
+gesichert — was ein `composer update` ohnehin allein betrifft.
+
+Reiter *Repository*: `owner/repo` des Projekts. In diesem Repository muss
+`.github/workflows/typovigil-update.yml` liegen (Vorlage unter
+`Documentation/examples/`), und unter Settings → Actions → General muss
+*Allow GitHub Actions to create and approve pull requests* aktiv sein.
+
+Auf der Zentrale als Umgebungsvariablen: `TYPOVIGIL_GITHUB_TOKEN` (Fine-grained
+PAT mit *Actions: Read and write*), für das Storage-Backup zusätzlich
+`TYPOVIGIL_COOLIFY_API_URL` und `TYPOVIGIL_COOLIFY_API_TOKEN`.
+
+Alle Zugangsdaten gehören in die Umgebung, nicht in die
+Extension-Konfiguration: `config/system` wird bei jedem Container-Deploy neu
+aus dem Image erzeugt, dort eingetragene Werte sind danach weg.
+
+### Wohin die Dumps gehen
+
+Standardmäßig nach `var/backups` im Container — und damit beim nächsten Deploy
+verloren. Für den ernsthaften Betrieb gehört dort ein eingebundenes Volume hin;
+der Pfad ist über `backupDirectory` in der Extension-Konfiguration einstellbar.
+
+### Auf der Kommandozeile
 
 ```bash
 php vendor/bin/typo3 typovigil:backup <projekt-uid>
 ```
 
-Der Status des letzten Backups steht danach auch in der Projektansicht im
-Backend.
+Dasselbe, was der Knopf tut. Der Status des letzten Backups steht danach in der
+Projektansicht, samt Hinweis, ob er noch zum aktuellen Paketstand passt.
+
+Backups laufen ausschließlich auf Anforderung. Der stündliche Abgleich
+(`typovigil:check-and-analyze`) prüft Versionen und schreibt KI-Berichte — er
+sichert nichts.
 
 ## Deploying
 

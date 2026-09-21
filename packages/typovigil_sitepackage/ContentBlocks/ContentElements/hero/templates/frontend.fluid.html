@@ -24,9 +24,15 @@
                          verdrahtet statt eigenes Feld/DB-Anbindung wie in portfolio-v10.
                          JSON steht als <script type="application/json">, nicht als
                          Fluid-String: geschweifte Klammern im JSON würden sonst als
-                         Fluid-Ausdrücke geparst. -->
+                         Fluid-Ausdrücke geparst.
+
+                         Die rote Linie ist der Update-Weg und läuft in der
+                         Reihenfolge, in der er auch bedient wird: Fund →
+                         Freigabe → Backup → Update → Pull Request. Jeder
+                         Schritt ist eine Bedingung für den nächsten, deshalb
+                         eine durchgehende Linie und keine Verzweigung. -->
                     <script type="application/json" id="c{data.uid}-metro">
-                        {"nodes":{"agent":{"label":"Agent-Extension\nje Installation","col":0,"row":1},"hub":{"label":"TypoVigil-Hub\nReport · HTTPS","col":1,"row":1},"backup":{"label":"Hosting-Plattform\nSofort-Backup bei Fund","col":2,"row":0},"status":{"label":"Statusübersicht\naktuell · veraltet","col":2,"row":1},"analysis":{"label":"KI-Risikoanalyse\nautomatisch bei kritischem Fund","col":2,"row":2},"sources":{"label":"get.typo3.org\nPackagist · Advisories","col":2,"row":3},"customer":{"label":"Kundenlogin\nFrontend","col":3,"row":1}},"edges":[{"from":"agent","to":"hub","color":"#1c8a7d"},{"from":"hub","to":"backup","color":"#c62f2b"},{"from":"hub","to":"status","color":"#1c8a7d"},{"from":"hub","to":"analysis","color":"#c62f2b"},{"from":"analysis","to":"customer","color":"#c62f2b"},{"from":"hub","to":"sources","color":"#e8590c"},{"from":"sources","to":"status","color":"#e8590c"},{"from":"status","to":"customer","color":"#1c8a7d"}]}
+                        {"nodes":{"agent":{"label":"Agent-Extension\nje Installation","col":0,"row":2},"hub":{"label":"TypoVigil-Hub\nReport · HTTPS","col":1,"row":2},"sources":{"label":"get.typo3.org\nPackagist · Advisories","col":1,"row":4},"analysis":{"label":"KI-Risikoanalyse\nbei kritischem Fund","col":2,"row":0},"approval":{"label":"Freigabe\ndurch die Agentur","col":3,"row":0},"backup":{"label":"Backup auf Knopfdruck\nDatenbank · Dateien","col":3,"row":2},"update":{"label":"Update beauftragen\nerst nach Backup","col":3,"row":4},"pr":{"label":"Pull Request\nim Repository","col":4,"row":4},"status":{"label":"Statusübersicht\naktuell · veraltet · kritisch","col":2,"row":2},"customer":{"label":"Kundenlogin\nFrontend","col":4,"row":2}},"edges":[{"from":"agent","to":"hub","color":"#1c8a7d"},{"from":"sources","to":"hub","color":"#e8590c"},{"from":"hub","to":"status","color":"#1c8a7d"},{"from":"hub","to":"analysis","color":"#c62f2b"},{"from":"analysis","to":"approval","color":"#c62f2b"},{"from":"approval","to":"backup","color":"#c62f2b"},{"from":"backup","to":"update","color":"#c62f2b"},{"from":"update","to":"pr","color":"#c62f2b"},{"from":"status","to":"customer","color":"#1c8a7d"}]}
                     </script>
                     <div class="tv-metro tv-hero__metro" data-metro-src="c{data.uid}-metro"></div>
                 </article>
