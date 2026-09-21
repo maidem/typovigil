@@ -16,6 +16,14 @@ use TYPO3\CMS\Core\Http\RequestFactory;
  * URL, token and model come from the extension configuration, not the
  * database — same reasoning as the hosting platform client: credentials do
  * not belong on a project record, and every analysis uses the same account.
+ *
+ * ENV variables (TYPOVIGIL_EDENAI_API_URL/TOKEN/MODEL) take precedence over
+ * the extension configuration, same pattern as TYPO3_SMTP_* in
+ * production.php. Same reasoning too: config/system has no persistent
+ * volume in the container deploy and is rebuilt from the image on every
+ * deploy, so a value entered only in the backend module is lost on the next
+ * deploy. ENV vars survive that; the extension configuration remains as a
+ * fallback for ddev/local setups where these are typically unset.
  */
 final readonly class EdenAiClient
 {
@@ -96,26 +104,28 @@ final readonly class EdenAiClient
 
     private function apiUrl(): string
     {
-        try {
-            return (string)$this->extensionConfiguration->get('typovigil', 'edenAiApiUrl');
-        } catch (\Throwable) {
-            return '';
-        }
+        return $this->configValue('TYPOVIGIL_EDENAI_API_URL', 'edenAiApiUrl');
     }
 
     private function apiToken(): string
     {
-        try {
-            return (string)$this->extensionConfiguration->get('typovigil', 'edenAiApiToken');
-        } catch (\Throwable) {
-            return '';
-        }
+        return $this->configValue('TYPOVIGIL_EDENAI_API_TOKEN', 'edenAiApiToken');
     }
 
     private function model(): string
     {
+        return $this->configValue('TYPOVIGIL_EDENAI_MODEL', 'edenAiModel');
+    }
+
+    private function configValue(string $envVar, string $extConfKey): string
+    {
+        $env = getenv($envVar);
+        if ($env !== false && $env !== '') {
+            return $env;
+        }
+
         try {
-            return (string)$this->extensionConfiguration->get('typovigil', 'edenAiModel');
+            return (string)$this->extensionConfiguration->get('typovigil', $extConfKey);
         } catch (\Throwable) {
             return '';
         }

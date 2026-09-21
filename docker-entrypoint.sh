@@ -75,13 +75,17 @@ su -s /bin/bash www-data -c \
 # credentials arrive exactly that way. Without this the check runs on schedule
 # but cannot connect, failing silently every hour. Written 0600 and owned by
 # www-data: it holds the database password.
+# TYPOVIGIL_* is included for the same reason: EdenAiClient reads its API
+# credentials from ENV first (config/system has no persistent volume, so
+# values entered only in the extension configuration module are lost on
+# every deploy — see EdenAiClient's class comment).
 # printf %q rather than wrapping in quotes by hand: a password containing a
 # quote, $ or backslash would otherwise produce a broken file, and the job
 # would fail silently every hour — the very bug this fixes.
 : > /var/www/html/var/cron-env.sh
 while IFS='=' read -r -d '' key value; do
     case "$key" in
-        TYPO3_*) printf 'export %s=%q\n' "$key" "$value" >> /var/www/html/var/cron-env.sh ;;
+        TYPO3_*|TYPOVIGIL_*) printf 'export %s=%q\n' "$key" "$value" >> /var/www/html/var/cron-env.sh ;;
     esac
 done < <(env -0)
 chmod 0600 /var/www/html/var/cron-env.sh
