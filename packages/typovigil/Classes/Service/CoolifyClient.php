@@ -15,10 +15,10 @@ use TYPO3\CMS\Core\Http\RequestFactory;
  * platform wrapper — this extension backs up projects before an update, it
  * does not manage the hosting platform.
  *
- * Base URL and token come from the extension configuration (same place as
- * projectStoragePid), not the database: credentials do not belong on a
- * project record, and every monitored project talks to the same hosting
- * platform instance.
+ * Base URL and token come from TYPOVIGIL_COOLIFY_API_URL/_TOKEN, falling
+ * back to the extension configuration for local setups — not the database:
+ * credentials do not belong on a project record, and every monitored project
+ * talks to the same hosting platform instance.
  */
 final readonly class CoolifyClient
 {
@@ -186,17 +186,30 @@ final readonly class CoolifyClient
 
     private function baseUrl(): string
     {
-        try {
-            return (string)$this->extensionConfiguration->get('typovigil', 'coolifyApiUrl');
-        } catch (\Throwable) {
-            return '';
-        }
+        return $this->configValue('TYPOVIGIL_COOLIFY_API_URL', 'coolifyApiUrl');
     }
 
     private function apiToken(): string
     {
+        return $this->configValue('TYPOVIGIL_COOLIFY_API_TOKEN', 'coolifyApiToken');
+    }
+
+    /**
+     * ENV first, extension configuration as the fallback — same as
+     * EdenAiClient, and for the same reason: config/system has no persistent
+     * volume in the container deploy, so credentials entered in the backend
+     * module are silently gone on the next deploy. This one had already
+     * fallen into that trap; every backup was failing with "not configured".
+     */
+    private function configValue(string $envVar, string $extConfKey): string
+    {
+        $env = getenv($envVar);
+        if ($env !== false && $env !== '') {
+            return trim($env);
+        }
+
         try {
-            return (string)$this->extensionConfiguration->get('typovigil', 'coolifyApiToken');
+            return (string)$this->extensionConfiguration->get('typovigil', $extConfKey);
         } catch (\Throwable) {
             return '';
         }

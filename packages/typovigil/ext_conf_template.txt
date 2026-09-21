@@ -4,17 +4,17 @@ agencyFeGroupId = 0
 # cat=basic; type=int+; label=Project storage page: Page (usually a Sysfolder) where "New project" in the TypoVigil module creates tx_typovigil_project records. 0 refuses to create new records from the module until this is set.
 projectStoragePid = 0
 
-# cat=hosting; type=string; label=Hosting platform API URL: Base URL of the hosting platform's API, e.g. http://100.99.227.54:8000/api/v1. Empty disables every backup feature — projects stay plain monitoring.
+# cat=hosting; type=string; label=Hosting platform API URL: Base URL of the hosting platform's API, e.g. http://100.99.227.54:8000/api/v1. Empty disables every backup feature. In a container deploy set TYPOVIGIL_COOLIFY_API_URL instead — this field is rebuilt from the image on every deploy and loses its value.
 coolifyApiUrl =
 
-# cat=hosting; type=string; label=Hosting platform API token: Bearer token for the hosting platform's API. Generated there under Keys & Tokens.
+# cat=hosting; type=string; label=Hosting platform API token: Bearer token for the hosting platform's API. Generated there under Keys & Tokens. In a container deploy set TYPOVIGIL_COOLIFY_API_TOKEN instead — this field does not survive a deploy.
 coolifyApiToken =
 
-# cat=ai; type=string; label=Eden AI API URL: Base URL of the Eden AI chat completions endpoint, e.g. https://api.edenai.run/v3/chat/completions. Empty disables the automatic risk analysis feature.
+# cat=ai; type=string; label=Eden AI API URL: Base URL of the Eden AI chat completions endpoint, e.g. https://api.edenai.run/v3/chat/completions. Empty disables the automatic risk analysis feature. In a container deploy set TYPOVIGIL_EDENAI_API_URL instead — this field does not survive a deploy.
 edenAiApiUrl =
 
-# cat=ai; type=string; label=Eden AI API token: Bearer token for Eden AI. Generated in the Eden AI dashboard.
+# cat=ai; type=string; label=Eden AI API token: Bearer token for Eden AI. Generated in the Eden AI dashboard. In a container deploy set TYPOVIGIL_EDENAI_API_TOKEN instead — this field does not survive a deploy.
 edenAiApiToken =
 
-# cat=ai; type=string; label=Eden AI model: Provider/model string passed to Eden AI, e.g. google/gemini-2.5-flash.
+# cat=ai; type=string; label=Eden AI model: Provider/model string passed to Eden AI, e.g. google/gemini-2.5-flash. TYPOVIGIL_EDENAI_MODEL overrides it.
 edenAiModel = google/gemini-2.5-flash
