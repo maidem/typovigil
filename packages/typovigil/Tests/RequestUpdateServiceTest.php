@@ -56,7 +56,8 @@ $withPending = $approvedPackages;
 $withPending[0]['ai_report_status'] = 'pending';
 $reason = RequestUpdateService::blockedBecause($linkedProject, $withPending);
 check($reason !== null, 'a pending report blocks the update');
-check(str_contains((string)$reason, '1'), 'the reason names how many reports are pending');
+check($reason['key'] === 'blocked.pendingReports', 'the reason names the pending reports');
+check($reason['argument'] === 1, 'the reason carries how many are pending');
 
 check(RequestUpdateService::pendingReportCount($withPending) === 1, 'counts one pending report');
 check(RequestUpdateService::pendingReportCount($approvedPackages) === 0, 'approved reports do not count as pending');
@@ -66,15 +67,14 @@ check(RequestUpdateService::pendingReportCount($approvedPackages) === 0, 'approv
 $unlinked = $linkedProject;
 $unlinked['coolify_database_uuid'] = '';
 check(
-    RequestUpdateService::blockedBecause($unlinked, $approvedPackages) !== null,
+    RequestUpdateService::blockedBecause($unlinked, $approvedPackages)['key'] === 'blocked.noBackup',
     'a project without a backup link is blocked'
 );
 
-// A pending report outranks the missing backup link in the message: it is
-// the one the operator can resolve without touching another system.
-$unlinkedAndPending = $unlinked;
+// A pending report outranks the missing backup link: it is the one the
+// operator can resolve without touching another system.
 check(
-    str_contains((string)RequestUpdateService::blockedBecause($unlinked, $withPending), 'approval'),
+    RequestUpdateService::blockedBecause($unlinked, $withPending)['key'] === 'blocked.pendingReports',
     'the pending report is reported before the missing backup link'
 );
 

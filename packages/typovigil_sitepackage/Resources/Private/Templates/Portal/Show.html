@@ -130,7 +130,8 @@
 
                 <f:if condition="{updateResult}">
                     <p class="tv-update__result tv-update__result--{f:if(condition: updateResult.requested, then: 'ok', else: 'warning')}">
-                        {updateResult.message}
+                        <f:translate key="LLL:EXT:typovigil/Resources/Private/Language/locallang.xlf:update.{updateResult.key}"
+                                     arguments="{updateResult.arguments}" />
                     </p>
                 </f:if>
 
@@ -144,7 +145,10 @@
 
                 <f:if condition="{project.updateBlockedBecause}">
                     <f:then>
-                        <p class="tv-update__blocked">{project.updateBlockedBecause}</p>
+                        <p class="tv-update__blocked">
+                            <f:translate key="LLL:EXT:typovigil/Resources/Private/Language/locallang.xlf:update.{project.updateBlockedBecause.key}"
+                                         arguments="{0: project.updateBlockedBecause.argument}" />
+                        </p>
                     </f:then>
                     <f:else>
                         <f:if condition="{project.updatablePackageCount} > 0">

@@ -45,22 +45,20 @@ final readonly class RequestUpdateService
     /**
      * Why the update cannot be requested right now, or null when it can.
      *
-     * Returns the reason rather than a bare false so the button can say what
-     * is missing instead of being mysteriously dead.
+     * Returns a reason rather than a bare false so the button can say what is
+     * missing instead of being mysteriously dead — as a label key plus its
+     * argument, because both callers render in the user's language and the
+     * service has no business picking one.
      *
      * @param array<string, mixed> $project
      * @param list<array<string, mixed>> $packages
+     * @return array{key: string, argument: int}|null
      */
-    public static function blockedBecause(array $project, array $packages): ?string
+    public static function blockedBecause(array $project, array $packages): ?array
     {
         $pending = self::pendingReportCount($packages);
         if ($pending > 0) {
-            return sprintf(
-                $pending === 1
-                    ? '%d AI risk report is still waiting for approval.'
-                    : '%d AI risk reports are still waiting for approval.',
-                $pending
-            );
+            return ['key' => 'blocked.pendingReports', 'argument' => $pending];
         }
 
         // Backup capability, not a backup run: this only opens a pull
@@ -73,7 +71,7 @@ final readonly class RequestUpdateService
         // triggers the platform. Until that exists, a project can be updated
         // with a backup that is merely possible, not taken.
         if (!self::canBeBackedUp($project)) {
-            return 'The project is not linked to a hosting platform, so it cannot be backed up.';
+            return ['key' => 'blocked.noBackup', 'argument' => 0];
         }
 
         return null;
@@ -133,35 +131,47 @@ final readonly class RequestUpdateService
     }
 
     /**
-     * @return array{requested: bool, message: string}
+     * Requests the update.
+     *
+     * The outcome travels as a label key and its arguments rather than a
+     * finished sentence, same reasoning as blockedBecause(): the backend
+     * module and the customer portal both render it, each in the language of
+     * whoever is looking.
+     *
+     * @return array{requested: bool, key: string, arguments: list<string|int>}
      */
     public function run(int $projectUid): array
     {
         $project = $this->projects->findByUid($projectUid);
         if ($project === null) {
-            return ['requested' => false, 'message' => 'Project not found.'];
+            return ['requested' => false, 'key' => 'result.projectNotFound', 'arguments' => []];
         }
 
         if (!self::appliesTo($project)) {
-            return ['requested' => false, 'message' => 'No repository is linked to this project.'];
+            return ['requested' => false, 'key' => 'result.noRepository', 'arguments' => []];
         }
 
         $packages = $this->projects->findPackagesByProject($projectUid);
 
         $blocked = self::blockedBecause($project, $packages);
         if ($blocked !== null) {
-            return ['requested' => false, 'message' => $blocked];
+            return [
+                'requested' => false,
+                'key' => $blocked['key'],
+                'arguments' => [$blocked['argument']],
+            ];
         }
 
         $updatable = self::updatablePackages($packages);
         if ($updatable === []) {
-            return ['requested' => false, 'message' => 'Everything is already up to date.'];
+            return ['requested' => false, 'key' => 'result.alreadyCurrent', 'arguments' => []];
         }
 
         $repo = trim((string)$project['github_repo']);
         if (!$this->gitHub->dispatchUpdateWorkflow($repo, $updatable)) {
-            // The client has already logged why.
-            return ['requested' => false, 'message' => 'GitHub did not accept the request — see the log.'];
+            // The client has already logged the reason; repeating it here
+            // would mean showing an API error to someone who cannot act on it.
+            return ['requested' => false, 'key' => 'result.dispatchFailed', 'arguments' => []];
         }
 
         $this->projects->updateProject($projectUid, ['update_requested_at' => time()]);
@@ -174,11 +184,8 @@ final readonly class RequestUpdateService
 
         return [
             'requested' => true,
-            'message' => sprintf(
-                'Update requested for %d package(s). A pull request will appear in %s.',
-                count($updatable),
-                $repo
-            ),
+            'key' => 'result.requested',
+            'arguments' => [count($updatable), $repo],
         ];
     }
 }

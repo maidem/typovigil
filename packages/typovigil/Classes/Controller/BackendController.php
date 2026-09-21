@@ -19,6 +19,7 @@ use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 final class BackendController extends ActionController
 {
@@ -86,6 +87,20 @@ final class BackendController extends ActionController
     }
 
     /**
+     * Approves one AI risk report, so it stops blocking the update button.
+     *
+     * The same approval the customer portal offers the agency role — here so
+     * that reading the report and acting on it happen in one place, instead
+     * of forcing a switch to the frontend for a single click.
+     */
+    public function approveAiReportAction(int $project, string $composerName): ResponseInterface
+    {
+        $this->projects->updatePackage($project, $composerName, '', ['ai_report_status' => 'approved']);
+
+        return $this->redirect('show', null, null, ['project' => $project]);
+    }
+
+    /**
      * Asks the project's repository to open an update pull request.
      *
      * Nothing happens to the live installation here — see
@@ -97,7 +112,11 @@ final class BackendController extends ActionController
         $result = $this->requestUpdate->run($project);
 
         $this->addPersistentFlashMessage(
-            $result['message'],
+            LocalizationUtility::translate(
+                'LLL:EXT:typovigil/Resources/Private/Language/locallang.xlf:update.' . $result['key'],
+                null,
+                $result['arguments']
+            ) ?? $result['key'],
             'TypoVigil',
             $result['requested'] ? ContextualFeedbackSeverity::OK : ContextualFeedbackSeverity::WARNING
         );

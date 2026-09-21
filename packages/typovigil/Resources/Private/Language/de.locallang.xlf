@@ -227,6 +227,38 @@
                 <source>Request update</source>
                 <target>Update beauftragen</target>
             </trans-unit>
+            <trans-unit id="backend.approveReport">
+                <source>Approve report</source>
+                <target>Bericht freigeben</target>
+            </trans-unit>
+            <trans-unit id="update.blocked.pendingReports">
+                <source>%d AI risk report(s) still waiting for approval.</source>
+                <target>%d KI-Risikobericht(e) noch nicht freigegeben.</target>
+            </trans-unit>
+            <trans-unit id="update.blocked.noBackup">
+                <source>Not linked to a hosting platform, so it cannot be backed up.</source>
+                <target>Keine Hosting-Plattform verknüpft, daher ist kein Backup möglich.</target>
+            </trans-unit>
+            <trans-unit id="update.result.requested">
+                <source>Update requested for %1$d package(s). A pull request will appear in %2$s.</source>
+                <target>Update für %1$d Paket(e) beauftragt. In %2$s entsteht ein Pull Request.</target>
+            </trans-unit>
+            <trans-unit id="update.result.projectNotFound">
+                <source>Project not found.</source>
+                <target>Projekt nicht gefunden.</target>
+            </trans-unit>
+            <trans-unit id="update.result.noRepository">
+                <source>No repository is linked to this project.</source>
+                <target>Für dieses Projekt ist kein Repository hinterlegt.</target>
+            </trans-unit>
+            <trans-unit id="update.result.alreadyCurrent">
+                <source>Everything is already up to date.</source>
+                <target>Alles ist bereits aktuell.</target>
+            </trans-unit>
+            <trans-unit id="update.result.dispatchFailed">
+                <source>GitHub did not accept the request. See the log for details.</source>
+                <target>GitHub hat die Anfrage abgelehnt. Details stehen im Protokoll.</target>
+            </trans-unit>
             <trans-unit id="backend.updateRequested">
                 <source>Update requested:</source>
                 <target>Update beauftragt:</target>

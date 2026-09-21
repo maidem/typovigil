@@ -25,7 +25,10 @@
                     <span class="btn btn-default disabled" aria-disabled="true">
                         <f:translate key="backend.requestUpdate" />
                     </span>
-                    <span class="text-warning">{project.updateBlockedBecause}</span>
+                    <span class="text-warning">
+                        <f:translate key="update.{project.updateBlockedBecause.key}"
+                                     arguments="{0: project.updateBlockedBecause.argument}" />
+                    </span>
                 </f:then>
                 <f:else>
                     <f:if condition="{project.updatablePackageCount} > 0">
@@ -138,6 +141,20 @@
                                             <span class="badge bg-secondary">{package.ai_report_status}</span>
                                         </p>
                                         <p>{package.ai_report_text}</p>
+
+                                        <!-- Approving here rather than only in
+                                             the portal: the report is read on
+                                             this page, so the decision belongs
+                                             on it too — and a pending report
+                                             is what blocks the update button
+                                             above. -->
+                                        <f:if condition="{package.ai_report_status} == 'pending'">
+                                            <f:link.action action="approveAiReport"
+                                                           arguments="{project: project.uid, composerName: package.composer_name}"
+                                                           class="btn btn-sm btn-default">
+                                                <f:translate key="backend.approveReport" />
+                                            </f:link.action>
+                                        </f:if>
                                     </div>
                                 </td>
                             </tr>

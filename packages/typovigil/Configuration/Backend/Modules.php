@@ -21,6 +21,7 @@ return [
                 'regenerateSetupLink',
                 'checkNow',
                 'requestUpdate',
+                'approveAiReport',
             ],
         ],
     ],

@@ -139,7 +139,7 @@ final class PortalController extends ActionController
      * The outcome of the last update request in this session, cleared as it is
      * read so a reload does not keep repeating it.
      *
-     * @return array{requested: bool, message: string}|null
+     * @return array{requested: bool, key: string, arguments: list<string|int>}|null
      */
     private function takeUpdateResult(): ?array
     {
