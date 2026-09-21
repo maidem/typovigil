@@ -26,15 +26,23 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
     sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        curl git zip unzip locales ca-certificates cron \
+        curl git zip unzip locales ca-certificates cron tzdata \
     && sed -i -e 's/# de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen \
     && locale-gen \
+    && ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime \
+    && echo 'Europe/Berlin' > /etc/timezone \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 ENV LANG=de_DE.UTF-8
 ENV LANGUAGE=de_DE:de
 ENV LC_ALL=de_DE.UTF-8
+
+# The container ran in UTC, so container logs, the cron schedule and PHP's
+# date() were two hours off from the times shown in the interface (TYPO3
+# renders in the user's timezone). Only the operator ever reads those, and
+# they are all German — matching the wall clock beats explaining the offset.
+ENV TZ=Europe/Berlin
 
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN chmod +x /usr/local/bin/install-php-extensions \
@@ -60,6 +68,9 @@ RUN printf '%s\n' \
     && a2enconf typo3
 
 RUN { \
+    # Without this PHP stays on UTC whatever TZ says: the base image pins
+    # date.timezone, and an explicit ini setting wins over the environment.
+    echo 'date.timezone=Europe/Berlin'; \
     echo 'opcache.memory_consumption=128'; \
     echo 'opcache.interned_strings_buffer=8'; \
     echo 'opcache.max_accelerated_files=4000'; \
