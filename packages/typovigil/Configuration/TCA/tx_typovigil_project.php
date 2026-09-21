@@ -78,15 +78,6 @@ return [
                 'eval' => 'trim',
             ],
         ],
-        'coolify_storage_backup_uuid' => [
-            'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.coolify_storage_backup_uuid',
-            'description' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.coolify_storage_backup_uuid.description',
-            'config' => [
-                'type' => 'input',
-                'size' => 40,
-                'readOnly' => true,
-            ],
-        ],
         'coolify_database_uuid' => [
             'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.coolify_database_uuid',
             'description' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.coolify_database_uuid.description',
@@ -96,13 +87,44 @@ return [
                 'eval' => 'trim',
             ],
         ],
-        'coolify_db_scheduled_backup_uuid' => [
-            'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.coolify_db_scheduled_backup_uuid',
-            'description' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.coolify_db_scheduled_backup_uuid.description',
+        'db_host' => [
+            'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.db_host',
             'config' => [
                 'type' => 'input',
                 'size' => 40,
                 'eval' => 'trim',
+            ],
+        ],
+        'db_port' => [
+            'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.db_port',
+            'config' => [
+                'type' => 'number',
+                'size' => 10,
+                'default' => 3306,
+            ],
+        ],
+        'db_name' => [
+            'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.db_name',
+            'config' => [
+                'type' => 'input',
+                'size' => 40,
+                'eval' => 'trim',
+            ],
+        ],
+        'db_user' => [
+            'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.db_user',
+            'config' => [
+                'type' => 'input',
+                'size' => 40,
+                'eval' => 'trim',
+            ],
+        ],
+        'db_password' => [
+            'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.db_password',
+            'description' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.db_password.description',
+            'config' => [
+                'type' => 'password',
+                'size' => 40,
             ],
         ],
         'last_backup_at' => [
@@ -179,8 +201,9 @@ return [
                 --div--;LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tab.access,
                     fe_users,
                 --div--;LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tab.coolify,
-                    coolify_application_uuid, coolify_storage_uuid, coolify_storage_backup_uuid,
-                    coolify_database_uuid, coolify_db_scheduled_backup_uuid,
+                    coolify_application_uuid, coolify_storage_uuid, coolify_database_uuid,
+                --div--;LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tab.database,
+                    db_host, db_port, db_name, db_user, db_password,
                 --div--;LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tab.github,
                     github_repo, update_requested_at,
             ',

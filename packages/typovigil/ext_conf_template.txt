@@ -18,3 +18,6 @@ edenAiApiToken =
 
 # cat=ai; type=string; label=Eden AI model: Provider/model string passed to Eden AI, e.g. google/gemini-2.5-flash. TYPOVIGIL_EDENAI_MODEL overrides it.
 edenAiModel = google/gemini-2.5-flash
+
+# cat=basic; type=string; label=Backup directory: Where database dumps are written. Relative paths are resolved against the TYPO3 root. Point this at a mounted volume — the default lives inside the container and is lost on the next deploy, along with every backup in it.
+backupDirectory = var/backups

@@ -27,6 +27,10 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         curl git zip unzip locales ca-certificates cron tzdata \
+        # mariadb-dump for the backup button: TypoVigil dumps a monitored
+        # project's database itself, because the hosting platform's API can
+        # only schedule database backups, never run one on demand.
+        mariadb-client \
     && sed -i -e 's/# de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen \
     && locale-gen \
     && ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime \

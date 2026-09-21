@@ -18,6 +18,10 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['typovigil'
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][]
     = \Maidemde\Typovigil\Hook\GenerateProjectToken::class;
 
+// Encrypts a project's database password before it is written.
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][]
+    = \Maidemde\Typovigil\Hook\EncryptDatabasePassword::class;
+
 // Scheduler task that matches reported packages against the upstream sources.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Maidemde\Typovigil\Task\UpdateCheckTask::class] = [
     'extension' => 'typovigil',

@@ -11,15 +11,21 @@ CREATE TABLE tx_typovigil_project (
     -- in for one that actually runs there. A project without these stays
     -- plain monitoring, exactly as before.
     coolify_application_uuid varchar(64) DEFAULT '' NOT NULL,
-    -- The volume's own uuid on the platform (Persistent Storage), which is
-    -- what both the backup trigger and the schedule creation address.
+    -- The volume's own uuid on the platform (Persistent Storage). Optional:
+    -- without it only the database is backed up, which is what a composer
+    -- update can break anyway.
     coolify_storage_uuid varchar(64) DEFAULT '' NOT NULL,
-    -- The schedule created from it by typovigil:onboard-coolify. Kept apart
-    -- from the volume so re-running the onboarding can tell "already done"
-    -- from "not yet" without guessing at the shape of a uuid.
-    coolify_storage_backup_uuid varchar(64) DEFAULT '' NOT NULL,
     coolify_database_uuid varchar(64) DEFAULT '' NOT NULL,
-    coolify_db_scheduled_backup_uuid varchar(64) DEFAULT '' NOT NULL,
+
+    -- Credentials for the dump TypoVigil takes itself. The password is
+    -- encrypted (SecretCipher) because unlike every other secret here it has
+    -- to be usable again, so it can be neither hashed nor left in the
+    -- environment.
+    db_host varchar(255) DEFAULT '' NOT NULL,
+    db_port int(11) unsigned DEFAULT 3306 NOT NULL,
+    db_name varchar(255) DEFAULT '' NOT NULL,
+    db_user varchar(255) DEFAULT '' NOT NULL,
+    db_password varchar(512) DEFAULT '' NOT NULL,
     last_backup_at int(11) unsigned DEFAULT 0 NOT NULL,
     last_backup_status varchar(255) DEFAULT '' NOT NULL,
     -- Fingerprint of the package state the last successful backup was taken

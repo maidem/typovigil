@@ -11,9 +11,11 @@ use TYPO3\CMS\Core\Http\RequestFactory;
 /**
  * Talks to the hosting platform's REST API.
  *
- * Only the two backup-related actions TypoVigil needs, not a general-purpose
- * platform wrapper — this extension backs up projects before an update, it
- * does not manage the hosting platform.
+ * Only the one action TypoVigil needs: triggering a volume backup. The
+ * database is dumped by TypoVigil itself (DatabaseBackupService), because
+ * this API can only schedule database backups, never run one now — so the
+ * schedule-creating and freshness-checking methods that used to live here
+ * are gone with the schedules they served.
  *
  * Base URL and token come from TYPOVIGIL_COOLIFY_API_URL/_TOKEN, falling
  * back to the extension configuration for local setups — not the database:
@@ -50,79 +52,6 @@ final readonly class CoolifyClient
         );
 
         return $response !== null;
-    }
-
-    /**
-     * Newest execution of a database's scheduled backup, or null when there
-     * is none or the request failed.
-     *
-     * The hosting platform has no on-demand database backup endpoint (unlike
-     * application storages) — this is how "was the database backed up
-     * recently enough" has to be answered instead.
-     *
-     * @return array{status: string, created_at: string, filename: string}|null
-     */
-    public function latestDatabaseBackupExecution(string $databaseUuid, string $scheduledBackupUuid): ?array
-    {
-        $data = $this->request(
-            'GET',
-            sprintf('/databases/%s/backups/%s/executions', $databaseUuid, $scheduledBackupUuid)
-        );
-
-        $executions = $data['executions'] ?? [];
-        if (!is_array($executions) || $executions === []) {
-            return null;
-        }
-
-        // Executions are not documented as sorted, so pick the newest by
-        // created_at explicitly rather than assuming index 0 is it.
-        usort(
-            $executions,
-            static fn(array $a, array $b): int => strcmp((string)($b['created_at'] ?? ''), (string)($a['created_at'] ?? ''))
-        );
-
-        $newest = $executions[0];
-
-        return [
-            'status' => (string)($newest['status'] ?? ''),
-            'created_at' => (string)($newest['created_at'] ?? ''),
-            'filename' => (string)($newest['filename'] ?? ''),
-        ];
-    }
-
-    /**
-     * Creates (or replaces) the backup schedule for an application's volume
-     * and returns the new schedule's UUID.
-     *
-     * $storageUuid here is the volume's own identifier (e.g.
-     * "{app_uuid}-fileadmin"), not a schedule id — the hosting platform only
-     * assigns a separate schedule UUID once this call creates one, which is
-     * what this method returns.
-     */
-    public function createStorageBackupSchedule(string $applicationUuid, string $storageUuid, string $frequency): ?string
-    {
-        $data = $this->request(
-            'PUT',
-            sprintf('/applications/%s/storages/%s/backups', $applicationUuid, $storageUuid),
-            ['frequency' => $frequency]
-        );
-
-        $uuid = $data['uuid'] ?? null;
-
-        return is_string($uuid) && $uuid !== '' ? $uuid : null;
-    }
-
-    /**
-     * Creates a backup schedule for a database and returns the new
-     * schedule's UUID.
-     */
-    public function createDatabaseBackupSchedule(string $databaseUuid, string $frequency): ?string
-    {
-        $data = $this->request('POST', sprintf('/databases/%s/backups', $databaseUuid), ['frequency' => $frequency]);
-
-        $uuid = $data['uuid'] ?? null;
-
-        return is_string($uuid) && $uuid !== '' ? $uuid : null;
     }
 
     /**

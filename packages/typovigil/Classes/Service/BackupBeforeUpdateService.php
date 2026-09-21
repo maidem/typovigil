@@ -7,66 +7,68 @@ namespace Maidemde\Typovigil\Service;
 use Maidemde\Typovigil\Domain\Repository\ProjectRepository;
 
 /**
- * Backs a project up on its hosting platform before an update is applied
- * there.
+ * Takes a project's backup — the one the update button waits for.
  *
- * Opt-in per project: only projects with coolify_application_uuid and
- * coolify_database_uuid filled in are touched. A project without those
- * stays plain monitoring — this service does not migrate or require them.
+ * Both halves are actually taken here, nothing is merely checked:
+ *   - the database is dumped by TypoVigil itself (DatabaseBackupService),
+ *     because the hosting platform's API can only schedule database backups,
+ *     never run one now
+ *   - the storage volume is triggered on the platform, which does offer that
  *
- * Two different guarantees, because the platform's API offers two different
- * things: the storage (volume) backup can be triggered right now, the
- * database backup can only be checked for freshness against its own
- * schedule. See CoolifyClient for why.
+ * This used to check whether the platform's scheduled database backup was
+ * recent enough instead of taking one. That made the button's promise
+ * conditional on a cron somewhere else having run, which is not what "press
+ * the button, then you may update" means.
+ *
+ * A project needs the database credentials for this. Without them the backup
+ * fails, and with it the update — deliberately: an update with no way back is
+ * exactly what this is meant to prevent.
  */
 final readonly class BackupBeforeUpdateService
 {
-    /**
-     * How old the newest database backup execution may be before it no
-     * longer counts as "backed up before this update". Matches a daily
-     * schedule with headroom; override per call if a project's schedule
-     * runs less often.
-     */
-    private const DEFAULT_MAX_DATABASE_BACKUP_AGE = 2 * 3600;
-
     public function __construct(
         private ProjectRepository $projects,
         private CoolifyClient $coolify,
+        private DatabaseBackupService $databaseBackup,
     ) {}
 
     /**
      * @return array{
      *     linked: bool,
      *     storageQueued: bool,
-     *     databaseFresh: bool,
+     *     databaseDumped: bool,
      *     secured: bool,
      *     message: string,
      * }
      */
-    public function run(int $projectUid, int $maxDatabaseBackupAge = self::DEFAULT_MAX_DATABASE_BACKUP_AGE): array
+    public function run(int $projectUid): array
     {
         $project = $this->projects->findByUid($projectUid);
-        $applicationUuid = trim((string)($project['coolify_application_uuid'] ?? ''));
-        $databaseUuid = trim((string)($project['coolify_database_uuid'] ?? ''));
-
-        if ($project === null || $applicationUuid === '' || $databaseUuid === '') {
-            return [
-                'linked' => false,
-                'storageQueued' => false,
-                'databaseFresh' => false,
-                'secured' => false,
-                'message' => 'Project is not linked to a hosting platform.',
-            ];
+        if ($project === null) {
+            return self::failure('Project not found.');
         }
 
+        $applicationUuid = trim((string)($project['coolify_application_uuid'] ?? ''));
         $storageUuid = trim((string)($project['coolify_storage_uuid'] ?? ''));
-        $storageQueued = $storageUuid !== '' && $this->coolify->triggerStorageBackup($applicationUuid, $storageUuid);
 
-        $scheduledBackupUuid = trim((string)($project['coolify_db_scheduled_backup_uuid'] ?? ''));
-        $databaseFresh = $scheduledBackupUuid !== '' && $this->isDatabaseBackupFresh($databaseUuid, $scheduledBackupUuid, $maxDatabaseBackupAge);
+        // The database is what a TYPO3 update can actually break, so a
+        // project that cannot be dumped cannot be backed up at all.
+        if (!DatabaseBackupService::isConfigured($project)) {
+            return self::failure('No database credentials on this project — fill them in on its Database tab.');
+        }
 
-        $status = self::statusString($storageQueued, $databaseFresh);
-        $secured = $storageQueued && $databaseFresh;
+        $dump = $this->databaseBackup->run($project);
+
+        // The volume is optional: a project may have nothing worth keeping in
+        // fileadmin, and a composer update does not touch it anyway. Only a
+        // configured volume that then fails counts against the backup.
+        $storageQueued = true;
+        if ($applicationUuid !== '' && $storageUuid !== '') {
+            $storageQueued = $this->coolify->triggerStorageBackup($applicationUuid, $storageUuid);
+        }
+
+        $secured = $dump['success'] && $storageQueued;
+        $status = self::statusString($dump['success'], $storageQueued);
 
         $values = [
             'last_backup_at' => time(),
@@ -74,9 +76,8 @@ final readonly class BackupBeforeUpdateService
         ];
 
         // Only a successful backup records the state it covers — that
-        // fingerprint is what unlocks the update button, so a half-failed
-        // run must not leave one behind. See
-        // RequestUpdateService::hasCurrentBackup().
+        // fingerprint is what unlocks the update button, so a half-failed run
+        // must not leave one behind. See RequestUpdateService.
         if ($secured) {
             $values['last_backup_state'] = RequestUpdateService::packageState(
                 $this->projects->findPackagesByProject($projectUid)
@@ -88,51 +89,34 @@ final readonly class BackupBeforeUpdateService
         return [
             'linked' => true,
             'storageQueued' => $storageQueued,
-            'databaseFresh' => $databaseFresh,
+            'databaseDumped' => $dump['success'],
             'secured' => $secured,
             'message' => $secured
-                ? 'Storage backup queued and database backup is fresh — safe to update.'
-                : 'Not fully secured: ' . $status . '. Check the hosting platform before updating.',
+                ? $dump['message'] . ' Storage backup queued. Ready to update.'
+                : 'Not backed up: ' . $status . '. ' . $dump['message'],
         ];
     }
 
-    private function isDatabaseBackupFresh(string $databaseUuid, string $scheduledBackupUuid, int $maxAge): bool
+    /**
+     * @return array{linked: bool, storageQueued: bool, databaseDumped: bool, secured: bool, message: string}
+     */
+    private static function failure(string $message): array
     {
-        $execution = $this->coolify->latestDatabaseBackupExecution($databaseUuid, $scheduledBackupUuid);
-
-        return $execution !== null && self::executionIsFresh($execution, $maxAge, time());
+        return [
+            'linked' => false,
+            'storageQueued' => false,
+            'databaseDumped' => false,
+            'secured' => false,
+            'message' => $message,
+        ];
     }
 
-    /**
-     * Pure decision, pulled out of isDatabaseBackupFresh so the self-check
-     * (Tests/BackupBeforeUpdateServiceTest.php) can exercise it without a
-     * database connection or an HTTP client — this is the only branch in
-     * the class worth testing in isolation.
-     *
-     * @param array{status: string, created_at: string, filename: string} $execution
-     */
-    private static function statusString(bool $storageQueued, bool $databaseFresh): string
+    private static function statusString(bool $databaseDumped, bool $storageQueued): string
     {
         return sprintf(
-            'storage:%s,database:%s',
-            $storageQueued ? 'queued' : 'failed',
-            $databaseFresh ? 'fresh' : 'stale'
+            'database:%s,storage:%s',
+            $databaseDumped ? 'dumped' : 'failed',
+            $storageQueued ? 'queued' : 'failed'
         );
-    }
-
-    public static function executionIsFresh(array $execution, int $maxAge, int $now): bool
-    {
-        // The hosting platform's own backup status wording; anything else
-        // (failed, running from a stale run, …) does not count as a safe backup.
-        if (!in_array($execution['status'], ['success', 'ok'], true)) {
-            return false;
-        }
-
-        $createdAt = strtotime($execution['created_at']);
-        if ($createdAt === false) {
-            return false;
-        }
-
-        return ($now - $createdAt) <= $maxAge;
     }
 }

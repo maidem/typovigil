@@ -39,23 +39,32 @@
             <trans-unit id="tx_typovigil_project.coolify_storage_uuid.description">
                 <source>UUID of the volume holding fileadmin, from the platform API (GET /applications/{uuid}/storages) — not the volume name shown in the UI, which the API rejects with "Storage not found". Required for a storage backup.</source>
             </trans-unit>
-            <trans-unit id="tx_typovigil_project.coolify_storage_backup_uuid">
-                <source>Hosting platform storage backup schedule UUID</source>
-            </trans-unit>
-            <trans-unit id="tx_typovigil_project.coolify_storage_backup_uuid.description">
-                <source>Written by typovigil:onboard-coolify, not by hand.</source>
-            </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_database_uuid">
                 <source>Hosting platform database UUID</source>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_database_uuid.description">
                 <source>UUID of the database resource on the hosting platform that belongs to this application.</source>
             </trans-unit>
-            <trans-unit id="tx_typovigil_project.coolify_db_scheduled_backup_uuid">
-                <source>Hosting platform database backup schedule UUID</source>
+            <trans-unit id="tab.database">
+                <source>Database</source>
             </trans-unit>
-            <trans-unit id="tx_typovigil_project.coolify_db_scheduled_backup_uuid.description">
-                <source>UUID of the database's scheduled backup configuration. Used to check whether the last automatic backup is recent enough — the hosting platform has no on-demand database backup endpoint.</source>
+            <trans-unit id="tx_typovigil_project.db_host">
+                <source>Database host</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.db_port">
+                <source>Database port</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.db_name">
+                <source>Database name</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.db_user">
+                <source>Database user</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.db_password">
+                <source>Database password</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.db_password.description">
+                <source>Stored encrypted, keyed off the encryptionKey of this installation. Needed for the backup button: TypoVigil dumps the database itself, because the hosting platform can only schedule database backups, not run one on demand.</source>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.last_backup_at">
                 <source>Last backup check</source>

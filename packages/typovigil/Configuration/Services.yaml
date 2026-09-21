@@ -49,12 +49,6 @@ services:
         command: 'typovigil:backup'
         description: 'Back a project up on Coolify before applying an update'
 
-  Maidemde\Typovigil\Command\OnboardCoolifyCommand:
-    tags:
-      - name: 'console.command'
-        command: 'typovigil:onboard-coolify'
-        description: "Create a project's Coolify backup schedules from its linked UUIDs"
-
   Maidemde\Typovigil\Command\CheckAndAnalyzeCommand:
     tags:
       - name: 'console.command'
