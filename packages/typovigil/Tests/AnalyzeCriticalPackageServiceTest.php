@@ -73,4 +73,26 @@ check(
     'falls back to the extension key when there is no composer name'
 );
 
+// The subject decides whether a stored report still counts as current. It
+// must ignore checked_at: UpdateChecker rewrites that on every hourly run,
+// and keying off it meant paying for a fresh AI call every hour for a
+// finding that had not changed at all.
+$before = AnalyzeCriticalPackageService::reportSubject($package + ['checked_at' => 1000]);
+$after = AnalyzeCriticalPackageService::reportSubject($package + ['checked_at' => 999999]);
+check($before === $after, 'a re-check alone does not change the report subject');
+
+$upgraded = $package;
+$upgraded['latest_version'] = '1.3.0';
+check(
+    AnalyzeCriticalPackageService::reportSubject($upgraded) !== $before,
+    'a newer target version does change the report subject'
+);
+
+$moved = $package;
+$moved['installed_version'] = '1.1.0';
+check(
+    AnalyzeCriticalPackageService::reportSubject($moved) !== $before,
+    'a changed installed version does change the report subject'
+);
+
 fwrite(STDOUT, "OK: {$checks} checks passed\n");

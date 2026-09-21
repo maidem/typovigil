@@ -38,13 +38,18 @@ final readonly class AnalyzeCriticalPackageService
             return ['analyzed' => false, 'message' => 'Eden AI is not configured.'];
         }
 
-        // Idempotency: a report already generated after this package was
-        // last checked is still current — do not pay for another AI call
-        // on every hourly run while nothing about the finding has changed.
-        $reportCreatedAt = (int)($package['ai_report_created_at'] ?? 0);
-        $checkedAt = (int)($package['checked_at'] ?? 0);
+        // Idempotency: a report describes one finding — this package, from
+        // this version, to that version. While those three are unchanged the
+        // report still says the truth, however often the package has been
+        // re-checked since.
+        //
+        // Comparing against checked_at instead (as this did originally) meant
+        // paying for a new report every hour: UpdateChecker sets checked_at to
+        // "now" on every run, changed finding or not, so it was always newer
+        // than the report and the guard never held.
+        $subject = self::reportSubject($package);
         $hasReport = (string)($package['ai_report_json'] ?? '') !== '';
-        if ($hasReport && $reportCreatedAt >= $checkedAt) {
+        if ($hasReport && (string)($package['ai_report_subject'] ?? '') === $subject) {
             return ['analyzed' => false, 'message' => 'Report already current.'];
         }
 
@@ -73,10 +78,27 @@ final readonly class AnalyzeCriticalPackageService
                 'ai_report_json' => json_encode(['report' => $answer], JSON_THROW_ON_ERROR),
                 'ai_report_status' => 'pending',
                 'ai_report_created_at' => time(),
+                'ai_report_subject' => $subject,
             ]
         );
 
         return ['analyzed' => true, 'message' => 'Report generated.'];
+    }
+
+    /**
+     * The finding a report is about: package, installed version, target
+     * version. Two runs that produce the same subject would produce the same
+     * report, so the second one is not worth paying for.
+     *
+     * @param array<string, mixed> $package
+     */
+    public static function reportSubject(array $package): string
+    {
+        return implode('@', [
+            (string)($package['composer_name'] ?: $package['extension_key'] ?? ''),
+            (string)($package['installed_version'] ?? ''),
+            (string)($package['latest_version'] ?? ''),
+        ]);
     }
 
     /**

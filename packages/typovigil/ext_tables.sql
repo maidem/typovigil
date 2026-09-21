@@ -17,6 +17,16 @@ CREATE TABLE tx_typovigil_project (
     last_backup_at int(11) unsigned DEFAULT 0 NOT NULL,
     last_backup_status varchar(255) DEFAULT '' NOT NULL,
 
+    -- Optional GitHub linkage, "owner/repo". Empty means the update button
+    -- stays hidden for this project: without a repository there is nowhere to
+    -- open a pull request, and updating the live installation directly is
+    -- exactly what this feature avoids.
+    github_repo varchar(255) DEFAULT '' NOT NULL,
+    -- When someone last requested an update. Not "when it was updated": the
+    -- pull request may sit unmerged for days, and the agent keeps reporting
+    -- the old version until a deploy actually happens.
+    update_requested_at int(11) unsigned DEFAULT 0 NOT NULL,
+
     KEY token_hash (token_hash)
 );
 
@@ -44,6 +54,10 @@ CREATE TABLE tx_typovigil_package (
     ai_report_json text,
     ai_report_status varchar(16) DEFAULT '' NOT NULL,
     ai_report_created_at int(11) unsigned DEFAULT 0 NOT NULL,
+    -- The finding the stored report describes: "name@installed@latest". A run
+    -- that would produce this same subject again is skipped, so an unchanged
+    -- critical package costs one AI call in total, not one per hourly run.
+    ai_report_subject varchar(255) DEFAULT '' NOT NULL,
 
     KEY project (project),
     KEY project_package (project, composer_name),
