@@ -27,14 +27,17 @@ function check(bool $condition, string $message): void
     }
 }
 
-// Stand-in for TYPO3\CMS\Core\Crypto\Random, so this runs without a
-// bootstrap — the cipher only needs random bytes from it.
-if (!class_exists(\TYPO3\CMS\Core\Crypto\Random::class)) {
-    eval('namespace TYPO3\CMS\Core\Crypto; class Random { public function generateRandomBytes(int $length): string { return random_bytes($length); } }');
-}
-
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = str_repeat('a', 96);
-$cipher = new SecretCipher(new \TYPO3\CMS\Core\Crypto\Random());
+
+// No constructor arguments on purpose: a DataHandler hook reaches this
+// through GeneralUtility::makeInstance(), which cannot resolve any. It once
+// took one, and every save of a project record died with "Too few arguments"
+// — a 500 in the backend that this check did not catch, because it was
+// wiring the dependency up by hand.
+check((new ReflectionClass(SecretCipher::class))->getConstructor() === null,
+    'the cipher is constructible without arguments');
+
+$cipher = new SecretCipher();
 
 $secret = 'p4ssw0rd mit Ümläuten und "Anführungszeichen"';
 $encrypted = $cipher->encrypt($secret);

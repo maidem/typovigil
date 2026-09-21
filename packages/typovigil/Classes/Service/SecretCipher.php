@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Maidemde\Typovigil\Service;
 
-use TYPO3\CMS\Core\Crypto\Random;
-
 /**
  * Encrypts and decrypts the one kind of secret TypoVigil has to keep: a
  * monitored project's database password.
@@ -26,7 +24,9 @@ final readonly class SecretCipher
     private const PREFIX = 'enc:v1:';
     private const TAG_BYTES = 16;
 
-    public function __construct(private Random $random) {}
+    // No constructor: this is reached from a DataHandler hook through
+    // GeneralUtility::makeInstance(), which cannot resolve arguments there.
+    // random_bytes() is the same source TYPO3's Random uses for this anyway.
 
     /**
      * Whether a stored value is already encrypted — so a password typed into
@@ -52,7 +52,7 @@ final readonly class SecretCipher
         }
 
         $ivLength = (int)openssl_cipher_iv_length(self::CIPHER);
-        $iv = $this->random->generateRandomBytes($ivLength);
+        $iv = random_bytes($ivLength);
         $tag = '';
 
         $ciphertext = openssl_encrypt($plaintext, self::CIPHER, $key, OPENSSL_RAW_DATA, $iv, $tag, '', self::TAG_BYTES);
