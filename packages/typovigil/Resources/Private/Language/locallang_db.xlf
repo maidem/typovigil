@@ -87,6 +87,18 @@
             <trans-unit id="tab.coolify">
                 <source>Hosting platform</source>
             </trans-unit>
+            <trans-unit id="tab.github">
+                <source>Repository</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.github_repo">
+                <source>GitHub repository</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.github_repo.description">
+                <source>owner/repo — the repository this project is deployed from. Required for the update button: the update arrives as a pull request there, never directly on the installation. The repository needs the typovigil-update.yml workflow.</source>
+            </trans-unit>
+            <trans-unit id="tx_typovigil_project.update_requested_at">
+                <source>Update last requested</source>
+            </trans-unit>
             <trans-unit id="task.updateCheck.title">
                 <source>TypoVigil: check for updates</source>
             </trans-unit>

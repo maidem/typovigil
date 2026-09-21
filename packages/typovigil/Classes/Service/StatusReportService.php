@@ -69,11 +69,19 @@ final readonly class StatusReportService
             return null;
         }
 
+        $packages = $this->sortBySeverity($this->projects->findPackagesByProject($projectUid));
+
         $summary = $this->summarize($project);
-        $summary['packages'] = array_map(
-            self::withAiReportText(...),
-            $this->sortBySeverity($this->projects->findPackagesByProject($projectUid))
-        );
+        $summary['packages'] = array_map(self::withAiReportText(...), $packages);
+
+        // State for the update button, resolved here rather than in the
+        // template: Fluid cannot call the service's static gates, and the
+        // template should not re-derive the rules either way.
+        $summary['canRequestUpdate'] = RequestUpdateService::appliesTo($project);
+        $summary['updateBlockedBecause'] = RequestUpdateService::blockedBecause($project, $packages);
+        $summary['updatablePackageCount'] = count(RequestUpdateService::updatablePackages($packages));
+        $summary['updateRequestedAt'] = (int)($project['update_requested_at'] ?? 0);
+        $summary['githubRepo'] = trim((string)($project['github_repo'] ?? ''));
 
         return $summary;
     }

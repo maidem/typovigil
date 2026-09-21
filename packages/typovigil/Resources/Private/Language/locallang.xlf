@@ -171,6 +171,15 @@
             <trans-unit id="backend.aiReport">
                 <source>AI risk report:</source>
             </trans-unit>
+            <trans-unit id="backend.requestUpdate">
+                <source>Request update</source>
+            </trans-unit>
+            <trans-unit id="backend.updateRequested">
+                <source>Update requested:</source>
+            </trans-unit>
+            <trans-unit id="backend.updateRequestedHint">
+                <source>a pull request is waiting in %s. The installation changes once it is merged and deployed.</source>
+            </trans-unit>
             <trans-unit id="backend.outdatedBadge">
                 <source>outdated</source>
             </trans-unit>

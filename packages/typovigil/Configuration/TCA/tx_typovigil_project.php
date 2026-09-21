@@ -112,6 +112,23 @@ return [
                 'readOnly' => true,
             ],
         ],
+        'github_repo' => [
+            'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.github_repo',
+            'description' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.github_repo.description',
+            'config' => [
+                'type' => 'input',
+                'size' => 40,
+                'eval' => 'trim',
+            ],
+        ],
+        'update_requested_at' => [
+            'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.update_requested_at',
+            'config' => [
+                'type' => 'datetime',
+                'format' => 'datetime',
+                'readOnly' => true,
+            ],
+        ],
         'fe_users' => [
             'label' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.fe_users',
             'description' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tx_typovigil_project.fe_users.description',
@@ -155,6 +172,8 @@ return [
                 --div--;LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tab.coolify,
                     coolify_application_uuid, coolify_storage_uuid,
                     coolify_database_uuid, coolify_db_scheduled_backup_uuid,
+                --div--;LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:tab.github,
+                    github_repo, update_requested_at,
             ',
         ],
     ],

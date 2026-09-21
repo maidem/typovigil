@@ -7,6 +7,7 @@ namespace Maidemde\Typovigil\Controller;
 use Maidemde\Typovigil\Domain\Repository\ProjectRepository;
 use Maidemde\Typovigil\Service\CustomerStorageService;
 use Maidemde\Typovigil\Service\ProjectTokenService;
+use Maidemde\Typovigil\Service\RequestUpdateService;
 use Maidemde\Typovigil\Service\StatusReportService;
 use Maidemde\Typovigil\Service\UpdateChecker;
 use Maidemde\Typovigil\Service\VersionCheckService;
@@ -30,6 +31,7 @@ final class BackendController extends ActionController
         private readonly ExtensionConfiguration $extensionConfiguration,
         private readonly CustomerStorageService $customerStorage,
         private readonly UpdateChecker $updateChecker,
+        private readonly RequestUpdateService $requestUpdate,
     ) {}
 
     public function indexAction(): ResponseInterface
@@ -81,6 +83,26 @@ final class BackendController extends ActionController
         $moduleTemplate->assign('project', $detail);
 
         return $moduleTemplate->renderResponse('Backend/Show');
+    }
+
+    /**
+     * Asks the project's repository to open an update pull request.
+     *
+     * Nothing happens to the live installation here — see
+     * RequestUpdateService for why the update goes through git rather than
+     * straight onto the server.
+     */
+    public function requestUpdateAction(int $project): ResponseInterface
+    {
+        $result = $this->requestUpdate->run($project);
+
+        $this->addPersistentFlashMessage(
+            $result['message'],
+            'TypoVigil',
+            $result['requested'] ? ContextualFeedbackSeverity::OK : ContextualFeedbackSeverity::WARNING
+        );
+
+        return $this->redirect('show', null, null, ['project' => $project]);
     }
 
     /**

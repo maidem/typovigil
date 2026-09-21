@@ -223,6 +223,18 @@
                 <source>AI risk report:</source>
                 <target>KI-Risikobericht:</target>
             </trans-unit>
+            <trans-unit id="backend.requestUpdate">
+                <source>Request update</source>
+                <target>Update beauftragen</target>
+            </trans-unit>
+            <trans-unit id="backend.updateRequested">
+                <source>Update requested:</source>
+                <target>Update beauftragt:</target>
+            </trans-unit>
+            <trans-unit id="backend.updateRequestedHint">
+                <source>a pull request is waiting in %s. The installation changes once it is merged and deployed.</source>
+                <target>in %s wartet ein Pull Request. Die Installation ändert sich erst, wenn er gemergt und deployt wurde.</target>
+            </trans-unit>
             <trans-unit id="backend.security">
                 <source>security</source>
                 <target>Sicherheit</target>

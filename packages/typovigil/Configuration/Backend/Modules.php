@@ -20,6 +20,7 @@ return [
                 'show',
                 'regenerateSetupLink',
                 'checkNow',
+                'requestUpdate',
             ],
         ],
     ],

@@ -13,7 +13,40 @@
         <f:link.action action="checkNow" arguments="{project: project.uid, returnTo: 'show'}" class="btn btn-default">
             <f:translate key="backend.checkNow" />
         </f:link.action>
+
+        <!-- Only for projects with a repository: without one there is nowhere
+             to open a pull request, so the button does not apply rather than
+             being offered and refused. -->
+        <f:if condition="{project.canRequestUpdate}">
+            <f:if condition="{project.updateBlockedBecause}">
+                <f:then>
+                    <!-- Disabled with the reason next to it: a dead button
+                         nobody can explain is worse than no button. -->
+                    <span class="btn btn-default disabled" aria-disabled="true">
+                        <f:translate key="backend.requestUpdate" />
+                    </span>
+                    <span class="text-warning">{project.updateBlockedBecause}</span>
+                </f:then>
+                <f:else>
+                    <f:if condition="{project.updatablePackageCount} > 0">
+                        <f:link.action action="requestUpdate" arguments="{project: project.uid}" class="btn btn-primary">
+                            <f:translate key="backend.requestUpdate" />
+                        </f:link.action>
+                    </f:if>
+                </f:else>
+            </f:if>
+        </f:if>
     </p>
+
+    <f:if condition="{project.updateRequestedAt}">
+        <div class="callout callout-info">
+            <p>
+                <strong><f:translate key="backend.updateRequested" /></strong>
+                <f:format.date format="d.m.Y H:i">{project.updateRequestedAt}</f:format.date>
+                — <f:translate key="backend.updateRequestedHint" arguments="{0: project.githubRepo}" />
+            </p>
+        </div>
+    </f:if>
 
     <f:if condition="{project.isStale}">
         <div class="callout callout-warning">
