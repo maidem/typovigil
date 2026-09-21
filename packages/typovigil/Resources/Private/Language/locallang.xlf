@@ -21,6 +21,12 @@
             <trans-unit id="backend.newProject">
                 <source>New project</source>
             </trans-unit>
+            <trans-unit id="backend.checkNow">
+                <source>Check now</source>
+            </trans-unit>
+            <trans-unit id="backend.checkAll">
+                <source>Check all</source>
+            </trans-unit>
             <trans-unit id="backend.noProjectStoragePid">
                 <source>No project storage page configured. Set %1$s in the extension configuration of %2$s to enable "New project" here.</source>
             </trans-unit>

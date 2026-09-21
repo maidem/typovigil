@@ -10,6 +10,9 @@
 
     <p>
         <f:link.action action="index" class="btn btn-default"><f:translate key="backend.allProjects" /></f:link.action>
+        <f:link.action action="checkNow" arguments="{project: project.uid, returnTo: 'show'}" class="btn btn-default">
+            <f:translate key="backend.checkNow" />
+        </f:link.action>
     </p>
 
     <f:if condition="{project.isStale}">

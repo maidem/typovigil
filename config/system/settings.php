@@ -2,7 +2,7 @@
 return [
     'BE' => [
         'debug' => false,
-        'installToolPassword' => getenv('TYPO3_INSTALL_TOOL_PASSWORD_HASH') ?: '',
+        'installToolPassword' => '$2y$12$n4t30AmePQ.sVQJyyJAAS.ajBs1Q5dB2O0OAchtxcHw0eWb/.eXMW',
         'passwordHashing' => [
             'className' => 'TYPO3\\CMS\\Core\\Crypto\\PasswordHashing\\Argon2iPasswordHash',
             'options' => [],
@@ -38,11 +38,13 @@ return [
         'scheduler' => [
             'maxLifetime' => '1440',
         ],
-        // Versioned on purpose: extension:setup runs on every container start and
-        // rewrites extension configuration from ext_conf_template.txt, which would
-        // reset this to its default and silently switch the agency role off.
         'typovigil' => [
             'agencyFeGroupId' => '2',
+            'coolifyApiToken' => '',
+            'coolifyApiUrl' => '',
+            'edenAiApiToken' => '',
+            'edenAiApiUrl' => '',
+            'edenAiModel' => 'google/gemini-2.5-flash',
             'projectStoragePid' => '8',
         ],
     ],
@@ -90,7 +92,7 @@ return [
         ],
         'devIPmask' => '',
         'displayErrors' => 0,
-        'encryptionKey' => getenv('TYPO3_ENCRYPTION_KEY') ?: '',
+        'encryptionKey' => 'dd91ae06bfc1233f2d4c21527320e07fd75c54c5fe3ea0dcc303944868d0139b3c3dfbb42dc03312405e850284dfa4b8',
         'exceptionalErrors' => 12290,
         'features' => [
             'frontend.cache.autoTagging' => true,

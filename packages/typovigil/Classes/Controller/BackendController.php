@@ -8,6 +8,7 @@ use Maidemde\Typovigil\Domain\Repository\ProjectRepository;
 use Maidemde\Typovigil\Service\CustomerStorageService;
 use Maidemde\Typovigil\Service\ProjectTokenService;
 use Maidemde\Typovigil\Service\StatusReportService;
+use Maidemde\Typovigil\Service\UpdateChecker;
 use Maidemde\Typovigil\Service\VersionCheckService;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
@@ -28,6 +29,7 @@ final class BackendController extends ActionController
         private readonly ProjectTokenService $projectTokens,
         private readonly ExtensionConfiguration $extensionConfiguration,
         private readonly CustomerStorageService $customerStorage,
+        private readonly UpdateChecker $updateChecker,
     ) {}
 
     public function indexAction(): ResponseInterface
@@ -41,6 +43,31 @@ final class BackendController extends ActionController
         $moduleTemplate->assign('customers', $this->projects->findAllCustomersWithProjects());
 
         return $moduleTemplate->renderResponse('Backend/Index');
+    }
+
+    /**
+     * Runs the same check the scheduler task runs, on demand — for one
+     * project, or for all of them when $project is left at 0 (the "check
+     * all" button on the overview). Synchronous: fine for the package
+     * counts this runs against today, but a growing project list will
+     * eventually want this pushed into a queue instead.
+     *
+     * $returnTo brings the user back to wherever they triggered this from
+     * (the overview list or a project's detail page) instead of always
+     * landing on the index.
+     */
+    public function checkNowAction(int $project = 0, string $returnTo = 'index'): ResponseInterface
+    {
+        $checked = $this->updateChecker->run($project === 0 ? null : $project);
+        $this->addPersistentFlashMessage(
+            sprintf('Checked %d packages.', $checked),
+            'TypoVigil',
+            ContextualFeedbackSeverity::OK
+        );
+
+        return $returnTo === 'show'
+            ? $this->redirect('show', null, null, ['project' => $project])
+            : $this->redirect('index');
     }
 
     public function showAction(int $project): ResponseInterface

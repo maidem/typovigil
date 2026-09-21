@@ -25,11 +25,14 @@ final readonly class UpdateChecker
     ) {}
 
     /**
+     * @param int|null $projectUid check only this project instead of all of them
      * @return int number of packages examined
      */
-    public function run(): int
+    public function run(?int $projectUid = null): int
     {
-        $packages = $this->projects->findAllPackages();
+        $packages = $projectUid === null
+            ? $this->projects->findAllPackages()
+            : $this->projects->findPackagesByProject($projectUid);
         if ($packages === []) {
             return 0;
         }

@@ -51,6 +51,10 @@
                 <be:link.newRecord table="tx_typovigil_project" pid="{projectStoragePid}" class="btn btn-primary">
                     <f:translate key="backend.newProject" />
                 </be:link.newRecord>
+                <f:link.action action="checkNow" class="btn btn-default">
+                    <core:icon identifier="actions-refresh" size="small" />
+                    <f:translate key="backend.checkAll" />
+                </f:link.action>
             </p>
         </f:then>
         <f:else>
@@ -142,6 +146,14 @@
                             </td>
                             <td class="col-control">
                                 <div class="btn-group" role="group">
+                                    <f:link.action
+                                        action="checkNow"
+                                        arguments="{project: project.uid, returnTo: 'index'}"
+                                        class="btn btn-default"
+                                        title="{f:translate(key: 'backend.checkNow')}"
+                                    >
+                                        <core:icon identifier="actions-refresh" size="small" />
+                                    </f:link.action>
                                     <be:link.editRecord
                                         table="tx_typovigil_project"
                                         uid="{project.uid}"
