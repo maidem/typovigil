@@ -39,7 +39,13 @@ final class EncryptDatabasePassword
             return;
         }
 
-        $value = trim((string)$fieldArray['db_password']);
+        // Not trimmed: a password is an opaque string, and a generated one
+        // can legitimately start or end with whitespace. Trimming it here
+        // silently produces a different password than the one on the
+        // database — which is exactly what happened before this comment
+        // was written: a correct password rejected every time, because this
+        // hook had quietly changed it before encrypting it.
+        $value = (string)$fieldArray['db_password'];
         if ($value === '' || SecretCipher::isEncrypted($value)) {
             return;
         }
