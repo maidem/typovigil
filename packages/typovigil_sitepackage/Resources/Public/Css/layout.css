@@ -608,11 +608,12 @@ body {
 }
 
 /* The core is not one extension among many — give it a visible outline.
-   box-shadow rather than outline: an outline with an offset reads as extra
-   height next to the plain badges. */
+   The plain border already does that; a bare border-color change keeps the
+   exact same box (all badges share border: 1px solid ...), so nothing looks
+   taller. The inset box-shadow this used to carry doubled up on top of that
+   border and made the badge read visibly heavier/taller than its neighbors. */
 .tv-badge--core {
     border-color: currentColor;
-    box-shadow: inset 0 0 0 1px currentColor;
 }
 
 .tv-legend {
