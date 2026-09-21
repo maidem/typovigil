@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Maidemde\TypovigilSitepackage\Controller;
 
 use Maidemde\Typovigil\Domain\Repository\ProjectRepository;
+use Maidemde\Typovigil\Service\RequestUpdateService;
 use Maidemde\Typovigil\Service\StatusReportService;
 use Maidemde\Typovigil\Service\VersionCheckService;
 use Psr\Http\Message\ResponseInterface;
@@ -23,12 +24,19 @@ use TYPO3\CMS\Frontend\Controller\ErrorController;
  */
 final class PortalController extends ActionController
 {
+    /**
+     * Where requestUpdateAction() leaves its outcome for the redirected-to
+     * showAction() to pick up and clear.
+     */
+    private const UPDATE_RESULT_SESSION_KEY = 'typovigil.updateResult';
+
     public function __construct(
         private readonly StatusReportService $statusReport,
         private readonly ProjectRepository $projects,
         private readonly Context $context,
         private readonly ExtensionConfiguration $extensionConfiguration,
         private readonly VersionCheckService $versionCheck,
+        private readonly RequestUpdateService $requestUpdate,
     ) {}
 
     /**
@@ -106,10 +114,75 @@ final class PortalController extends ActionController
             $detail['packages'] ?? []
         );
 
+        if (!$seesAll) {
+            // The update fields are agency business, and githubRepo would tell
+            // a customer where the project is hosted in source form. Stripped
+            // here rather than merely hidden in the template, for the same
+            // reason the AI report is.
+            unset(
+                $detail['canRequestUpdate'],
+                $detail['updateBlockedBecause'],
+                $detail['updatablePackageCount'],
+                $detail['updateRequestedAt'],
+                $detail['githubRepo'],
+            );
+        }
+
         $this->view->assign('project', $detail);
         $this->view->assign('seesAllProjects', $seesAll);
+        $this->view->assign('updateResult', $seesAll ? $this->takeUpdateResult() : null);
 
         return $this->htmlResponse();
+    }
+
+    /**
+     * The outcome of the last update request in this session, cleared as it is
+     * read so a reload does not keep repeating it.
+     *
+     * @return array{requested: bool, message: string}|null
+     */
+    private function takeUpdateResult(): ?array
+    {
+        $user = $this->request->getAttribute('frontend.user');
+        $stashed = $user?->getSessionData(self::UPDATE_RESULT_SESSION_KEY);
+        if (!is_array($stashed)) {
+            return null;
+        }
+
+        $user?->setAndSaveSessionData(self::UPDATE_RESULT_SESSION_KEY, null);
+
+        return $stashed;
+    }
+
+    /**
+     * Requests an update for a project — agency only, same two independent
+     * checks as approveAiReportAction: seesAllProjects() restricts this to
+     * the agency, isVisibleToFrontendUser() keeps even an agency account to
+     * the projects it may see.
+     */
+    public function requestUpdateAction(int $project): ResponseInterface
+    {
+        $userId = $this->frontendUserId();
+        if ($userId === 0 || !$this->seesAllProjects()) {
+            return $this->accessDenied('Not allowed.');
+        }
+
+        if (!$this->projects->isVisibleToFrontendUser($project, $userId, true)) {
+            return $this->accessDenied('This project is not available to your account.');
+        }
+
+        $result = $this->requestUpdate->run($project);
+
+        // Stashed in the frontend user's session rather than sent as a flash
+        // message: rendering those needs a partial this site does not have,
+        // so the message would vanish silently — and "GitHub refused the
+        // request" is the one outcome that must not.
+        $this->request->getAttribute('frontend.user')?->setAndSaveSessionData(
+            self::UPDATE_RESULT_SESSION_KEY,
+            $result
+        );
+
+        return $this->redirect('show', null, null, ['project' => $project]);
     }
 
     /**

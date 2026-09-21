@@ -121,6 +121,51 @@
                 </section>
             </f:if>
         </f:for>
+
+        <!-- Sits after the reports on purpose: approving them is what unblocks
+             this button, so the two belong in reading order. -->
+        <f:if condition="{project.canRequestUpdate}">
+            <section class="tv-update">
+                <h3 class="tv-update__heading">Update</h3>
+
+                <f:if condition="{updateResult}">
+                    <p class="tv-update__result tv-update__result--{f:if(condition: updateResult.requested, then: 'ok', else: 'warning')}">
+                        {updateResult.message}
+                    </p>
+                </f:if>
+
+                <f:if condition="{project.updateRequestedAt}">
+                    <p class="tv-update__requested">
+                        Beauftragt am <f:format.date format="d.m.Y H:i">{project.updateRequestedAt}</f:format.date>.
+                        In {project.githubRepo} wartet ein Pull Request — die Installation
+                        ändert sich erst, wenn er gemergt und deployt wurde.
+                    </p>
+                </f:if>
+
+                <f:if condition="{project.updateBlockedBecause}">
+                    <f:then>
+                        <p class="tv-update__blocked">{project.updateBlockedBecause}</p>
+                    </f:then>
+                    <f:else>
+                        <f:if condition="{project.updatablePackageCount} > 0">
+                            <f:then>
+                                <p class="tv-update__text">
+                                    {project.updatablePackageCount} Komponenten können aktualisiert werden.
+                                    Der Update-Auftrag öffnet einen Pull Request in {project.githubRepo};
+                                    die Installation bleibt unverändert, bis er gemergt und deployt wurde.
+                                </p>
+                                <f:form action="requestUpdate" arguments="{project: project.uid}" class="tv-update__form">
+                                    <f:form.submit value="Update beauftragen" class="tv-btn" />
+                                </f:form>
+                            </f:then>
+                            <f:else>
+                                <p class="tv-update__text">Alles auf dem neuesten Stand.</p>
+                            </f:else>
+                        </f:if>
+                    </f:else>
+                </f:if>
+            </section>
+        </f:if>
     </f:if>
 </div>
 

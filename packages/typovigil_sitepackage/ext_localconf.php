@@ -15,7 +15,7 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['backend']['backendFavicon'] = 'EXT:ty
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'TypovigilSitepackage',
     'Portal',
-    [\Maidemde\TypovigilSitepackage\Controller\PortalController::class => 'list,show,security,approveAiReport'],
-    [\Maidemde\TypovigilSitepackage\Controller\PortalController::class => 'list,show,security,approveAiReport'],
+    [\Maidemde\TypovigilSitepackage\Controller\PortalController::class => 'list,show,security,approveAiReport,requestUpdate'],
+    [\Maidemde\TypovigilSitepackage\Controller\PortalController::class => 'list,show,security,approveAiReport,requestUpdate'],
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );

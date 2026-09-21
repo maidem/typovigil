@@ -1219,6 +1219,54 @@ body > ul a:hover {
     font-weight: 600;
 }
 
+/* Same box as .tv-ai-report — it is the same kind of thing: an agency-only
+   panel below the package list. */
+.tv-update {
+    margin-top: 20px;
+    padding: 16px;
+    border: 1px solid var(--tv-border);
+    border-radius: var(--tv-radius);
+    background: var(--tv-surface);
+}
+
+.tv-update__heading {
+    margin: 0 0 10px;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.tv-update__text,
+.tv-update__requested {
+    margin: 0 0 12px;
+    color: var(--tv-muted);
+}
+
+/* The reason an update cannot be requested is not an error — it is a step
+   that is still open, so it reads in the same colour as an outdated badge
+   rather than a critical one. */
+.tv-update__blocked {
+    margin: 0;
+    color: var(--tv-outdated);
+    font-weight: 600;
+}
+
+.tv-update__form {
+    margin: 0;
+}
+
+.tv-update__result {
+    margin: 0 0 12px;
+    font-weight: 600;
+}
+
+.tv-update__result--ok {
+    color: var(--tv-ok);
+}
+
+.tv-update__result--warning {
+    color: var(--tv-critical);
+}
+
 /* Reusable version of the login form's submit-button styling
    (.frame-type-felogin_login button[type="submit"]) — same pill shape and
    accent fill, but not full-width and not scoped to that one form. */
