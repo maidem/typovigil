@@ -201,7 +201,10 @@ gesichert — was ein `composer update` ohnehin allein betrifft.
 Reiter *Repository*: `owner/repo` des Projekts. In diesem Repository muss
 `.github/workflows/typovigil-update.yml` liegen (Vorlage unter
 `Documentation/examples/`), und unter Settings → Actions → General muss
-*Allow GitHub Actions to create and approve pull requests* aktiv sein.
+*Allow GitHub Actions to create and approve pull requests* aktiv sein. Die
+Vorlage merged den Pull Request selbst, ohne zweite Freigabe — ändert sich
+dort etwas, muss die Kopie in jedem bereits eingebundenen Projekt-Repository
+manuell nachgezogen werden, TypoVigil aktualisiert sie nicht automatisch.
 
 Auf der Zentrale als Umgebungsvariablen: `TYPOVIGIL_GITHUB_TOKEN` (Fine-grained
 PAT mit *Actions: Read and write*), für das Storage-Backup zusätzlich
