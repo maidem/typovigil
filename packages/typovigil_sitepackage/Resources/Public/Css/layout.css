@@ -540,10 +540,10 @@ body {
 
 .tv-packages__heading {
     margin: 0 0 14px;
-    /* 1.2rem: a clear step below .tv-card__title (1.5rem) but still a real
-       step above the 1rem body text, not the previous 1.05rem that read as
-       barely distinct from surrounding copy. */
-    font-size: 1.2rem;
+    /* 1.3rem: a clear step below .tv-card__title (1.5rem), and a real 1.3×
+       step above the 1rem body text — 1.2rem measured as too flat against
+       body copy to read as its own hierarchy level. */
+    font-size: 1.3rem;
     font-weight: 700;
 }
 
@@ -1198,12 +1198,12 @@ body > ul a:hover {
     border-color: color-mix(in srgb, var(--tv-ok) 35%, var(--tv-border));
 }
 
-/* Same level as .tv-packages__heading (1.2rem): both are section headings
+/* Same level as .tv-packages__heading (1.3rem): both are section headings
    within the card, not a sub-level of it — a smaller size here would read
    as less important than "Komponenten" without reason to be. */
 .tv-ai-report__heading {
     margin: 0 0 10px;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     font-weight: 700;
 }
 
@@ -1231,7 +1231,7 @@ body > ul a:hover {
 
 .tv-update__heading {
     margin: 0 0 10px;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     font-weight: 700;
 }
 
