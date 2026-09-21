@@ -125,6 +125,12 @@ return [
             'config' => [
                 'type' => 'password',
                 'size' => 40,
+                // Not hashed: TypoVigil has to send this password to the
+                // project's database, so it must be readable again. It is
+                // encrypted instead, by EncryptDatabasePassword — without
+                // this flag the DataHandler would hash it and the backup
+                // would fail with "access denied" forever.
+                'hashed' => false,
             ],
         ],
         'last_backup_at' => [
