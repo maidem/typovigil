@@ -214,7 +214,7 @@
                 <source>Update requested:</source>
             </trans-unit>
             <trans-unit id="backend.updateRequestedHint">
-                <source>a pull request is waiting in %s. The installation changes once it is merged and deployed.</source>
+                <source>a pull request was opened and merged in %s. The installation changes once it is deployed.</source>
             </trans-unit>
             <trans-unit id="backend.outdatedBadge">
                 <source>outdated</source>

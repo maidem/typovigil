@@ -280,8 +280,8 @@
                 <target>Update beauftragt:</target>
             </trans-unit>
             <trans-unit id="backend.updateRequestedHint">
-                <source>a pull request is waiting in %s. The installation changes once it is merged and deployed.</source>
-                <target>in %s wartet ein Pull Request. Die Installation ändert sich erst, wenn er gemergt und deployt wurde.</target>
+                <source>a pull request was opened and merged in %s. The installation changes once it is deployed.</source>
+                <target>in %s wurde ein Pull Request geöffnet und gemergt. Die Installation ändert sich, sobald er deployt wurde.</target>
             </trans-unit>
             <trans-unit id="backend.security">
                 <source>security</source>
