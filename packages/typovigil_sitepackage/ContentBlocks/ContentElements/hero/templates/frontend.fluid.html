@@ -3,26 +3,34 @@
     xmlns:cb="http://typo3.org/ns/TYPO3/CMS/ContentBlocks/ViewHelpers"
     data-namespace-typo3-fluid="true"
 >
-    <!-- Lives on the start page only (separate from the "Meine Installationen"
-         page with the portal plugin), so it stays visible regardless of login
-         state — nothing here depends on being logged in or out. -->
-    <div class="tv-portal tv-hero">
-        <f:if condition="{data.teaser}">
-            <h1 class="tv-hero__teaser">{data.teaser}</h1>
-        </f:if>
-        <article class="tv-card tv-hero__card">
-            <header class="tv-card__head">
-                <span class="tv-chip tv-chip--ok">Live-Überwachung</span>
-            </header>
-            <!-- Architektur ändert sich nicht redaktionell, daher fest
-                 verdrahtet statt eigenes Feld/DB-Anbindung wie in portfolio-v10.
-                 JSON steht als <script type="application/json">, nicht als
-                 Fluid-String: geschweifte Klammern im JSON würden sonst als
-                 Fluid-Ausdrücke geparst. -->
-            <script type="application/json" id="c{data.uid}-metro">
-                {"nodes":{"agent":{"label":"Agent-Extension\nje Installation","col":0,"row":1},"hub":{"label":"TypoVigil-Hub\nReport · HTTPS","col":1,"row":1},"backup":{"label":"Hosting-Plattform\nSofort-Backup bei Fund","col":2,"row":0},"status":{"label":"Statusübersicht\naktuell · veraltet","col":2,"row":1},"analysis":{"label":"KI-Risikoanalyse\nautomatisch bei kritischem Fund","col":2,"row":2},"sources":{"label":"get.typo3.org\nPackagist · Advisories","col":2,"row":3},"customer":{"label":"Kundenlogin\nFrontend","col":3,"row":1}},"edges":[{"from":"agent","to":"hub","color":"#1c8a7d"},{"from":"hub","to":"backup","color":"#c62f2b"},{"from":"hub","to":"status","color":"#1c8a7d"},{"from":"hub","to":"analysis","color":"#c62f2b"},{"from":"analysis","to":"customer","color":"#c62f2b"},{"from":"hub","to":"sources","color":"#e8590c"},{"from":"sources","to":"status","color":"#e8590c"},{"from":"status","to":"customer","color":"#1c8a7d"}]}
-            </script>
-            <div class="tv-metro tv-hero__metro" data-metro-src="c{data.uid}-metro"></div>
-        </article>
-    </div>
+    <!-- The portal plugin renders both the logged-out security overview and
+         the logged-in project list on this same start page (it needs the
+         former to be reachable without an account), so the hero can't be
+         kept off this page by putting the plugin elsewhere. Instead it
+         hides itself once a frontend user is logged in — f:security.ifAuthenticated
+         already does exactly this for the demo-access bar and the topbar in
+         Layouts/Default.html. -->
+    <f:security.ifAuthenticated>
+        <f:else>
+            <div class="tv-portal tv-hero">
+                <f:if condition="{data.teaser}">
+                    <h1 class="tv-hero__teaser">{data.teaser}</h1>
+                </f:if>
+                <article class="tv-card tv-hero__card">
+                    <header class="tv-card__head">
+                        <span class="tv-chip tv-chip--ok">Live-Überwachung</span>
+                    </header>
+                    <!-- Architektur ändert sich nicht redaktionell, daher fest
+                         verdrahtet statt eigenes Feld/DB-Anbindung wie in portfolio-v10.
+                         JSON steht als <script type="application/json">, nicht als
+                         Fluid-String: geschweifte Klammern im JSON würden sonst als
+                         Fluid-Ausdrücke geparst. -->
+                    <script type="application/json" id="c{data.uid}-metro">
+                        {"nodes":{"agent":{"label":"Agent-Extension\nje Installation","col":0,"row":1},"hub":{"label":"TypoVigil-Hub\nReport · HTTPS","col":1,"row":1},"backup":{"label":"Hosting-Plattform\nSofort-Backup bei Fund","col":2,"row":0},"status":{"label":"Statusübersicht\naktuell · veraltet","col":2,"row":1},"analysis":{"label":"KI-Risikoanalyse\nautomatisch bei kritischem Fund","col":2,"row":2},"sources":{"label":"get.typo3.org\nPackagist · Advisories","col":2,"row":3},"customer":{"label":"Kundenlogin\nFrontend","col":3,"row":1}},"edges":[{"from":"agent","to":"hub","color":"#1c8a7d"},{"from":"hub","to":"backup","color":"#c62f2b"},{"from":"hub","to":"status","color":"#1c8a7d"},{"from":"hub","to":"analysis","color":"#c62f2b"},{"from":"analysis","to":"customer","color":"#c62f2b"},{"from":"hub","to":"sources","color":"#e8590c"},{"from":"sources","to":"status","color":"#e8590c"},{"from":"status","to":"customer","color":"#1c8a7d"}]}
+                    </script>
+                    <div class="tv-metro tv-hero__metro" data-metro-src="c{data.uid}-metro"></div>
+                </article>
+            </div>
+        </f:else>
+    </f:security.ifAuthenticated>
 </html>
