@@ -1,26 +1,23 @@
 # TypoVigil update workflow.
 #
-# Copy this file to .github/workflows/typovigil-update.yml in every repository
-# TypoVigil should be able to update. The hub starts it through the GitHub API
-# and passes the packages it found an update for; the actual work happens here,
-# in the project's own repository, so composer.lock stays in git and a local
-# ddev copy catches up with a plain `git pull`.
+# Copy this file to .github/workflows/ in every repository TypoVigil should be
+# able to update. Started by the hub through the GitHub API when someone
+# presses "Update beauftragen" there. The update happens in the repository, so
+# composer.lock stays in git: the live installation only changes when the
+# resulting pull request is merged and the project's own deploy workflow runs.
 #
-# Requirements in the repository:
-#   Settings → Actions → General → Workflow permissions
-#     - "Read and write permissions"
-#     - "Allow GitHub Actions to create and approve pull requests"
-# No secret is needed: the automatic GITHUB_TOKEN covers both the push and the
-# pull request. The token the *hub* uses to start this workflow lives on the
-# hub (TYPOVIGIL_GITHUB_TOKEN), not here.
+# Requires in Settings → Actions → General → Workflow permissions:
+#   - "Read and write permissions"
+#   - "Allow GitHub Actions to create and approve pull requests"
+# No secret is needed here; the hub's own token lives on the hub.
 
 name: TypoVigil update
 
 on:
     workflow_dispatch:
         inputs:
-            packages:
-                description: 'Space-separated composer names, empty for all'
+            findings:
+                description: 'Packages TypoVigil found an update for (description only)'
                 required: false
                 default: ''
 
@@ -37,24 +34,30 @@ jobs:
 
             - uses: shivammathur/setup-php@v2
               with:
-                  # Match the version the project actually runs on, otherwise
-                  # composer resolves against the wrong platform requirements.
+                  # ADJUST per project: must match .ddev/config.yaml and the
+                  # composer.json platform requirement. Resolving against a
+                  # different version produces a lock file the project cannot
+                  # install.
                   php-version: '8.4'
 
-            - name: Update the requested packages
+            - name: Update
               id: update
-              env:
-                  PACKAGES: ${{ inputs.packages }}
               run: |
                   set -euo pipefail
 
-                  # --with-dependencies: a package rarely updates alone, and
-                  # refusing to move its requirements is how these runs end in
-                  # an unsolvable conflict instead of a pull request.
-                  composer update $PACKAGES \
-                      --with-dependencies \
-                      --no-interaction \
-                      --no-scripts
+                  # A full update, not the package list TypoVigil found: the
+                  # TYPO3 packages pin each other to one exact version
+                  # (typo3/cms-install requires typo3/cms-core 14.3.5, not
+                  # ^14.3), so naming a subset makes composer refuse the whole
+                  # resolution — even with --with-all-dependencies.
+                  #
+                  # The constraints in composer.json are what limits the
+                  # change; they stay untouched, so this cannot cross a major
+                  # version.
+                  #
+                  # --no-scripts: TYPO3's post-install scripts want a database
+                  # and a writable var/, neither of which exists here.
+                  composer update --no-interaction --no-scripts
 
                   if git diff --quiet composer.lock; then
                       echo "changed=no" >> "$GITHUB_OUTPUT"
@@ -62,32 +65,26 @@ jobs:
                       echo "changed=yes" >> "$GITHUB_OUTPUT"
                   fi
 
-            - name: Summarise the change
-              if: steps.update.outputs.changed == 'yes'
-              id: summary
-              run: |
-                  set -euo pipefail
-                  # The lock diff is the honest description of what this PR
-                  # does — far more reliable than restating the hub's input.
-                  git diff composer.lock \
-                      | grep -E '^[+-]\s+"(name|version)"' \
-                      | head -60 > /tmp/lockdiff.txt || true
-                  echo "file=/tmp/lockdiff.txt" >> "$GITHUB_OUTPUT"
-
             - name: Open a pull request
               if: steps.update.outputs.changed == 'yes'
               uses: peter-evans/create-pull-request@v7
               with:
-                  # A fixed branch name means a second run updates the existing
-                  # pull request instead of opening a competing one.
+                  # A fixed branch means a second run updates the open pull
+                  # request instead of opening a competing one.
                   branch: typovigil/update
-                  title: 'TypoVigil: dependency update'
+                  title: 'TypoVigil: Abhängigkeiten aktualisieren'
                   commit-message: 'Update dependencies (requested by TypoVigil)'
                   body: |
-                      Requested by TypoVigil.
+                      Von TypoVigil beauftragt.
 
-                      Packages: `${{ inputs.packages || 'all' }}`
+                      Auslösende Funde: `${{ inputs.findings || 'keine genannt' }}`
 
-                      Merging this changes nothing by itself — the installation
-                      updates on the next deploy.
+                      Aktualisiert wurde alles, was die Constraints in
+                      `composer.json` zulassen — die TYPO3-Pakete hängen
+                      aneinander und lassen sich nicht einzeln bewegen. Was
+                      sich tatsächlich ändert, steht im Diff von
+                      `composer.lock`.
+
+                      Der Merge löst den Deploy-Workflow des Projekts aus —
+                      erst danach ändert sich die Installation.
                   delete-branch: true

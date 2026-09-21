@@ -58,7 +58,9 @@ final readonly class GitHubClient
      * repository's Actions tab, not here.
      *
      * @param string $repo "owner/repo"
-     * @param list<string> $packages composer names to update, empty for all
+     * @param list<string> $packages the findings behind this request, passed
+     *        along so the pull request can name them — not an argument list
+     *        for composer, see RequestUpdateService::updatablePackages()
      */
     public function dispatchUpdateWorkflow(string $repo, array $packages): bool
     {
@@ -92,10 +94,11 @@ final readonly class GitHubClient
                 'json' => [
                     'ref' => 'main',
                     'inputs' => [
-                        // A workflow_dispatch input has to be a string, so the
-                        // package list travels space-separated — that is also
-                        // exactly the shape `composer update` wants.
-                        'packages' => implode(' ', $packages),
+                        // A workflow_dispatch input has to be a string.
+                        // Truncated because GitHub caps an input at 1024
+                        // characters and a large project can exceed that —
+                        // this only feeds the pull request description.
+                        'findings' => mb_substr(implode(' ', $packages), 0, 900),
                     ],
                 ],
             ]);

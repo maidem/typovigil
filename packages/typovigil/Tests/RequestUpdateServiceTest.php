@@ -78,18 +78,20 @@ check(
     'the pending report is reported before the missing backup link'
 );
 
-// Only packages with somewhere to go are handed to composer.
+// The findings behind a request: what has somewhere to go. This describes
+// the update, it is not the argument list for composer — see the method's
+// docblock for why naming a subset does not work with TYPO3.
 $updatable = RequestUpdateService::updatablePackages($approvedPackages);
-check(in_array('typo3/cms-core', $updatable, true), 'a critical package is updatable');
-check(in_array('acme/news', $updatable, true), 'an outdated package is updatable');
-check(!in_array('acme/stable', $updatable, true), 'an up-to-date package is left alone');
+check(in_array('typo3/cms-core', $updatable, true), 'a critical package counts as a finding');
+check(in_array('acme/news', $updatable, true), 'an outdated package counts as a finding');
+check(!in_array('acme/stable', $updatable, true), 'an up-to-date package is not a finding');
 
-// A TER-only extension has no composer name, so there is nothing to pass to
-// composer — it must not end up as an empty argument.
+// An empty result is what stops the request ("everything is already up to
+// date"), so a package with no composer name must not silently fill it.
 $noComposerName = [['composer_name' => '', 'extension_key' => 'legacy_ext', 'severity' => 'critical']];
 check(
     RequestUpdateService::updatablePackages($noComposerName) === [],
-    'a package without a composer name is not passed to composer'
+    'a package without a composer name does not count as a finding'
 );
 
 fwrite(STDOUT, "OK: {$checks} checks passed\n");

@@ -104,10 +104,16 @@ final readonly class RequestUpdateService
     }
 
     /**
-     * The packages an update should actually move. Only the ones with a known
-     * newer version — a package at severity "ok" has nothing to update to,
-     * and passing it to `composer update` would widen the change for no
-     * reason.
+     * The packages with a known newer version.
+     *
+     * Used to decide whether an update is worth requesting at all, and to
+     * describe it — NOT as the argument list for `composer update`. A trial
+     * run against a real TYPO3 project showed why: the TYPO3 packages pin
+     * each other to the exact same version (typo3/cms-install requires
+     * typo3/cms-core 14.3.5, not ^14.3), so naming a subset makes composer
+     * refuse the whole resolution, even with --with-all-dependencies. The
+     * workflow therefore runs a plain `composer update` and lets the
+     * constraints in composer.json decide how far anything may move.
      *
      * @param list<array<string, mixed>> $packages
      * @return list<string>
