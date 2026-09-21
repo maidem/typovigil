@@ -44,12 +44,12 @@
                 <target>UUID der Anwendung auf der Hosting-Plattform, aus der URL der Detailseite. Für ein Projekt, das dort nicht läuft, leer lassen — es bleibt dann reines Monitoring.</target>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_storage_uuid">
-                <source>Hosting platform storage backup schedule UUID</source>
-                <target>UUID des Storage-Backup-Zeitplans der Hosting-Plattform</target>
+                <source>Hosting platform volume name</source>
+                <target>Volume-Name auf der Hosting-Plattform</target>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_storage_uuid.description">
-                <source>UUID of the application's volume backup schedule (Persistent Storage → Backups). Required to trigger a storage backup before an update.</source>
-                <target>UUID des Backup-Zeitplans für das Volume der Anwendung (Persistent Storage → Backups). Wird benötigt, um vor einem Update ein Storage-Backup auszulösen.</target>
+                <source>Name of the volume holding fileadmin, e.g. "{app-uuid}-fileadmin" (Persistent Storage on the application). Not a schedule id — the schedule is created from this by typovigil:onboard-coolify. Required for a storage backup.</source>
+                <target>Name des Volumes mit dem fileadmin, z. B. „{app-uuid}-fileadmin“ (Persistent Storage der Anwendung). Kein Zeitplan — den legt typovigil:onboard-coolify daraus an. Wird für ein Storage-Backup benötigt.</target>
             </trans-unit>
             <trans-unit id="tx_typovigil_project.coolify_database_uuid">
                 <source>Hosting platform database UUID</source>

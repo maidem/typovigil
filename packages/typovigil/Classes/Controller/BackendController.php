@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Maidemde\Typovigil\Controller;
 
 use Maidemde\Typovigil\Domain\Repository\ProjectRepository;
+use Maidemde\Typovigil\Service\BackupBeforeUpdateService;
 use Maidemde\Typovigil\Service\CustomerStorageService;
 use Maidemde\Typovigil\Service\ProjectTokenService;
 use Maidemde\Typovigil\Service\RequestUpdateService;
@@ -33,6 +34,7 @@ final class BackendController extends ActionController
         private readonly CustomerStorageService $customerStorage,
         private readonly UpdateChecker $updateChecker,
         private readonly RequestUpdateService $requestUpdate,
+        private readonly BackupBeforeUpdateService $backup,
     ) {}
 
     public function indexAction(): ResponseInterface
@@ -96,6 +98,32 @@ final class BackendController extends ActionController
     public function approveAiReportAction(int $project, string $composerName): ResponseInterface
     {
         $this->projects->updatePackage($project, $composerName, '', ['ai_report_status' => 'approved']);
+
+        return $this->redirect('show', null, null, ['project' => $project]);
+    }
+
+    /**
+     * Backs the project up on its hosting platform, on demand.
+     *
+     * The same thing `typovigil:backup <uid>` does — here because needing a
+     * shell for a button-sized action is the kind of friction that ends in
+     * the backup not being taken at all.
+     */
+    public function backupNowAction(int $project): ResponseInterface
+    {
+        $result = $this->backup->run($project);
+
+        $this->addPersistentFlashMessage(
+            $result['message'],
+            'TypoVigil',
+            match (true) {
+                !$result['linked'] => ContextualFeedbackSeverity::WARNING,
+                $result['secured'] => ContextualFeedbackSeverity::OK,
+                // Partially secured is not success: the message names which
+                // half failed, and acting on it is the point.
+                default => ContextualFeedbackSeverity::ERROR,
+            }
+        );
 
         return $this->redirect('show', null, null, ['project' => $project]);
     }

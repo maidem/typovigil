@@ -204,8 +204,12 @@
                 <target>Letztes Backup der Hosting-Plattform</target>
             </trans-unit>
             <trans-unit id="backend.backupHint">
-                <source>Run `typovigil:backup %1$d` before applying an update to this project.</source>
-                <target>Vor einem Update dieses Projekts `typovigil:backup %1$d` ausführen.</target>
+                <source>Also available on the command line as `typovigil:backup %1$d`.</source>
+                <target>Auf der Kommandozeile auch als `typovigil:backup %1$d` verfügbar.</target>
+            </trans-unit>
+            <trans-unit id="backend.backupNow">
+                <source>Back up now</source>
+                <target>Jetzt sichern</target>
             </trans-unit>
             <trans-unit id="backend.installed">
                 <source>Installed</source>

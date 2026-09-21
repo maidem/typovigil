@@ -154,7 +154,10 @@
                 <source>Last hosting platform backup</source>
             </trans-unit>
             <trans-unit id="backend.backupHint">
-                <source>Run `typovigil:backup %1$d` before applying an update to this project.</source>
+                <source>Also available on the command line as `typovigil:backup %1$d`.</source>
+            </trans-unit>
+            <trans-unit id="backend.backupNow">
+                <source>Back up now</source>
             </trans-unit>
             <trans-unit id="backend.installed">
                 <source>Installed</source>

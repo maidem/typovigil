@@ -22,6 +22,7 @@ return [
                 'checkNow',
                 'requestUpdate',
                 'approveAiReport',
+                'backupNow',
             ],
         ],
     ],

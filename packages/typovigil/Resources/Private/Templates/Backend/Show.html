@@ -14,6 +14,14 @@
             <f:translate key="backend.checkNow" />
         </f:link.action>
 
+        <!-- Only where there is a platform to back up to; a project without
+             one is plain monitoring and has nothing to trigger. -->
+        <f:if condition="{project.coolifyApplicationUuid}">
+            <f:link.action action="backupNow" arguments="{project: project.uid}" class="btn btn-default">
+                <f:translate key="backend.backupNow" />
+            </f:link.action>
+        </f:if>
+
         <!-- Only for projects with a repository: without one there is nowhere
              to open a pull request, so the button does not apply rather than
              being offered and refused. -->
