@@ -168,6 +168,9 @@
             <trans-unit id="backend.security">
                 <source>security</source>
             </trans-unit>
+            <trans-unit id="backend.aiReport">
+                <source>AI risk report:</source>
+            </trans-unit>
             <trans-unit id="backend.outdatedBadge">
                 <source>outdated</source>
             </trans-unit>

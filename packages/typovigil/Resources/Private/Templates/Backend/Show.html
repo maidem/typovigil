@@ -96,6 +96,19 @@
                                 </f:switch>
                             </td>
                         </tr>
+                        <f:if condition="{package.ai_report_text}">
+                            <tr>
+                                <td colspan="4">
+                                    <div class="callout callout-info">
+                                        <p>
+                                            <strong><f:translate key="backend.aiReport" /></strong>
+                                            <span class="badge bg-secondary">{package.ai_report_status}</span>
+                                        </p>
+                                        <p>{package.ai_report_text}</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </f:if>
                     </f:for>
                 </tbody>
             </table>

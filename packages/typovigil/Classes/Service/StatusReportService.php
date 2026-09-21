@@ -70,9 +70,30 @@ final readonly class StatusReportService
         }
 
         $summary = $this->summarize($project);
-        $summary['packages'] = $this->sortBySeverity($this->projects->findPackagesByProject($projectUid));
+        $summary['packages'] = array_map(
+            self::withAiReportText(...),
+            $this->sortBySeverity($this->projects->findPackagesByProject($projectUid))
+        );
 
         return $summary;
+    }
+
+    /**
+     * Unpacks ai_report_json into ai_report_text, same as the frontend
+     * portal's withAiReportVisibility() does — the backend template should
+     * not have to json_decode it itself. No visibility restriction here:
+     * unlike the frontend, everyone with access to this module is agency
+     * staff.
+     *
+     * @param array<string, mixed> $package
+     * @return array<string, mixed>
+     */
+    private static function withAiReportText(array $package): array
+    {
+        $decoded = json_decode((string)($package['ai_report_json'] ?? ''), true);
+        $package['ai_report_text'] = is_array($decoded) ? (string)($decoded['report'] ?? '') : '';
+
+        return $package;
     }
 
     /**

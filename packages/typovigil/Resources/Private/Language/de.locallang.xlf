@@ -219,6 +219,10 @@
                 <source>unknown</source>
                 <target>unbekannt</target>
             </trans-unit>
+            <trans-unit id="backend.aiReport">
+                <source>AI risk report:</source>
+                <target>KI-Risikobericht:</target>
+            </trans-unit>
             <trans-unit id="backend.security">
                 <source>security</source>
                 <target>Sicherheit</target>
