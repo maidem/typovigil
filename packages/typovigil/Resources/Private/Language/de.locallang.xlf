@@ -87,6 +87,14 @@
                 <source>Generate setup link</source>
                 <target>Setup-Link erzeugen</target>
             </trans-unit>
+            <trans-unit id="backend.regenerateSetupLink">
+                <source>Issue new token</source>
+                <target>Neuen Token ausstellen</target>
+            </trans-unit>
+            <trans-unit id="backend.regenerateSetupLink.confirm">
+                <source>This project already receives reports. Issuing a new token invalidates the current one immediately — reporting will fail until the agent is updated with the new one. Continue?</source>
+                <target>Dieses Projekt meldet sich bereits. Ein neuer Token macht den aktuellen sofort ungültig — die Meldungen schlagen fehl, bis der Agent mit dem neuen Token aktualisiert wurde. Fortfahren?</target>
+            </trans-unit>
             <trans-unit id="backend.noSiteUrl">
                 <source>no site URL</source>
                 <target>keine Website-URL</target>
@@ -219,6 +227,10 @@
                 <source>Back up now</source>
                 <target>Jetzt sichern</target>
             </trans-unit>
+            <trans-unit id="backend.backupNow.confirm">
+                <source>TypoVigil dumps the database now and, if a storage volume is linked, triggers its backup too. This runs immediately. Continue?</source>
+                <target>TypoVigil erstellt jetzt den Datenbank-Dump und stößt, falls ein Storage-Volume verknüpft ist, auch dessen Backup an. Das läuft sofort. Fortfahren?</target>
+            </trans-unit>
             <trans-unit id="backend.installed">
                 <source>Installed</source>
                 <target>Installiert</target>
@@ -238,6 +250,10 @@
             <trans-unit id="backend.requestUpdate">
                 <source>Request update</source>
                 <target>Update beauftragen</target>
+            </trans-unit>
+            <trans-unit id="backend.requestUpdate.confirm">
+                <source>This opens a pull request in the project's repository and merges it immediately — the next deploy there changes the live installation. Continue?</source>
+                <target>Dadurch wird ein Pull Request im Repository des Projekts geöffnet und sofort gemergt — beim nächsten Deploy dort ändert sich die laufende Installation. Fortfahren?</target>
             </trans-unit>
             <trans-unit id="backend.approveReport">
                 <source>Approve report</source>

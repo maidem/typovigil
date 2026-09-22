@@ -153,13 +153,17 @@ final class BackendController extends ActionController
     }
 
     /**
-     * Issues a fresh token and setup link, for a project whose site URL was
-     * filled in after the initial save (the token is only issued once, on
-     * creation) or whose link was lost before it was ever used.
+     * Issues a fresh token and setup link.
      *
-     * Refuses once the agent has reported: the site is presumably already
-     * configured with the current token, and replacing it would silently
-     * break a working integration.
+     * This is also the only way to revoke a token: issuing a new one
+     * overwrites the stored hash, so the old token stops matching
+     * immediately. There is no separate "revoke" action — a compromised or
+     * lost token is invalidated by replacing it, same as here.
+     *
+     * The template asks for confirmation once the agent has already
+     * reported, since replacing the token then means the agent's own copy
+     * (in its backend module, or its TYPOVIGIL_AGENT_TOKEN environment
+     * variable) also needs to be updated, or reporting breaks until it is.
      */
     public function regenerateSetupLinkAction(int $project): ResponseInterface
     {
@@ -175,16 +179,6 @@ final class BackendController extends ActionController
         if ($siteUrl === '') {
             $this->addPersistentFlashMessage(
                 'Fill in the site URL on this project first, then generate the setup link again.',
-                'TypoVigil',
-                ContextualFeedbackSeverity::WARNING
-            );
-
-            return $this->redirect('index');
-        }
-
-        if ((int)($record['last_report_at'] ?? 0) > 0) {
-            $this->addPersistentFlashMessage(
-                'This project already receives reports. Generating a new token would invalidate the one currently configured on the agent, breaking a working integration.',
                 'TypoVigil',
                 ContextualFeedbackSeverity::WARNING
             );

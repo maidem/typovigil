@@ -15,9 +15,21 @@
         </f:link.action>
 
         <!-- Only where there is a platform to back up to; a project without
-             one is plain monitoring and has nothing to trigger. -->
+             one is plain monitoring and has nothing to trigger.
+             t3js-modal-trigger is the core's own confirmation dialog
+             (TYPO3.Modal), wired up purely through data attributes — no
+             extension JavaScript needed. -->
         <f:if condition="{project.coolifyApplicationUuid}">
-            <f:link.action action="backupNow" arguments="{project: project.uid}" class="btn btn-default">
+            <f:link.action
+                action="backupNow"
+                arguments="{project: project.uid}"
+                class="btn btn-default t3js-modal-trigger"
+                additionalAttributes="{
+                    data-title: '{f:translate(key: \'backend.backupNow\')}',
+                    data-content: '{f:translate(key: \'backend.backupNow.confirm\')}',
+                    data-severity: 'warning'
+                }"
+            >
                 <f:translate key="backend.backupNow" />
             </f:link.action>
         </f:if>
@@ -40,7 +52,16 @@
                 </f:then>
                 <f:else>
                     <f:if condition="{project.updatablePackageCount} > 0">
-                        <f:link.action action="requestUpdate" arguments="{project: project.uid}" class="btn btn-primary">
+                        <f:link.action
+                            action="requestUpdate"
+                            arguments="{project: project.uid}"
+                            class="btn btn-primary t3js-modal-trigger"
+                            additionalAttributes="{
+                                data-title: '{f:translate(key: \'backend.requestUpdate\')}',
+                                data-content: '{f:translate(key: \'backend.requestUpdate.confirm\')}',
+                                data-severity: 'warning'
+                            }"
+                        >
                             <f:translate key="backend.requestUpdate" />
                         </f:link.action>
                     </f:if>

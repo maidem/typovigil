@@ -129,18 +129,28 @@
                                 </f:if>
                             </td>
                             <td>
-                                <f:if condition="{project.hasReported}">
-                                    <f:else>
-                                        <f:if condition="{project.siteUrl}">
+                                <f:if condition="{project.siteUrl}">
+                                    <f:then>
+                                        <f:if condition="{project.hasReported}">
                                             <f:then>
-                                                <f:link.action action="regenerateSetupLink" arguments="{project: project.uid}" class="btn btn-sm btn-outline-secondary">
-                                                    <f:translate key="backend.generateSetupLink" />
+                                                <f:link.action
+                                                    action="regenerateSetupLink"
+                                                    arguments="{project: project.uid}"
+                                                    class="btn btn-sm btn-outline-secondary"
+                                                    onclick="return confirm('{f:translate(key: \'backend.regenerateSetupLink.confirm\')}');"
+                                                >
+                                                    <f:translate key="backend.regenerateSetupLink" />
                                                 </f:link.action>
                                             </f:then>
                                             <f:else>
-                                                <span class="text-muted" title="{f:translate(key: 'backend.noSiteUrlTitle')}"><f:translate key="backend.noSiteUrl" /></span>
+                                                <f:link.action action="regenerateSetupLink" arguments="{project: project.uid}" class="btn btn-sm btn-outline-secondary">
+                                                    <f:translate key="backend.generateSetupLink" />
+                                                </f:link.action>
                                             </f:else>
                                         </f:if>
+                                    </f:then>
+                                    <f:else>
+                                        <span class="text-muted" title="{f:translate(key: 'backend.noSiteUrlTitle')}"><f:translate key="backend.noSiteUrl" /></span>
                                     </f:else>
                                 </f:if>
                             </td>

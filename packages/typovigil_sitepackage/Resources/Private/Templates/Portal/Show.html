@@ -159,7 +159,11 @@
                                     die Installation bleibt unverändert, bis er gemergt und deployt wurde.
                                 </p>
                                 <f:form action="requestUpdate" arguments="{project: project.uid}" class="tv-update__form">
-                                    <f:form.submit value="Update beauftragen" class="tv-btn" />
+                                    <f:form.submit
+                                        value="Update beauftragen"
+                                        class="tv-btn"
+                                        onclick="return confirm('Dadurch wird ein Pull Request im Repository geöffnet und sofort gemergt — beim nächsten Deploy ändert sich die laufende Installation. Fortfahren?');"
+                                    />
                                 </f:form>
                             </f:then>
                             <f:else>

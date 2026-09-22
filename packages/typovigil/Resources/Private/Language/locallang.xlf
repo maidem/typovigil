@@ -66,6 +66,12 @@
             <trans-unit id="backend.generateSetupLink">
                 <source>Generate setup link</source>
             </trans-unit>
+            <trans-unit id="backend.regenerateSetupLink">
+                <source>Issue new token</source>
+            </trans-unit>
+            <trans-unit id="backend.regenerateSetupLink.confirm">
+                <source>This project already receives reports. Issuing a new token invalidates the current one immediately — reporting will fail until the agent is updated with the new one. Continue?</source>
+            </trans-unit>
             <trans-unit id="backend.noSiteUrl">
                 <source>no site URL</source>
             </trans-unit>
@@ -165,6 +171,9 @@
             <trans-unit id="backend.backupNow">
                 <source>Back up now</source>
             </trans-unit>
+            <trans-unit id="backend.backupNow.confirm">
+                <source>TypoVigil dumps the database now and, if a storage volume is linked, triggers its backup too. This runs immediately. Continue?</source>
+            </trans-unit>
             <trans-unit id="backend.installed">
                 <source>Installed</source>
             </trans-unit>
@@ -182,6 +191,9 @@
             </trans-unit>
             <trans-unit id="backend.requestUpdate">
                 <source>Request update</source>
+            </trans-unit>
+            <trans-unit id="backend.requestUpdate.confirm">
+                <source>This opens a pull request in the project's repository and merges it immediately — the next deploy there changes the live installation. Continue?</source>
             </trans-unit>
             <trans-unit id="backend.approveReport">
                 <source>Approve report</source>
