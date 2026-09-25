@@ -550,6 +550,7 @@ body {
 .tv-badges {
     display: flex;
     flex-wrap: wrap;
+    align-items: flex-start;
     gap: 8px;
     margin: 0;
     padding: 0;
