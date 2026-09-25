@@ -557,6 +557,16 @@ body {
     list-style: none;
 }
 
+/* Chrome puts the first flex item ~4-5px higher than the rest of its row
+   inside this <details> content (a rounding quirk tied to the <details>
+   element itself — reproduces even with display: grid or inline-flex, and
+   disappears once the list is cloned outside the <details>). Nudging just
+   the first item down is the reliable fix; revisit if Chrome fixes the
+   underlying rounding. */
+.tv-badges > li:first-child {
+    margin-top: 4.8px;
+}
+
 /* The li is a flex item itself, so the badge fills it exactly — as a block the
    inline badge sat on a text baseline and rows came out different heights. */
 .tv-badges > li {
