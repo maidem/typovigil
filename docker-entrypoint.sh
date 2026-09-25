@@ -102,4 +102,20 @@ touch /var/log/typovigil-check.log
 chown www-data:www-data /var/log/typovigil-check.log
 cron
 
+# Backup worker: consumes the "backup" transport so the backend's "Back up
+# now" button no longer blocks on the dump — see BackendController and
+# Classes/Queue. Same pattern as cron above: a plain background loop, no
+# supervisor. messenger:consume exits on its own after --time-limit (a
+# safety net against memory leaks in a long-running PHP process), so the
+# loop just restarts it; `|| true` keeps a single failed run from killing
+# the loop.
+touch /var/log/typovigil-backup-worker.log
+chown www-data:www-data /var/log/typovigil-backup-worker.log
+su -s /bin/bash www-data -c '
+    cd /var/www/html
+    while true; do
+        php vendor/bin/typo3 messenger:consume backup --time-limit=55 >> /var/log/typovigil-backup-worker.log 2>&1 || true
+    done
+' &
+
 exec docker-php-entrypoint "$@"

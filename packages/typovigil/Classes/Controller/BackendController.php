@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Maidemde\Typovigil\Controller;
 
 use Maidemde\Typovigil\Domain\Repository\ProjectRepository;
+use Maidemde\Typovigil\Queue\Message\BackupMessage;
 use Maidemde\Typovigil\Service\BackupBeforeUpdateService;
 use Maidemde\Typovigil\Service\CustomerStorageService;
 use Maidemde\Typovigil\Service\ProjectTokenService;
@@ -13,8 +14,10 @@ use Maidemde\Typovigil\Service\StatusReportService;
 use Maidemde\Typovigil\Service\UpdateChecker;
 use Maidemde\Typovigil\Service\VersionCheckService;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
@@ -35,6 +38,7 @@ final class BackendController extends ActionController
         private readonly UpdateChecker $updateChecker,
         private readonly RequestUpdateService $requestUpdate,
         private readonly BackupBeforeUpdateService $backup,
+        private readonly MessageBusInterface $messageBus,
     ) {}
 
     public function indexAction(): ResponseInterface
@@ -103,29 +107,39 @@ final class BackendController extends ActionController
     }
 
     /**
-     * Backs the project up on its hosting platform, on demand.
-     *
-     * The same thing `typovigil:backup <uid>` does — here because needing a
-     * shell for a button-sized action is the kind of friction that ends in
-     * the backup not being taken at all.
+     * Queues the project's backup instead of running it inline — a dump can
+     * take minutes, and nobody should have to stare at a frozen tab for that.
+     * The background worker (`messenger:consume backup`, started alongside
+     * Apache — see docker-entrypoint.sh) picks it up and writes its progress
+     * to `backup_progress`, which backupStatusAction polls for.
      */
     public function backupNowAction(int $project): ResponseInterface
     {
-        $result = $this->backup->run($project);
+        $this->projects->updateProject($project, ['backup_progress' => 'queued']);
+        $this->messageBus->dispatch(new BackupMessage($project));
 
         $this->addPersistentFlashMessage(
-            $result['message'],
+            'Backup queued — the status below updates once it starts.',
             'TypoVigil',
-            match (true) {
-                !$result['linked'] => ContextualFeedbackSeverity::WARNING,
-                $result['secured'] => ContextualFeedbackSeverity::OK,
-                // Partially secured is not success: the message names which
-                // half failed, and acting on it is the point.
-                default => ContextualFeedbackSeverity::ERROR,
-            }
+            ContextualFeedbackSeverity::OK
         );
 
         return $this->redirect('show', null, null, ['project' => $project]);
+    }
+
+    /**
+     * Polled by Show.html while a backup is in flight. Plain JSON, no Extbase
+     * view: this is read by JavaScript, not rendered for a person.
+     */
+    public function backupStatusAction(int $project): ResponseInterface
+    {
+        $record = $this->projects->findByUid($project);
+
+        return new JsonResponse([
+            'progress' => $record['backup_progress'] ?? '',
+            'lastBackupAt' => (int)($record['last_backup_at'] ?? 0),
+            'lastBackupStatus' => (string)($record['last_backup_status'] ?? ''),
+        ]);
     }
 
     /**

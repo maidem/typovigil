@@ -149,6 +149,10 @@ final readonly class StatusReportService
             'coolifyApplicationUuid' => (string)($project['coolify_application_uuid'] ?? ''),
             'lastBackupAt' => (int)($project['last_backup_at'] ?? 0),
             'lastBackupStatus' => (string)($project['last_backup_status'] ?? ''),
+            // 'done'/'failed'/'' all mean nothing to poll for — only the
+            // in-between steps do. Kept as the raw string rather than a bool:
+            // the template's inline script matches on it directly.
+            'backupProgress' => (string)($project['backup_progress'] ?? ''),
         ];
     }
 

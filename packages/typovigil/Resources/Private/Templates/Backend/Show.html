@@ -105,24 +105,74 @@
         <f:if condition="{project.coolifyApplicationUuid}">
             <dt class="col-sm-3"><f:translate key="backend.lastBackup" /></dt>
             <dd class="col-sm-9">
-                <f:if condition="{project.lastBackupAt}">
-                    <f:then>
-                        <f:format.date format="d.m.Y H:i">{project.lastBackupAt}</f:format.date>
-                        (<code>{project.lastBackupStatus}</code>)
-                        <!-- Whether it still covers what is installed now,
-                             which is what the update button asks. A date
-                             alone does not answer that. -->
-                        <f:if condition="{project.hasCurrentBackup}">
-                            <f:then><span class="badge bg-success"><f:translate key="backend.backupCurrent" /></span></f:then>
-                            <f:else><span class="badge bg-warning text-dark"><f:translate key="backend.backupOutdated" /></span></f:else>
-                        </f:if>
-                    </f:then>
-                    <f:else><f:translate key="backend.never" /></f:else>
-                </f:if>
+                <span id="typovigil-backup-status"
+                      data-url-status="{f:uri.action(action: 'backupStatus', arguments: {project: project.uid})}"
+                      data-progress="{project.backupProgress}"
+                      data-label-queued="{f:translate(key: 'backend.backupProgress.queued')}"
+                      data-label-dumping="{f:translate(key: 'backend.backupProgress.dumping')}"
+                      data-label-triggering-storage="{f:translate(key: 'backend.backupProgress.triggeringStorage')}"
+                >
+                    <f:if condition="{project.lastBackupAt}">
+                        <f:then>
+                            <f:format.date format="d.m.Y H:i">{project.lastBackupAt}</f:format.date>
+                            (<code>{project.lastBackupStatus}</code>)
+                            <!-- Whether it still covers what is installed now,
+                                 which is what the update button asks. A date
+                                 alone does not answer that. -->
+                            <f:if condition="{project.hasCurrentBackup}">
+                                <f:then><span class="badge bg-success"><f:translate key="backend.backupCurrent" /></span></f:then>
+                                <f:else><span class="badge bg-warning text-dark"><f:translate key="backend.backupOutdated" /></span></f:else>
+                            </f:if>
+                        </f:then>
+                        <f:else><f:translate key="backend.never" /></f:else>
+                    </f:if>
+                </span>
                 <p class="text-muted"><small><f:translate key="backend.backupHint" arguments="{0: project.uid}" /></small></p>
             </dd>
         </f:if>
     </dl>
+
+    <f:if condition="{project.coolifyApplicationUuid}">
+        <script>
+        <![CDATA[
+            (function () {
+                // ponytail: plain fetch polling, no library — the status
+                // check is one field, not worth a JS build step. Labels and
+                // the initial progress come in as data attributes (set in
+                // Fluid above) rather than interleaved here, so this stays
+                // plain JavaScript instead of alternating CDATA sections.
+                var status = document.getElementById('typovigil-backup-status');
+                var statusUrl = status.dataset.urlStatus;
+                var labels = {
+                    queued: status.dataset.labelQueued,
+                    dumping: status.dataset.labelDumping,
+                    triggering_storage: status.dataset.labelTriggeringStorage
+                };
+
+                function poll() {
+                    fetch(statusUrl, { headers: { Accept: 'application/json' } })
+                        .then(function (response) { return response.json(); })
+                        .then(function (data) {
+                            if (data.progress && labels[data.progress]) {
+                                status.textContent = labels[data.progress];
+                                setTimeout(poll, 2000);
+                            } else if (data.progress === 'done' || data.progress === 'failed') {
+                                // A run just finished — reload once to show
+                                // the final date/status/badge instead of
+                                // reimplementing that markup in JavaScript.
+                                window.location.reload();
+                            }
+                        });
+                }
+
+                var initialProgress = status.dataset.progress;
+                if (initialProgress && initialProgress !== 'done' && initialProgress !== 'failed') {
+                    poll();
+                }
+            })();
+        ]]>
+        </script>
+    </f:if>
 
     <f:if condition="{project.packages}">
         <f:then>

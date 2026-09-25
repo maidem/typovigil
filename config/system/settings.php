@@ -40,6 +40,7 @@ return [
         ],
         'typovigil' => [
             'agencyFeGroupId' => '2',
+            'backupDirectory' => 'var/backups',
             'coolifyApiToken' => '',
             'coolifyApiUrl' => '',
             'edenAiApiToken' => '',

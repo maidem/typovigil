@@ -172,7 +172,16 @@
                 <source>Back up now</source>
             </trans-unit>
             <trans-unit id="backend.backupNow.confirm">
-                <source>TypoVigil dumps the database now and, if a storage volume is linked, triggers its backup too. This runs immediately. Continue?</source>
+                <source>TypoVigil queues the database dump now and, if a storage volume is linked, triggers its backup too. This runs in the background. Continue?</source>
+            </trans-unit>
+            <trans-unit id="backend.backupProgress.queued">
+                <source>Backup queued…</source>
+            </trans-unit>
+            <trans-unit id="backend.backupProgress.dumping">
+                <source>Dumping database…</source>
+            </trans-unit>
+            <trans-unit id="backend.backupProgress.triggeringStorage">
+                <source>Database dumped — triggering storage backup…</source>
             </trans-unit>
             <trans-unit id="backend.installed">
                 <source>Installed</source>

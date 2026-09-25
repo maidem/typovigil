@@ -54,3 +54,19 @@ services:
       - name: 'console.command'
         command: 'typovigil:check-and-analyze'
         description: 'Run the update check and generate an AI risk report for each critical package'
+
+  # Own table (tx_typovigil_backup_queue) rather than core's default
+  # sys_messenger_messages: TYPO3 only auto-creates that one via database
+  # compare, a custom table_name needs its own ext_tables.sql entry, which
+  # this has.
+  messenger.transport.backup:
+    factory: ['@TYPO3\CMS\Core\Messenger\DoctrineTransportFactory', 'createTransport']
+    class: 'Symfony\Component\Messenger\Bridge\Doctrine\Transport\DoctrineTransport'
+    arguments:
+      $options:
+        table_name: 'tx_typovigil_backup_queue'
+    tags:
+      - name: 'messenger.sender'
+        identifier: 'backup'
+      - name: 'messenger.receiver'
+        identifier: 'backup'

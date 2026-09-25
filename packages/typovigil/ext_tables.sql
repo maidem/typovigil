@@ -34,6 +34,11 @@ CREATE TABLE tx_typovigil_project (
     -- is about to be updated, so it has to be taken again.
     last_backup_state varchar(64) DEFAULT '' NOT NULL,
 
+    -- Live status of a backup run in progress, polled by the Show page while
+    -- the queue works through it. Empty once no run is in flight — the button
+    -- reads that as "nothing to poll", not as a step name.
+    backup_progress varchar(32) DEFAULT '' NOT NULL,
+
     -- Optional GitHub linkage, "owner/repo". Empty means the update button
     -- stays hidden for this project: without a repository there is nowhere to
     -- open a pull request, and updating the live installation directly is
@@ -102,6 +107,25 @@ CREATE TABLE tx_typovigil_source (
 -- it on the local table even though the relation itself lives in the MM table.
 CREATE TABLE fe_users (
     tx_typovigil_projects int(11) unsigned DEFAULT 0 NOT NULL
+);
+
+-- Messenger's own queue table for the "backup" transport, so the button no
+-- longer blocks on the dump. TYPO3's DoctrineTransportFactory only skips
+-- auto-creating this for its default table name (sys_messenger_messages,
+-- already shipped by core) — a project-specific name needs its own schema.
+CREATE TABLE tx_typovigil_backup_queue (
+    id int(11) unsigned NOT NULL auto_increment,
+    body longtext NOT NULL,
+    headers longtext NOT NULL,
+    queue_name varchar(190) NOT NULL,
+    created_at datetime NOT NULL,
+    available_at datetime NOT NULL,
+    delivered_at datetime DEFAULT NULL,
+
+    PRIMARY KEY (id),
+    KEY queue_name (queue_name),
+    KEY available_at (available_at),
+    KEY delivered_at (delivered_at)
 );
 
 CREATE TABLE tx_typovigil_project_feuser_mm (

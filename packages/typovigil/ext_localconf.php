@@ -22,6 +22,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][]
     = \Maidemde\Typovigil\Hook\EncryptDatabasePassword::class;
 
+// Routes a backup job to its own transport/queue table instead of core's
+// shared default, so the backup button no longer waits on the dump inline —
+// see Classes/Queue and the background worker loop in docker-entrypoint.sh.
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['messenger']['routing'][\Maidemde\Typovigil\Queue\Message\BackupMessage::class] = 'backup';
+
 // Scheduler task that matches reported packages against the upstream sources.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Maidemde\Typovigil\Task\UpdateCheckTask::class] = [
     'extension' => 'typovigil',

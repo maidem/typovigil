@@ -88,6 +88,8 @@ ausgefallener Agent darf nicht wie „alles in Ordnung" aussehen.
 - PHP 8.4
 - MariaDB 11.8
 - Apache
+- Symfony Messenger (Doctrine-Transport, eigene Warteschlangentabelle) für den
+  Backup-Worker
 
 ## Eigene Erweiterungen
 
@@ -168,6 +170,13 @@ Knopfdruck. TypoVigil erstellt den Datenbank-Dump selbst und stößt zusätzlich
 das Backup des Storage-Volumes auf der Hosting-Plattform an, falls dort eines
 verknüpft ist. Erst wenn beides erfolgreich war, zählt es.
 
+Der Knopf löst das nicht mehr selbst aus, sondern reiht den Auftrag über
+Symfony Messenger ein und kehrt sofort zurück — ein Dump kann Minuten dauern,
+in denen vorher der Tab eingefroren war. Die Projektansicht zeigt währenddessen
+den Fortschritt (`Backup in Warteschlange…` → `Datenbank wird gesichert…` →
+ggf. `Storage-Backup wird angestoßen…`) und pollt dafür alle zwei Sekunden
+`backupStatus`, bis der Lauf abgeschlossen ist.
+
 Das Backup gilt für den Paketstand, gegen den es gemacht wurde. Meldet der
 Agent danach andere Versionen, ist es verbraucht und muss erneut angestoßen
 werden — ein Backup, das den zu aktualisierenden Zustand nicht enthält, nützt
@@ -226,12 +235,40 @@ der Pfad ist über `backupDirectory` in der Extension-Konfiguration einstellbar.
 php vendor/bin/typo3 typovigil:backup <projekt-uid>
 ```
 
-Dasselbe, was der Knopf tut. Der Status des letzten Backups steht danach in der
-Projektansicht, samt Hinweis, ob er noch zum aktuellen Paketstand passt.
+Läuft synchron und direkt, ohne die Warteschlange — für den Knopf im Backend
+gilt das Folgende.
 
 Backups laufen ausschließlich auf Anforderung. Der stündliche Abgleich
 (`typovigil:check-and-analyze`) prüft Versionen und schreibt KI-Berichte — er
 sichert nichts.
+
+### Der Backup-Worker
+
+Der Knopf *Jetzt sichern* schreibt nur einen Auftrag in die Warteschlange
+(eigene Tabelle `tx_typovigil_backup_queue`, ein Symfony-Messenger-Transport).
+Abgearbeitet wird er von einem eigenen Hintergrundprozess:
+
+```bash
+php vendor/bin/typo3 messenger:consume backup
+```
+
+Im Container-Deploy läuft das bereits automatisch — `docker-entrypoint.sh`
+startet neben Apache eine Endlosschleife, die diesen Befehl mit
+`--time-limit=55` neu startet, sobald er (planmäßig, als Schutz vor
+Speicherlecks in einem lange laufenden PHP-Prozess) beendet wurde. Logs stehen
+in `/var/log/typovigil-backup-worker.log`.
+
+**Wichtig für andere Umgebungen:** Ohne laufenden Worker bleibt ein
+angestoßenes Backup dauerhaft auf `Backup in Warteschlange…` stehen — es
+passiert einfach nichts. Wer TypoVigil nicht über dieses Docker-Image betreibt
+(klassisches Hosting, eigener Server ohne den Entrypoint), muss den Worker
+selbst dauerhaft am Laufen halten, z. B. als systemd-Service oder Supervisor,
+der bei Absturz automatisch neu startet. Ein Scheduler-Task, der den Befehl nur
+minütlich kurz anstößt, geht ebenfalls, verzögert dann aber jedes Backup um bis
+zu eine Minute.
+
+Der Status des letzten Backups steht danach in der Projektansicht, samt
+Hinweis, ob er noch zum aktuellen Paketstand passt.
 
 ## Deploying
 

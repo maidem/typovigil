@@ -54,9 +54,12 @@ final readonly class BackupBeforeUpdateService
         // The database is what a TYPO3 update can actually break, so a
         // project that cannot be dumped cannot be backed up at all.
         if (!DatabaseBackupService::isConfigured($project)) {
+            $this->projects->updateProject($projectUid, ['backup_progress' => '']);
+
             return self::failure('No database credentials on this project — fill them in on its Database tab.');
         }
 
+        $this->projects->updateProject($projectUid, ['backup_progress' => 'dumping']);
         $dump = $this->databaseBackup->run($project);
 
         // The volume is optional: a project may have nothing worth keeping in
@@ -64,6 +67,7 @@ final readonly class BackupBeforeUpdateService
         // configured volume that then fails counts against the backup.
         $storageQueued = true;
         if ($applicationUuid !== '' && $storageUuid !== '') {
+            $this->projects->updateProject($projectUid, ['backup_progress' => 'triggering_storage']);
             $storageQueued = $this->coolify->triggerStorageBackup($applicationUuid, $storageUuid);
         }
 
@@ -73,6 +77,7 @@ final readonly class BackupBeforeUpdateService
         $values = [
             'last_backup_at' => time(),
             'last_backup_status' => $status,
+            'backup_progress' => $secured ? 'done' : 'failed',
         ];
 
         // Only a successful backup records the state it covers — that

@@ -23,6 +23,7 @@ return [
                 'requestUpdate',
                 'approveAiReport',
                 'backupNow',
+                'backupStatus',
             ],
         ],
     ],
