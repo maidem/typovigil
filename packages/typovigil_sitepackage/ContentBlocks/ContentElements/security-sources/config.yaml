@@ -21,8 +21,10 @@ fields:
         type: Text
         label: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/security-sources/language/labels.xlf:sources.composer_name.label
         description: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/security-sources/language/labels.xlf:sources.composer_name.description
+        default: 'typo3/cms-core'
         required: true
       - identifier: label
         type: Text
         label: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/security-sources/language/labels.xlf:sources.label_field.label
         description: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/security-sources/language/labels.xlf:sources.label_field.description
+        default: 'TYPO3 Core'
