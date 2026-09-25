@@ -4,6 +4,13 @@
     data-namespace-typo3-fluid="true"
 >
     <div class="tv-portal tv-core-versions">
+        <f:if condition="{data.heading}">
+            <f:if condition="{data.heading_level} == 'h1'">
+                <f:then><h1 class="tv-portal__heading">{data.heading}</h1></f:then>
+                <f:else><h2 class="tv-portal__heading">{data.heading}</h2></f:else>
+            </f:if>
+        </f:if>
+
         <f:if condition="{data.majors}">
             <f:then>
                 <div class="tv-cards">

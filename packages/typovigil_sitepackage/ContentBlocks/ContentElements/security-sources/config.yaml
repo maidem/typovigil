@@ -9,6 +9,16 @@ fields:
     type: Text
     label: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/security-sources/language/labels.xlf:heading.label
     default: 'Security Advisories'
+  - identifier: heading_level
+    type: Select
+    renderType: selectSingle
+    label: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/security-sources/language/labels.xlf:heading_level.label
+    default: 'h2'
+    items:
+      - label: 'H1'
+        value: 'h1'
+      - label: 'H2'
+        value: 'h2'
   - identifier: sources
     type: Collection
     label: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/security-sources/language/labels.xlf:sources.label

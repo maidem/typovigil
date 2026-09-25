@@ -5,7 +5,10 @@
 >
     <div class="tv-portal tv-security-sources">
         <f:if condition="{data.heading}">
-            <h2 class="tv-portal__heading">{data.heading}</h2>
+            <f:if condition="{data.heading_level} == 'h1'">
+                <f:then><h1 class="tv-portal__heading">{data.heading}</h1></f:then>
+                <f:else><h2 class="tv-portal__heading">{data.heading}</h2></f:else>
+            </f:if>
         </f:if>
 
         <f:if condition="{data.sources}">

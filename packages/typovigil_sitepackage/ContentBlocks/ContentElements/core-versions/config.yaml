@@ -5,6 +5,19 @@ description: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/core-ve
 prefixFields: true
 prefixType: full
 fields:
+  - identifier: heading
+    type: Text
+    label: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/core-versions/language/labels.xlf:heading.label
+  - identifier: heading_level
+    type: Select
+    renderType: selectSingle
+    label: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/core-versions/language/labels.xlf:heading_level.label
+    default: 'h2'
+    items:
+      - label: 'H1'
+        value: 'h1'
+      - label: 'H2'
+        value: 'h2'
   - identifier: majors
     type: Collection
     label: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/core-versions/language/labels.xlf:majors.label

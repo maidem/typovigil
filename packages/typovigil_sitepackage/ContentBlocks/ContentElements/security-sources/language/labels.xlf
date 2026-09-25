@@ -14,6 +14,10 @@
                 <source>Überschrift</source>
                 <target>Überschrift</target>
             </trans-unit>
+            <trans-unit id="heading_level.label">
+                <source>Überschriften-Ebene</source>
+                <target>Überschriften-Ebene</target>
+            </trans-unit>
             <trans-unit id="sources.label">
                 <source>Quellen</source>
                 <target>Quellen</target>

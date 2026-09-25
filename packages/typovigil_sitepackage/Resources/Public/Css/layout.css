@@ -132,7 +132,7 @@ body {
 .tv-portal {
     max-width: 1180px;
     margin-inline: auto;
-    padding-block: 40px 64px;
+    padding-block: 16px 64px;
     padding-inline: 20px;
 }
 
@@ -665,7 +665,7 @@ body {
     flex-wrap: wrap;
     align-items: baseline;
     gap: 8px 16px;
-    margin-top: 40px;
+    margin-top: 16px;
     padding-top: 18px;
     border-top: 1px solid var(--tv-border);
     color: var(--tv-muted);

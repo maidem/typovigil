@@ -10,6 +10,14 @@
                 <source>Zeigt die neueste Version je gepflegter TYPO3-Hauptversion, live von get.typo3.org abgefragt.</source>
                 <target>Zeigt die neueste Version je gepflegter TYPO3-Hauptversion, live von get.typo3.org abgefragt.</target>
             </trans-unit>
+            <trans-unit id="heading.label">
+                <source>Überschrift</source>
+                <target>Überschrift</target>
+            </trans-unit>
+            <trans-unit id="heading_level.label">
+                <source>Überschriften-Ebene</source>
+                <target>Überschriften-Ebene</target>
+            </trans-unit>
             <trans-unit id="majors.label">
                 <source>Hauptversionen</source>
                 <target>Hauptversionen</target>
