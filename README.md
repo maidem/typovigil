@@ -145,6 +145,22 @@ Anschließend in der Zentrale den Abgleich als Scheduler-Aufgabe einrichten.
 Zusätzlich meldet sich der Agent von selbst, sobald eine Erweiterung installiert
 oder entfernt wird.
 
+Eine reine Versionsänderung eines bereits installierten Pakets — genau das, was
+ein von TypoVigil beauftragtes Update ist — löst dagegen keines dieser
+Ereignisse aus. Ohne weiteres Zutun bliebe der neue Stand bis zum nächsten
+täglichen Bericht unsichtbar, im schlechtesten Fall fast 24 Stunden. Deshalb
+gehört in den Docker-Entrypoint jeder überwachten Seite (ab `typovigil-agent`
+v1.0.3), direkt nach `extension:setup`, dieser zusätzliche Aufruf:
+
+```bash
+php vendor/bin/typo3 typovigil-agent:report || true
+```
+
+`|| true` ist Pflicht: ein Backend, das gerade erst hochfährt oder noch keine
+Netzwerkverbindung hat, darf den Deploy nicht zum Scheitern bringen. Ohne
+diesen Eintrag funktioniert das Monitoring weiterhin — nur eben verzögert bis
+zum nächsten Scheduler-Lauf.
+
 Für einen neuen Kunden kommt ein Frontend-Benutzer im Ordner *Kunden* hinzu, der
 über Schritt 3 seinen Projekten zugeordnet wird. Wer alle Projekte sehen soll,
 kommt stattdessen in die Agentur-Gruppe; deren Nummer trägt man einmalig in den

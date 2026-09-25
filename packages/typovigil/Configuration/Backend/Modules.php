@@ -18,7 +18,7 @@ return [
             BackendController::class => [
                 'index',
                 'show',
-                'regenerateSetupLink',
+                'regenerateToken',
                 'checkNow',
                 'requestUpdate',
                 'approveAiReport',

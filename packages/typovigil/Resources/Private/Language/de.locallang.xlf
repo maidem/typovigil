@@ -8,20 +8,16 @@
                 <target>Token</target>
             </trans-unit>
             <trans-unit id="backend.tokenShownOnce">
-                <source>shown once, it is not stored and cannot be shown again.</source>
-                <target>wird nur einmal angezeigt, es wird nicht gespeichert und kann nicht erneut angezeigt werden.</target>
+                <source>Shown once, not stored, cannot be shown again.</source>
+                <target>Wird nur einmal angezeigt, nicht gespeichert, kann nicht erneut angezeigt werden.</target>
             </trans-unit>
-            <trans-unit id="backend.copySetupLink">
-                <source>Copy setup link</source>
-                <target>Setup-Link kopieren</target>
+            <trans-unit id="backend.tokenHint">
+                <source>Set it as TYPOVIGIL_AGENT_TOKEN in the environment of the monitored installation.</source>
+                <target>Als TYPOVIGIL_AGENT_TOKEN in der Umgebung der überwachten Installation eintragen.</target>
             </trans-unit>
-            <trans-unit id="backend.setupLinkHint">
-                <source>Open this link on the monitored site (as a logged-in admin) to configure the agent extension automatically.</source>
-                <target>Diesen Link auf der überwachten Website (als eingeloggter Administrator) öffnen, um die Agent-Extension automatisch zu konfigurieren.</target>
-            </trans-unit>
-            <trans-unit id="backend.noSiteUrlHint">
-                <source>No site URL was set, so no setup link could be built. Copy the token into the agent extension configuration by hand, or fill in the site URL and use "Generate setup link" below.</source>
-                <target>Es wurde keine Website-URL angegeben, daher konnte kein Setup-Link erstellt werden. Den Token manuell in die Konfiguration der Agent-Extension eintragen oder die Website-URL ausfüllen und unten "Setup-Link erzeugen" verwenden.</target>
+            <trans-unit id="backend.copyToken">
+                <source>Copy token</source>
+                <target>Token kopieren</target>
             </trans-unit>
             <trans-unit id="backend.newProject">
                 <source>New project</source>
@@ -83,25 +79,17 @@
                 <source>never reported</source>
                 <target>noch nie gemeldet</target>
             </trans-unit>
-            <trans-unit id="backend.generateSetupLink">
-                <source>Generate setup link</source>
-                <target>Setup-Link erzeugen</target>
+            <trans-unit id="backend.generateToken">
+                <source>Generate token</source>
+                <target>Token erzeugen</target>
             </trans-unit>
-            <trans-unit id="backend.regenerateSetupLink">
+            <trans-unit id="backend.regenerateToken">
                 <source>Issue new token</source>
                 <target>Neuen Token ausstellen</target>
             </trans-unit>
-            <trans-unit id="backend.regenerateSetupLink.confirm">
+            <trans-unit id="backend.regenerateToken.confirm">
                 <source>This project already receives reports. Issuing a new token invalidates the current one immediately — reporting will fail until the agent is updated with the new one. Continue?</source>
                 <target>Dieses Projekt meldet sich bereits. Ein neuer Token macht den aktuellen sofort ungültig — die Meldungen schlagen fehl, bis der Agent mit dem neuen Token aktualisiert wurde. Fortfahren?</target>
-            </trans-unit>
-            <trans-unit id="backend.noSiteUrl">
-                <source>no site URL</source>
-                <target>keine Website-URL</target>
-            </trans-unit>
-            <trans-unit id="backend.noSiteUrlTitle">
-                <source>Fill in the site URL on the project record first</source>
-                <target>Zuerst die Website-URL im Projektdatensatz eintragen</target>
             </trans-unit>
             <trans-unit id="backend.editProject">
                 <source>Edit project</source>

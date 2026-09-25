@@ -44,24 +44,17 @@ final class GenerateProjectToken
             return;
         }
 
-        $record = BackendUtility::getRecord('tx_typovigil_project', $uid, 'token_hash,site_url');
+        $record = BackendUtility::getRecord('tx_typovigil_project', $uid, 'token_hash');
         if (($record['token_hash'] ?? '') !== '') {
             return;
         }
 
-        $issued = GeneralUtility::makeInstance(ProjectTokenService::class)
-            ->issue($uid, (string)($record['site_url'] ?? ''));
+        $token = GeneralUtility::makeInstance(ProjectTokenService::class)->issue($uid);
 
-        $message = $issued['setupLink'] !== null
-            ? sprintf(
-                'Token: %s — open %s on the monitored site to configure the agent extension automatically. The token is not stored and cannot be shown again.',
-                $issued['token'],
-                $issued['setupLink']
-            )
-            : sprintf(
-                'Token: %s — copy it now into the agent extension configuration, or fill in the site URL and use "generate setup link" from the project list later. The token is not stored and cannot be shown again.',
-                $issued['token']
-            );
+        $message = sprintf(
+            'Token: %s — set it as TYPOVIGIL_AGENT_TOKEN in the environment of the monitored installation now. The token is not stored and cannot be shown again.',
+            $token
+        );
 
         GeneralUtility::makeInstance(FlashMessageService::class)
             ->getMessageQueueByIdentifier()

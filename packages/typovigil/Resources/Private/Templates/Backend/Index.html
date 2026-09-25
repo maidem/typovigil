@@ -19,27 +19,16 @@
             <div class="callout-body">
                 <p>
                     <strong><f:translate key="backend.token" />:</strong>
-                    <code>{justIssued.token}</code>
-                    — <f:translate key="backend.tokenShownOnce" />
                 </p>
-                <f:if condition="{justIssued.setupLink}">
-                    <f:then>
-                        <div class="input-group">
-                            <input type="text" class="form-control" readonly="readonly" value="{justIssued.setupLink}">
-                            <typo3-copy-to-clipboard class="btn btn-default" title="{f:translate(key: 'backend.copySetupLink')}" text="{justIssued.setupLink}">
-                                <core:icon identifier="actions-clipboard" size="small" />
-                            </typo3-copy-to-clipboard>
-                        </div>
-                        <p class="text-muted mt-2 mb-0">
-                            <f:translate key="backend.setupLinkHint" />
-                        </p>
-                    </f:then>
-                    <f:else>
-                        <p class="mb-0">
-                            <f:translate key="backend.noSiteUrlHint" />
-                        </p>
-                    </f:else>
-                </f:if>
+                <div class="input-group">
+                    <input type="text" class="form-control" readonly="readonly" value="{justIssued}">
+                    <typo3-copy-to-clipboard class="btn btn-default" title="{f:translate(key: 'backend.copyToken')}" text="{justIssued}">
+                        <core:icon identifier="actions-clipboard" size="small" />
+                    </typo3-copy-to-clipboard>
+                </div>
+                <p class="text-muted mt-2 mb-0">
+                    <f:translate key="backend.tokenShownOnce" /> <f:translate key="backend.tokenHint" />
+                </p>
             </div>
         </div>
         <f:asset.module identifier="@typo3/backend/copy-to-clipboard.js" />
@@ -129,28 +118,21 @@
                                 </f:if>
                             </td>
                             <td>
-                                <f:if condition="{project.siteUrl}">
+                                <f:if condition="{project.hasReported}">
                                     <f:then>
-                                        <f:if condition="{project.hasReported}">
-                                            <f:then>
-                                                <f:link.action
-                                                    action="regenerateSetupLink"
-                                                    arguments="{project: project.uid}"
-                                                    class="btn btn-sm btn-outline-secondary"
-                                                    onclick="return confirm('{f:translate(key: \'backend.regenerateSetupLink.confirm\')}');"
-                                                >
-                                                    <f:translate key="backend.regenerateSetupLink" />
-                                                </f:link.action>
-                                            </f:then>
-                                            <f:else>
-                                                <f:link.action action="regenerateSetupLink" arguments="{project: project.uid}" class="btn btn-sm btn-outline-secondary">
-                                                    <f:translate key="backend.generateSetupLink" />
-                                                </f:link.action>
-                                            </f:else>
-                                        </f:if>
+                                        <f:link.action
+                                            action="regenerateToken"
+                                            arguments="{project: project.uid}"
+                                            class="btn btn-sm btn-outline-secondary"
+                                            onclick="return confirm('{f:translate(key: \'backend.regenerateToken.confirm\')}');"
+                                        >
+                                            <f:translate key="backend.regenerateToken" />
+                                        </f:link.action>
                                     </f:then>
                                     <f:else>
-                                        <span class="text-muted" title="{f:translate(key: 'backend.noSiteUrlTitle')}"><f:translate key="backend.noSiteUrl" /></span>
+                                        <f:link.action action="regenerateToken" arguments="{project: project.uid}" class="btn btn-sm btn-outline-secondary">
+                                            <f:translate key="backend.generateToken" />
+                                        </f:link.action>
                                     </f:else>
                                 </f:if>
                             </td>

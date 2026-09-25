@@ -167,7 +167,7 @@ final class BackendController extends ActionController
     }
 
     /**
-     * Issues a fresh token and setup link.
+     * Issues a fresh token.
      *
      * This is also the only way to revoke a token: issuing a new one
      * overwrites the stored hash, so the old token stops matching
@@ -175,11 +175,11 @@ final class BackendController extends ActionController
      * lost token is invalidated by replacing it, same as here.
      *
      * The template asks for confirmation once the agent has already
-     * reported, since replacing the token then means the agent's own copy
-     * (in its backend module, or its TYPOVIGIL_AGENT_TOKEN environment
-     * variable) also needs to be updated, or reporting breaks until it is.
+     * reported, since replacing the token then means TYPOVIGIL_AGENT_TOKEN on
+     * the monitored installation also needs to be updated, or reporting
+     * breaks until it is.
      */
-    public function regenerateSetupLinkAction(int $project): ResponseInterface
+    public function regenerateTokenAction(int $project): ResponseInterface
     {
         $record = $this->projects->findByUid($project);
 
@@ -189,20 +189,9 @@ final class BackendController extends ActionController
             return $this->redirect('index');
         }
 
-        $siteUrl = trim((string)($record['site_url'] ?? ''));
-        if ($siteUrl === '') {
-            $this->addPersistentFlashMessage(
-                'Fill in the site URL on this project first, then generate the setup link again.',
-                'TypoVigil',
-                ContextualFeedbackSeverity::WARNING
-            );
-
-            return $this->redirect('index');
-        }
-
-        // issue() stashes the result in the backend user's session; indexAction
+        // issue() stashes the token in the backend user's session; indexAction
         // picks it up and shows it with a copy button after this redirect.
-        $this->projectTokens->issue($project, $siteUrl);
+        $this->projectTokens->issue($project);
 
         return $this->redirect('index');
     }
