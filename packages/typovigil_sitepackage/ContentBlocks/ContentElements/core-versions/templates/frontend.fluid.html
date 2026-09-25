@@ -1,0 +1,26 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:tv="http://typo3.org/ns/Maidemde/TypovigilSitepackage/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+    <div class="tv-portal tv-core-versions">
+        <f:if condition="{data.majors}">
+            <f:then>
+                <div class="tv-cards">
+                    <f:for each="{tv:coreVersions(majors: data.majors)}" as="core">
+                        <article class="tv-card tv-card--{core.severity}">
+                            <header class="tv-card__head">
+                                <span class="tv-chip tv-chip--{core.severity}">{core.severityLabel}</span>
+                            </header>
+                            <h2 class="tv-card__title">TYPO3 {core.major}</h2>
+                            <p class="tv-lead">Neueste Version: {core.version}</p>
+                        </article>
+                    </f:for>
+                </div>
+            </f:then>
+            <f:else>
+                <p class="tv-empty">Keine Hauptversionen hinterlegt.</p>
+            </f:else>
+        </f:if>
+    </div>
+</html>

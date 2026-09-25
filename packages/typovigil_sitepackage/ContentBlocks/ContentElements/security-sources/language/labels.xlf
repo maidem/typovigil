@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" target-language="de" datatype="plaintext" original="labels.xlf">
+        <body>
+            <trans-unit id="title">
+                <source>Security Sources</source>
+                <target>Security-Quellen</target>
+            </trans-unit>
+            <trans-unit id="description">
+                <source>Zeigt Security Advisories für eine redaktionell gepflegte Liste von Composer-Paketen.</source>
+                <target>Zeigt Security Advisories für eine redaktionell gepflegte Liste von Composer-Paketen.</target>
+            </trans-unit>
+            <trans-unit id="heading.label">
+                <source>Überschrift</source>
+                <target>Überschrift</target>
+            </trans-unit>
+            <trans-unit id="sources.label">
+                <source>Quellen</source>
+                <target>Quellen</target>
+            </trans-unit>
+            <trans-unit id="sources.composer_name.label">
+                <source>Composer-Paketname</source>
+                <target>Composer-Paketname</target>
+            </trans-unit>
+            <trans-unit id="sources.composer_name.description">
+                <source>Z. B. typo3/cms-core oder ein anderes Composer-Paket.</source>
+                <target>Z. B. typo3/cms-core oder ein anderes Composer-Paket.</target>
+            </trans-unit>
+            <trans-unit id="sources.label_field.label">
+                <source>Anzeigename</source>
+                <target>Anzeigename</target>
+            </trans-unit>
+            <trans-unit id="sources.label_field.description">
+                <source>Wird als Kartentitel gezeigt, z. B. "TYPO3 Core".</source>
+                <target>Wird als Kartentitel gezeigt, z. B. "TYPO3 Core".</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

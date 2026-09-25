@@ -1,0 +1,24 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:cb="http://typo3.org/ns/TYPO3/CMS/ContentBlocks/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+    <f:layout name="Preview" />
+
+    <f:section name="Header">
+        <cb:link.editRecord uid="{data.uid}" table="{data.mainType}"
+            ><strong>Security Sources</strong></cb:link.editRecord
+        >
+    </f:section>
+
+    <f:section name="Content">
+        <f:if condition="{data.sources}">
+            <f:then>
+                <div>{data.sources -> f:count()} Quelle(n): <f:for each="{data.sources}" as="source" iteration="it">{source.label}<f:if condition="!{it.isLast}">, </f:if></f:for></div>
+            </f:then>
+            <f:else>
+                <div>Keine Quellen hinterlegt</div>
+            </f:else>
+        </f:if>
+    </f:section>
+</html>

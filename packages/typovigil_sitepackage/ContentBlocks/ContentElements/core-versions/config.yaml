@@ -1,0 +1,18 @@
+name: typovigil/core-versions
+title: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/core-versions/language/labels.xlf:title
+group: common
+description: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/core-versions/language/labels.xlf:description
+prefixFields: true
+prefixType: full
+fields:
+  - identifier: majors
+    type: Collection
+    label: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/core-versions/language/labels.xlf:majors.label
+    labelField: major_version
+    minitems: 1
+    fields:
+      - identifier: major_version
+        type: Text
+        label: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/core-versions/language/labels.xlf:majors.major_version.label
+        description: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/core-versions/language/labels.xlf:majors.major_version.description
+        required: true

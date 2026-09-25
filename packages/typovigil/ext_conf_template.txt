@@ -4,6 +4,9 @@ agencyFeGroupId = 0
 # cat=basic; type=int+; label=Project storage page: Page (usually a Sysfolder) where "New project" in the TypoVigil module creates tx_typovigil_project records. 0 refuses to create new records from the module until this is set.
 projectStoragePid = 0
 
+# cat=basic; type=int+; label=Security sources page: Page whose content elements (a "Security Sources" Content Block) are rendered on the public /security-status route. 0 falls back to the built-in TYPO3-core-only check.
+securitySourcesPageId = 0
+
 # cat=hosting; type=string; label=Hosting platform API URL: Base URL of the hosting platform's API, e.g. http://100.99.227.54:8000/api/v1. Empty disables every backup feature. In a container deploy set TYPOVIGIL_COOLIFY_API_URL instead — this field is rebuilt from the image on every deploy and loses its value.
 coolifyApiUrl =
 

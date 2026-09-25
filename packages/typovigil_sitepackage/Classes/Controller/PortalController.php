@@ -14,6 +14,7 @@ use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\ErrorController;
 
 /**
@@ -70,9 +71,21 @@ final class PortalController extends ActionController
      * The public security overview, reachable from the navigation regardless
      * of login state — a logged-in customer may want it too, not only visitors
      * without an account.
+     *
+     * Delegates to a page of ordinary content elements (a "Security Sources"
+     * Content Block) instead of assembling the data itself, so which packages
+     * are watched is an editorial decision, not a code change. Falls back to
+     * the built-in TYPO3-core-only check when no page is configured yet.
      */
     public function securityAction(): ResponseInterface
     {
+        $sourcesPageId = (int)($this->extensionConfiguration->get('typovigil', 'securitySourcesPageId') ?: 0);
+        if ($sourcesPageId > 0) {
+            $this->view->assign('securitySourcesHtml', $this->renderPageContent($sourcesPageId));
+
+            return $this->htmlResponse();
+        }
+
         $this->assignSecurityOverview();
 
         return $this->htmlResponse();
@@ -82,6 +95,26 @@ final class PortalController extends ActionController
     {
         $this->view->assign('coreVersions', $this->versionCheck->maintainedCoreVersions());
         $this->view->assign('advisories', $this->versionCheck->securityAdvisories());
+    }
+
+    /**
+     * Renders every content element of a page, the same way TypoScript's
+     * RECORDS/CONTENT content objects do — used here to embed a page built
+     * from "Security Sources" Content Block elements without wiring a
+     * separate TypoScript path for it.
+     */
+    private function renderPageContent(int $pageId): string
+    {
+        $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+
+        return (string)$cObj->cObjGetSingle('CONTENT', [
+            'table' => 'tt_content',
+            'select.' => [
+                'pidInList' => $pageId,
+                'orderBy' => 'sorting',
+                'where' => 'colPos = 0',
+            ],
+        ]);
     }
 
     public function showAction(int $project): ResponseInterface

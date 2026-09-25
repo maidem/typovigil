@@ -1,0 +1,24 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:cb="http://typo3.org/ns/TYPO3/CMS/ContentBlocks/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+    <f:layout name="Preview" />
+
+    <f:section name="Header">
+        <cb:link.editRecord uid="{data.uid}" table="{data.mainType}"
+            ><strong>Core Versions</strong></cb:link.editRecord
+        >
+    </f:section>
+
+    <f:section name="Content">
+        <f:if condition="{data.majors}">
+            <f:then>
+                <div>Hauptversionen: <f:for each="{data.majors}" as="major" iteration="it">{major.major_version}<f:if condition="!{it.isLast}">, </f:if></f:for></div>
+            </f:then>
+            <f:else>
+                <div>Keine Hauptversionen hinterlegt</div>
+            </f:else>
+        </f:if>
+    </f:section>
+</html>

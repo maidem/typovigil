@@ -136,6 +136,22 @@ body {
     padding-inline: 20px;
 }
 
+/* Several Content Blocks (hero, core versions, security sources) can sit on
+   one page, each its own .tv-portal — without this, each one's bottom
+   padding would stack with the next one's top padding into a much larger
+   gap than a single plugin ever had. Reduced, not removed: the hero's own
+   card already ends visually right at its box edge, so a following block
+   still needs its own top padding to not sit flush against it. Set per pair
+   rather than once for all .tv-portal siblings: the security list follows
+   right after a heading-less card grid and can sit closer than the hero can. */
+.tv-portal + .tv-portal {
+    padding-top: 24px;
+}
+
+.tv-core-versions + .tv-security-sources {
+    padding-top: 8px;
+}
+
 /* Wraps every page's main content, plugin included, so this is the same
    1180px frame as .tv-portal — a nested .tv-portal simply reuses the same
    width. The narrower reading measure below applies to plain text
@@ -1039,6 +1055,14 @@ body > ul a:hover {
 
 .tv-nav__link:hover {
     border-color: var(--tv-muted);
+}
+
+/* The brand link (site name) shares the nav's click target and font weight
+   but must not look like the pill-shaped action links next to it. */
+.tv-nav__link--brand {
+    padding: 6px 0;
+    border: none;
+    border-radius: 0;
 }
 
 /* Overrides .tv-topbar's own full-width flex row: inside .tv-header it is

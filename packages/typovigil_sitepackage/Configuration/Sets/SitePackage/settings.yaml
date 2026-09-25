@@ -19,9 +19,10 @@ config.prefixLocalAnchors: 'all'
 config.headerComment: 'build by get.typo3.org/sitepackage'
 config.sendCacheHeaders: '1'
 
-# The login form is fetched into a <dialog> on the root page (see main.js),
-# so felogin's own referrer-based redirect isn't reliable — always sending
-# customers to the root page after login is where their installations live.
+# The root page (1) is the public marketing/hero page and carries no plugin
+# after login — sending customers there after login would show them nothing
+# of their own. Page 3 ("Meine Installationen") holds the actual project
+# overview plugin.
 felogin.redirectMode: 'login'
-felogin.redirectPageLogin: 1
+felogin.redirectPageLogin: 3
 felogin.redirectDisable: false

@@ -14,11 +14,11 @@
          customer checking their own project may still want the general
          TYPO3 release status, and it costs nothing to keep it one click away. -->
     <nav class="tv-nav">
-        <f:link.page pageUid="1" additionalParams="{tx_typovigilsitepackage_portal: {action: 'security', controller: 'Portal'}}" class="tv-nav__link">
-            Sicherheitsstatus
+        <f:link.page pageUid="1" class="tv-nav__link tv-nav__link--brand">
+            TypoVigil
         </f:link.page>
         <f:security.ifAuthenticated>
-            <f:link.page pageUid="1" class="tv-nav__link">Meine Installationen</f:link.page>
+            <f:link.page pageUid="3" class="tv-nav__link">Meine Installationen</f:link.page>
         </f:security.ifAuthenticated>
     </nav>
 

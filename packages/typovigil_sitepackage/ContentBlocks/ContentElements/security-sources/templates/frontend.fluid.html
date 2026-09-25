@@ -1,0 +1,69 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:tv="http://typo3.org/ns/Maidemde/TypovigilSitepackage/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+    <div class="tv-portal tv-security-sources">
+        <f:if condition="{data.heading}">
+            <h2 class="tv-portal__heading">{data.heading}</h2>
+        </f:if>
+
+        <f:if condition="{data.sources}">
+            <f:then>
+                <f:variable name="advisories" value="{tv:securitySources(sources: data.sources)}" />
+
+                <f:if condition="{advisories}">
+                    <f:then>
+                        <!-- Alle Advisories kommen mit; Filter und Pagination laufen
+                             client-seitig (main.js) ohne Seiten-Reload. -->
+                        <div class="tv-filter" data-tv-advisory-filter>
+                            <button type="button" class="tv-filter__pill is-active" data-tv-advisory-type="all">Alle</button>
+                            <button type="button" class="tv-filter__pill" data-tv-advisory-type="critical">Kritisch</button>
+                            <button type="button" class="tv-filter__pill" data-tv-advisory-type="high">Hoch</button>
+                            <button type="button" class="tv-filter__pill" data-tv-advisory-type="medium">Mittel</button>
+                            <button type="button" class="tv-filter__pill" data-tv-advisory-type="low">Niedrig</button>
+                        </div>
+
+                        <div class="tv-cards tv-cards--advisories" data-tv-advisory-list>
+                            <f:for each="{advisories}" as="advisory">
+                                <article class="tv-card tv-card--{f:if(condition: '{advisory.severity} == \'critical\' || {advisory.severity} == \'high\'', then: 'critical', else: 'outdated')}" data-tv-advisory-type="{advisory.severity}">
+                                    <header class="tv-card__head">
+                                        <span class="tv-chip tv-chip--{f:if(condition: '{advisory.severity} == \'critical\' || {advisory.severity} == \'high\'', then: 'critical', else: 'outdated')}">
+                                            <f:switch expression="{advisory.severity}">
+                                                <f:case value="critical">Kritisch</f:case>
+                                                <f:case value="high">Hoch</f:case>
+                                                <f:case value="medium">Mittel</f:case>
+                                                <f:case value="low">Niedrig</f:case>
+                                                <f:defaultCase>Unbekannt</f:defaultCase>
+                                            </f:switch>
+                                        </span>
+                                    </header>
+
+                                    <h2 class="tv-card__title">
+                                        <a href="{advisory.link}" target="_blank" rel="noopener">{advisory.title}</a>
+                                    </h2>
+
+                                    <div class="tv-card__foot">
+                                        <span class="tv-card__more">{advisory.source} &middot; {advisory.id} &middot; <f:format.date format="d.m.Y">{advisory.date}</f:format.date></span>
+                                    </div>
+                                </article>
+                            </f:for>
+                        </div>
+
+                        <p class="tv-empty tv-empty--filtered" data-tv-advisory-empty hidden>
+                            Keine Security Advisories in dieser Auswahl.
+                        </p>
+
+                        <div class="tv-back" data-tv-advisory-pagination></div>
+                    </f:then>
+                    <f:else>
+                        <p class="tv-empty">Security Advisories derzeit nicht verfügbar.</p>
+                    </f:else>
+                </f:if>
+            </f:then>
+            <f:else>
+                <p class="tv-empty">Keine Quellen hinterlegt.</p>
+            </f:else>
+        </f:if>
+    </div>
+</html>

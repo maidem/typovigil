@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" target-language="de" datatype="plaintext" original="labels.xlf">
+        <body>
+            <trans-unit id="title">
+                <source>Core Versions</source>
+                <target>TYPO3-Versionen</target>
+            </trans-unit>
+            <trans-unit id="description">
+                <source>Zeigt die neueste Version je gepflegter TYPO3-Hauptversion, live von get.typo3.org abgefragt.</source>
+                <target>Zeigt die neueste Version je gepflegter TYPO3-Hauptversion, live von get.typo3.org abgefragt.</target>
+            </trans-unit>
+            <trans-unit id="majors.label">
+                <source>Hauptversionen</source>
+                <target>Hauptversionen</target>
+            </trans-unit>
+            <trans-unit id="majors.major_version.label">
+                <source>Hauptversion</source>
+                <target>Hauptversion</target>
+            </trans-unit>
+            <trans-unit id="majors.major_version.description">
+                <source>Nur die Zahl, z. B. 12, 13 oder 14.</source>
+                <target>Nur die Zahl, z. B. 12, 13 oder 14.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

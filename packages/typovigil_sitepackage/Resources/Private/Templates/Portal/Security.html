@@ -5,6 +5,13 @@
 
 <!-- No f:layout: Layouts/ holds page layouts only, and a plugin rendered into a
      content element brings its own markup. -->
+<f:if condition="{securitySourcesHtml}">
+    <f:then>
+        <!-- Editorially maintained: content elements of the page configured
+             under securitySourcesPageId, rendered as-is. -->
+        <f:format.raw>{securitySourcesHtml}</f:format.raw>
+    </f:then>
+    <f:else>
 <div class="tv-portal">
     <div class="tv-cards">
         <f:for each="{coreVersions}" as="core">
@@ -69,5 +76,7 @@
         </f:else>
     </f:if>
 </div>
+    </f:else>
+</f:if>
 
 </html>

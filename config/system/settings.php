@@ -47,6 +47,7 @@ return [
             'edenAiApiUrl' => '',
             'edenAiModel' => 'google/gemini-2.5-flash',
             'projectStoragePid' => '8',
+            'securitySourcesPageId' => '0',
         ],
     ],
     'FE' => [
