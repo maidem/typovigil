@@ -15,6 +15,9 @@
         <f:if condition="{data.teaser}">
             <div><em>{data.teaser}</em></div>
         </f:if>
-        <div>Architektur-Grafik</div>
+        <f:if condition="{data.metro_json}">
+            <f:then><div>Architektur-Grafik: JSON hinterlegt</div></f:then>
+            <f:else><div>Architektur-Grafik: kein JSON hinterlegt</div></f:else>
+        </f:if>
     </f:section>
 </html>

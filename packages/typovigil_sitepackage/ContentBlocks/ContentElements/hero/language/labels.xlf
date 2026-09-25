@@ -18,6 +18,14 @@
                 <source>Kurzbeschreibung über der Trennlinie, z. B. "Server überwachen".</source>
                 <target>Kurzbeschreibung über der Trennlinie, z. B. "Server überwachen".</target>
             </trans-unit>
+            <trans-unit id="metro_json.label">
+                <source>Architektur-Grafik (JSON)</source>
+                <target>Architektur-Grafik (JSON)</target>
+            </trans-unit>
+            <trans-unit id="metro_json.description">
+                <source>Nodes und Edges des Diagramms als JSON. Format siehe Kommentar in metro.js.</source>
+                <target>Nodes und Edges des Diagramms als JSON. Format siehe Kommentar in metro.js.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
