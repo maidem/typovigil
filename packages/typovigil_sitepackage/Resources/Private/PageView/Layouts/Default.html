@@ -20,6 +20,13 @@
         <f:security.ifAuthenticated>
             <f:link.page pageUid="3" class="tv-nav__link">Meine Installationen</f:link.page>
         </f:security.ifAuthenticated>
+        <!-- Every other page in the tree (Login and Meine Installationen are
+             nav_hide'd, since both already have their own dedicated link
+             above) — so a newly created page shows up here without a
+             template change. -->
+        <f:for each="{mainnavigation}" as="page">
+            <f:link.page pageUid="{page.data.uid}" class="tv-nav__link">{page.title}</f:link.page>
+        </f:for>
     </nav>
 
     <f:security.ifAuthenticated>
