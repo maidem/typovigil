@@ -64,6 +64,27 @@ Jeder Kunde sieht ausschließlich die ihm zugeordneten Projekte. Diese Prüfung
 findet im Programmcode selbst statt, nicht nur über den Seitenschutz — sonst
 ließe sich durch Ändern der Adresszeile ein fremdes Projekt aufrufen.
 
+## Frei platzierbare Content Blocks
+
+Neben der eigentlichen Kunden- und Projektverwaltung bringt die Zentrale zwei
+Content Blocks mit, die sich auf beliebigen Seiten platzieren lassen:
+
+- **Security Sources** — Sicherheitsmeldungen für eine redaktionell gepflegte
+  Liste von Composer-Paketen, mit Filter nach Schweregrad
+- **CLI Commands** — alle TYPO3-Console-Commands, filterbar nach Hauptversion
+  (12/13/14), mit Klick-zum-Kopieren je Befehl
+
+Beide holen ihre Daten bei jedem Seitenaufruf live von den offiziellen Quellen
+(Packagist bzw. das TYPO3-Core-Repository auf GitHub) und cachen sie für 24
+Stunden, damit kein Aufruf auf eine der drei unterstützten Quellen wartet.
+
+Die CLI-Command-Liste liest dabei drei verschiedene Registrierungsstile aus,
+weil TYPO3 sie zwischen den Versionen geändert hat: das `console.command`-Tag
+in `Configuration/Services.yaml` (12/13), das `#[AsCommand]`-Attribut an der
+Befehlsklasse (ab 14), und den älteren `parent::__construct('name')` +
+`setDescription(...)`-Stil, den einzelne Core-Befehle (z. B. `cache:flush`)
+auch in 14 noch verwenden.
+
 ## Einstufung
 
 - **kritisch** — für die installierte Version ist eine Sicherheitslücke bekannt,
