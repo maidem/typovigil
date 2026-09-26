@@ -50,13 +50,12 @@ final class PortalController extends ActionController
     {
         $userId = $this->frontendUserId();
         if ($userId === 0) {
-            // Renders the Security template explicitly rather than calling
-            // securityAction() as a plain method: $this->view is already bound
-            // to List.html at this point, and render() is the supported way to
-            // pick a different template within the same request.
-            $this->assignSecurityOverview();
-
-            return $this->htmlResponse($this->view->render('Security'));
+            // forward() rather than manually rendering the Security template:
+            // $this->view is already bound to List.html at this point, and a
+            // manual render('Security') call silently produced an empty body
+            // instead of the Security template's content. forward() is
+            // Extbase's supported way to hand off to another action mid-request.
+            $this->forward('security');
         }
 
         $seesAll = $this->seesAllProjects();
