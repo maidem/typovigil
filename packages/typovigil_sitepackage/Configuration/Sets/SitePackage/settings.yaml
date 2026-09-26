@@ -19,11 +19,11 @@ config.prefixLocalAnchors: 'all'
 config.headerComment: 'build by get.typo3.org/sitepackage'
 config.sendCacheHeaders: '1'
 
-# The root page (1) is the public marketing/hero page and carries no plugin
-# after login — sending customers there after login would show them nothing
-# of their own. Page 3 ("Meine Installationen") holds the actual project
-# overview plugin.
+# The portal plugin (project overview) lives on the root page (1), not on
+# "Status" (3) anymore — see MoveContentToRootPageCommand. Both login and
+# logout now send visitors there; "Status" is a leftover page with no content
+# on it.
 felogin.redirectMode: 'login,logout'
-felogin.redirectPageLogin: 3
+felogin.redirectPageLogin: 1
 felogin.redirectPageLogout: 1
 felogin.redirectDisable: false
