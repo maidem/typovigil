@@ -16,6 +16,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\ErrorController;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * Customer-facing status view.
@@ -50,12 +51,12 @@ final class PortalController extends ActionController
     {
         $userId = $this->frontendUserId();
         if ($userId === 0) {
-            // forward() rather than manually rendering the Security template:
-            // $this->view is already bound to List.html at this point, and a
-            // manual render('Security') call silently produced an empty body
-            // instead of the Security template's content. forward() is
-            // Extbase's supported way to hand off to another action mid-request.
-            $this->forward('security');
+            // A standalone view rather than $this->view->render('Security') or
+            // forward(): $this->view is already bound to List.html at this
+            // point, and both alternatives silently produced an empty response
+            // body instead of the Security template's content. A fresh,
+            // independent view sidesteps whatever state that binding left behind.
+            return $this->htmlResponse($this->renderSecurityOverview());
         }
 
         $seesAll = $this->seesAllProjects();
@@ -78,22 +79,36 @@ final class PortalController extends ActionController
      */
     public function securityAction(): ResponseInterface
     {
-        $sourcesPageId = (int)($this->extensionConfiguration->get('typovigil', 'securitySourcesPageId') ?: 0);
-        if ($sourcesPageId > 0) {
-            $this->view->assign('securitySourcesHtml', $this->renderPageContent($sourcesPageId));
-
-            return $this->htmlResponse();
-        }
-
-        $this->assignSecurityOverview();
-
-        return $this->htmlResponse();
+        return $this->htmlResponse($this->renderSecurityOverview());
     }
 
-    private function assignSecurityOverview(): void
+    /**
+     * Builds the Security template's output through its own StandaloneView
+     * rather than through $this->view — used both as securityAction()'s own
+     * result and as listAction()'s fallback for logged-out visitors, where
+     * $this->view is already bound to List.html.
+     */
+    private function renderSecurityOverview(): string
     {
-        $this->view->assign('coreVersions', $this->versionCheck->maintainedCoreVersions());
-        $this->view->assign('advisories', $this->versionCheck->securityAdvisories());
+        $sourcesPageId = (int)($this->extensionConfiguration->get('typovigil', 'securitySourcesPageId') ?: 0);
+
+        $view = GeneralUtility::makeInstance(StandaloneView::class);
+        $view->setTemplatePathAndFilename(
+            GeneralUtility::getFileAbsFileName(
+                'EXT:typovigil_sitepackage/Resources/Private/Templates/Portal/Security.html'
+            )
+        );
+
+        if ($sourcesPageId > 0) {
+            $view->assign('securitySourcesHtml', $this->renderPageContent($sourcesPageId));
+
+            return $view->render();
+        }
+
+        $view->assign('coreVersions', $this->versionCheck->maintainedCoreVersions());
+        $view->assign('advisories', $this->versionCheck->securityAdvisories());
+
+        return $view->render();
     }
 
     /**
