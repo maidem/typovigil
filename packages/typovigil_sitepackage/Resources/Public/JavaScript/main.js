@@ -28,6 +28,33 @@ document.addEventListener('keydown', function (event) {
     }
 });
 
+/*
+ * Mobile menu: the burger toggles the full-screen overlay. The overlay starts
+ * right below the header's current bottom edge, which moves while the demo
+ * bar above it is still in view — hence measured on open, not fixed in CSS.
+ */
+document.addEventListener('click', function (event) {
+    var burger = event.target.closest('[data-tv-burger]');
+    if (!burger) {
+        return;
+    }
+    var header = burger.closest('.tv-header');
+    var open = !header.classList.contains('is-open');
+    header.style.setProperty('--tv-menu-top', header.getBoundingClientRect().bottom + 'px');
+    header.classList.toggle('is-open', open);
+    burger.setAttribute('aria-expanded', String(open));
+});
+
+document.addEventListener('keydown', function (event) {
+    var header = document.querySelector('.tv-header.is-open');
+    if (event.key === 'Escape' && header) {
+        header.classList.remove('is-open');
+        var burger = header.querySelector('[data-tv-burger]');
+        burger.setAttribute('aria-expanded', 'false');
+        burger.focus();
+    }
+});
+
 document.addEventListener('DOMContentLoaded', function () {
     var bar = document.querySelector('[data-tv-filter]');
     if (!bar) {

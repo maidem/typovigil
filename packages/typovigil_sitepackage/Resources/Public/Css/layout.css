@@ -38,6 +38,7 @@
     --tv-muted: #6b6b6b;
     --tv-radius: 10px;
     --tv-radius-pill: 999px;
+    --tv-header-h: 64px;
 
     /* Window chrome dots (traffic lights), used by .tv-card__titlebar. */
     --tv-chrome-red: #ff5f57;
@@ -433,6 +434,7 @@ h2.tv-portal__heading {
 
     .tv-list__meta {
         order: 2;
+        white-space: normal;
     }
 }
 
@@ -1233,6 +1235,21 @@ body > ul a:hover {
     border-radius: 0;
 }
 
+/* Nav + user area. On desktop just the rest of the header row; below the
+   breakpoint a full-screen overlay (see the media query further down). */
+.tv-menu {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-left: 14px;
+}
+
+.tv-burger {
+    display: none;
+}
+
 /* Overrides .tv-topbar's own full-width flex row: inside .tv-header it is
    just the right-hand item next to the nav, not a row of its own. */
 .tv-header .tv-topbar {
@@ -1275,7 +1292,108 @@ body > ul a:hover {
 @media (max-width: 520px) {
     .tv-portal { padding-block: 40px 40px; }
     .tv-cards { grid-template-columns: 1fr; }
-    .tv-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
+
+/* --- mobile menu --------------------------------------------------------
+   1024px, not a phone width: logged in, the pill row plus the user menu
+   no longer fits a single line well before that, and wrapping it into two
+   rows made the sticky header eat a third of a phone screen. */
+@media (max-width: 1024px) {
+    .tv-header {
+        min-height: var(--tv-header-h);
+        padding-block: 10px;
+    }
+
+    .tv-burger {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: 1px solid var(--tv-border);
+        border-radius: var(--tv-radius-pill);
+        background: var(--tv-surface);
+        color: var(--tv-text);
+        cursor: pointer;
+    }
+
+    .tv-burger__bar,
+    .tv-burger__bar::before,
+    .tv-burger__bar::after {
+        position: absolute;
+        width: 18px;
+        height: 2px;
+        border-radius: 1px;
+        background: currentColor;
+        transition: transform 0.2s, background-color 0.2s;
+    }
+
+    .tv-burger__bar::before,
+    .tv-burger__bar::after {
+        content: "";
+        left: 0;
+    }
+
+    .tv-burger__bar::before { transform: translateY(-6px); }
+    .tv-burger__bar::after { transform: translateY(6px); }
+
+    .tv-header.is-open .tv-burger__bar { background: transparent; }
+    .tv-header.is-open .tv-burger__bar::before { transform: rotate(45deg); }
+    .tv-header.is-open .tv-burger__bar::after { transform: rotate(-45deg); }
+
+    /* z-index -1 inside the header's own stacking context: painted above
+       the header background but below its brand link and burger, so both
+       stay visible and clickable on top of the overlay. */
+    .tv-menu {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        gap: 28px;
+        margin: 0;
+        padding: calc(var(--tv-menu-top, var(--tv-header-h)) + 16px) 20px 32px;
+        background: var(--tv-bg);
+        overflow-y: auto;
+    }
+
+    .tv-header.is-open .tv-menu {
+        display: flex;
+    }
+
+    .tv-nav {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .tv-nav .tv-nav__link,
+    .tv-login-link {
+        display: block;
+        padding: 14px 20px;
+        font-size: 1.05rem;
+    }
+
+    .tv-header .tv-topbar {
+        display: block;
+        padding-top: 20px;
+        border-top: 1px solid var(--tv-border);
+    }
+
+    /* Inside the overlay there is room to show the dropdown in place
+       instead of floating it off the screen edge. */
+    .tv-user__menu {
+        position: static;
+        min-width: 0;
+        box-shadow: none;
+    }
+
+    html:has(.tv-header.is-open) {
+        overflow: hidden;
+    }
 }
 
 /* --- hero (Content Block) ------------------------------------------------ */
@@ -1309,11 +1427,7 @@ body > ul a:hover {
        the sources row below) instead of the previous three — taller so the
        bottom row's label does not get clipped. */
     height: 320px;
-    /* ponytail: SVG scales to fit width via preserveAspectRatio — with 4
-       columns that squeezes labels into unreadable soup below ~480px. Scroll
-       horizontally on narrow screens instead of shrinking the graphic. */
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow: hidden;
 }
 
 @media (min-width: 768px) {
@@ -1322,19 +1436,59 @@ body > ul a:hover {
 
 .tv-metro__svg {
     display: block;
+    width: 100%;
     height: 100%;
     font-family: "JetBrains Mono", monospace;
 }
 
-@media (max-width: 479px) {
-    .tv-metro__svg {
-        width: auto;
-        min-width: 620px;
+/* Phones: the hero fills the first screen. Portrait gets the vertical
+   graphic (metro.js switches on the same portrait query), landscape the
+   horizontal one — both scale into the card, no sideways scrolling. */
+@media (max-width: 767px) and (orientation: portrait),
+       (orientation: landscape) and (max-height: 500px) {
+    .tv-content:has(.tv-hero) {
+        padding-top: 0;
+    }
+
+    .tv-hero {
+        display: flex;
+        flex-direction: column;
+        /* svh: the height with Safari's toolbars shown, so the card's bottom
+           edge is never hidden behind them. */
+        height: calc(100svh - var(--tv-header-h));
+        padding-block: 8px 16px;
+        box-sizing: border-box;
+    }
+
+    .tv-hero__teaser {
+        margin-bottom: 12px;
+        font-size: 1rem;
+    }
+
+    .tv-hero__card {
+        flex: 1;
+        min-height: 0;
+        padding-bottom: 16px;
+    }
+
+    .tv-hero__metro {
+        flex: 1;
+        min-height: 0;
+        height: auto;
+        padding-inline: 0;
     }
 }
 
-@media (min-width: 480px) {
-    .tv-metro__svg { width: 100%; }
+/* Phone landscape: every pixel of height goes to the graphic. */
+@media (orientation: landscape) and (max-height: 500px) {
+    .tv-hero__teaser,
+    .tv-hero__card .tv-card__head {
+        display: none;
+    }
+
+    .tv-hero__card {
+        padding-top: 12px;
+    }
 }
 
 .tv-metro--play .tv-metro__line {

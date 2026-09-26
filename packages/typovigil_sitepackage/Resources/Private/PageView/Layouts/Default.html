@@ -13,10 +13,18 @@
     <!-- The security overview is always reachable, logged in or not — a
          customer checking their own project may still want the general
          TYPO3 release status, and it costs nothing to keep it one click away. -->
+    <f:link.page pageUid="1" class="tv-nav__link tv-nav__link--brand">
+        TypoVigil
+    </f:link.page>
+
+    <!-- Below the desktop breakpoint the menu becomes a full-screen overlay,
+         toggled by this button (main.js). Hidden on desktop via CSS. -->
+    <button type="button" class="tv-burger" aria-expanded="false" aria-controls="tv-menu" aria-label="Menü" data-tv-burger>
+        <span class="tv-burger__bar" aria-hidden="true"></span>
+    </button>
+
+    <div class="tv-menu" id="tv-menu">
     <nav class="tv-nav">
-        <f:link.page pageUid="1" class="tv-nav__link tv-nav__link--brand">
-            TypoVigil
-        </f:link.page>
         <f:security.ifAuthenticated>
             <f:link.page pageUid="3" class="tv-nav__link">Meine Installationen</f:link.page>
         </f:security.ifAuthenticated>
@@ -67,6 +75,7 @@
             </div>
         </f:else>
     </f:security.ifAuthenticated>
+    </div>
 </header>
 
 <main class="tv-main">
