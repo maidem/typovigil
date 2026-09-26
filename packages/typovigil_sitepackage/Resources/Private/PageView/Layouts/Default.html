@@ -47,8 +47,11 @@
 
                         <!-- POST, not a link: a GET logout can be triggered by any
                              foreign page through an embedded <img src>. felogin needs
-                             no request token for logging out, only for logging in. -->
-                        <form method="post" action="">
+                             no request token for logging out, only for logging in.
+                             Posts to the root page: felogin's redirectPageLogout only
+                             fires on pages carrying the felogin plugin, so posting to
+                             the current page would leave the visitor there. -->
+                        <form method="post" action="/">
                             <input type="hidden" name="logintype" value="logout" />
                             <button type="submit" class="tv-user__logout">Abmelden</button>
                         </form>
