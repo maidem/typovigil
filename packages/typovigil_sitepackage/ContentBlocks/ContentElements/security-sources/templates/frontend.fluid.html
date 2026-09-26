@@ -27,29 +27,23 @@
                             <button type="button" class="tv-filter__pill" data-tv-advisory-type="low">Niedrig</button>
                         </div>
 
-                        <div class="tv-cards tv-cards--advisories" data-tv-advisory-list>
+                        <div class="tv-list" data-tv-advisory-list>
                             <f:for each="{advisories}" as="advisory">
-                                <article class="tv-card tv-card--{f:if(condition: '{advisory.severity} == \'critical\' || {advisory.severity} == \'high\'', then: 'critical', else: 'outdated')}" data-tv-advisory-type="{advisory.severity}">
-                                    <header class="tv-card__head">
-                                        <span class="tv-chip tv-chip--{f:if(condition: '{advisory.severity} == \'critical\' || {advisory.severity} == \'high\'', then: 'critical', else: 'outdated')}">
-                                            <f:switch expression="{advisory.severity}">
-                                                <f:case value="critical">Kritisch</f:case>
-                                                <f:case value="high">Hoch</f:case>
-                                                <f:case value="medium">Mittel</f:case>
-                                                <f:case value="low">Niedrig</f:case>
-                                                <f:defaultCase>Unbekannt</f:defaultCase>
-                                            </f:switch>
-                                        </span>
-                                    </header>
+                                <div class="tv-list__row" data-tv-advisory-type="{advisory.severity}">
+                                    <span class="tv-chip tv-chip--{f:if(condition: '{advisory.severity} == \'critical\' || {advisory.severity} == \'high\'', then: 'critical', else: 'outdated')}">
+                                        <f:switch expression="{advisory.severity}">
+                                            <f:case value="critical">Kritisch</f:case>
+                                            <f:case value="high">Hoch</f:case>
+                                            <f:case value="medium">Mittel</f:case>
+                                            <f:case value="low">Niedrig</f:case>
+                                            <f:defaultCase>Unbekannt</f:defaultCase>
+                                        </f:switch>
+                                    </span>
 
-                                    <h2 class="tv-card__title">
-                                        <a href="{advisory.link}" target="_blank" rel="noopener">{advisory.title}</a>
-                                    </h2>
+                                    <a class="tv-list__title" href="{advisory.link}" target="_blank" rel="noopener">{advisory.title}</a>
 
-                                    <div class="tv-card__foot">
-                                        <span class="tv-card__more">{advisory.source} &middot; {advisory.id} &middot; <f:format.date format="d.m.Y">{advisory.date}</f:format.date></span>
-                                    </div>
-                                </article>
+                                    <span class="tv-list__meta">{advisory.source} &middot; {advisory.id} &middot; <f:format.date format="d.m.Y">{advisory.date}</f:format.date></span>
+                                </div>
                             </f:for>
                         </div>
 
@@ -57,7 +51,7 @@
                             Keine Security Advisories in dieser Auswahl.
                         </p>
 
-                        <div class="tv-back" data-tv-advisory-pagination></div>
+                        <div data-tv-advisory-pagination></div>
                     </f:then>
                     <f:else>
                         <p class="tv-empty">Security Advisories derzeit nicht verfügbar.</p>

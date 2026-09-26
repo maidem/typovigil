@@ -275,6 +275,79 @@ h2.tv-portal__heading {
     align-items: stretch;
 }
 
+/* Advisories read as one bordered list (one "board"), not as N separate
+   cards: rows share the container width and are separated by hairlines
+   instead of each carrying its own border/shadow/radius. */
+.tv-list {
+    border: 1px solid var(--tv-border);
+    border-radius: var(--tv-radius);
+    background: var(--tv-surface);
+    box-shadow: var(--tv-shadow);
+    overflow: hidden;
+}
+
+.tv-list__row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--tv-border);
+}
+
+.tv-list__row:last-child {
+    border-bottom: none;
+}
+
+.tv-list__row[hidden] {
+    display: none;
+}
+
+.tv-list .tv-chip {
+    flex: 0 0 auto;
+    width: 72px;
+    padding: 3px 0;
+    font-size: 0.7rem;
+    text-align: center;
+}
+
+.tv-list__title {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: inherit;
+    font-size: 0.95rem;
+    text-decoration: none;
+}
+
+.tv-list__title:hover {
+    text-decoration: underline;
+}
+
+.tv-list__meta {
+    flex: 0 0 auto;
+    color: var(--tv-muted);
+    font-size: 0.86rem;
+    white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+    .tv-list__row {
+        flex-wrap: wrap;
+    }
+
+    .tv-list__title {
+        flex-basis: 100%;
+        white-space: normal;
+        order: 1;
+    }
+
+    .tv-list__meta {
+        order: 2;
+    }
+}
+
 /* An opened card holds dozens of badges, which do not fit a narrow column.
    Letting it span the full row keeps them readable without a second page. */
 .tv-card:has(.tv-details[open]) {
@@ -1038,7 +1111,7 @@ body > ul a:hover {
     width: 100%;
     max-width: 1180px;
     margin: 0 auto;
-    padding: 14px 24px;
+    padding: 14px 20px;
     box-sizing: border-box;
     background: var(--tv-bg);
     /* Extends the background to the window edge without a wrapper element:

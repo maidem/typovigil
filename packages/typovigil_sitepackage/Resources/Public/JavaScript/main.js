@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    var PER_PAGE = 30;
+    var PER_PAGE = 9999;
     var cards = Array.prototype.slice.call(list.querySelectorAll('[data-tv-advisory-type]'));
     var empty = document.querySelector('[data-tv-advisory-empty]');
     var pagination = document.querySelector('[data-tv-advisory-pagination]');
