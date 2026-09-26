@@ -1,0 +1,24 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:cb="http://typo3.org/ns/TYPO3/CMS/ContentBlocks/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+    <f:layout name="Preview" />
+
+    <f:section name="Header">
+        <cb:link.editRecord uid="{data.uid}" table="{data.mainType}"
+            ><strong>CLI Commands</strong></cb:link.editRecord
+        >
+    </f:section>
+
+    <f:section name="Content">
+        <f:if condition="{data.majors}">
+            <f:then>
+                <div>TYPO3 <f:for each="{data.majors}" as="major" iteration="it">{major}<f:if condition="!{it.isLast}">, </f:if></f:for></div>
+            </f:then>
+            <f:else>
+                <div>Keine Versionen ausgewählt</div>
+            </f:else>
+        </f:if>
+    </f:section>
+</html>

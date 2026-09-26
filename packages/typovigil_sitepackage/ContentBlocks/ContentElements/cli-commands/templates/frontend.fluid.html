@@ -1,0 +1,53 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:tv="http://typo3.org/ns/Maidemde/TypovigilSitepackage/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+    <div class="tv-portal tv-cli-commands">
+        <f:if condition="{data.heading}">
+            <f:if condition="{data.heading_level} == 'h1'">
+                <f:then><h1 class="tv-portal__heading">{data.heading}</h1></f:then>
+                <f:else><h2 class="tv-portal__heading">{data.heading}</h2></f:else>
+            </f:if>
+        </f:if>
+
+        <f:if condition="{data.majors}">
+            <f:then>
+                <f:variable name="commands" value="{tv:cliCommands(majors: data.majors)}" />
+
+                <f:if condition="{commands}">
+                    <f:then>
+                        <div class="tv-filter" data-tv-cli-filter>
+                            <button type="button" class="tv-filter__pill is-active" data-tv-cli-major="all">Alle</button>
+                            <f:for each="{tv:explode(value: data.majors)}" as="major">
+                                <button type="button" class="tv-filter__pill" data-tv-cli-major="{major}">TYPO3 {major}</button>
+                            </f:for>
+                        </div>
+
+                        <div class="tv-list" data-tv-cli-list>
+                            <f:for each="{commands}" as="cmd">
+                                <div class="tv-list__row" data-tv-cli-major="{cmd.major}">
+                                    <span class="tv-chip tv-chip--ok">TYPO3 {cmd.major}</span>
+                                    <button type="button" class="tv-list__title tv-copy" data-tv-copy="{cmd.command}" title="In die Zwischenablage kopieren">
+                                        <code>{cmd.command}</code>
+                                    </button>
+                                    <span class="tv-list__meta">{cmd.description} &middot; {cmd.extension}</span>
+                                </div>
+                            </f:for>
+                        </div>
+
+                        <p class="tv-empty tv-empty--filtered" data-tv-cli-empty hidden>
+                            Keine Commands in dieser Auswahl.
+                        </p>
+                    </f:then>
+                    <f:else>
+                        <p class="tv-empty">CLI-Commands derzeit nicht verfügbar.</p>
+                    </f:else>
+                </f:if>
+            </f:then>
+            <f:else>
+                <p class="tv-empty">Keine Versionen ausgewählt.</p>
+            </f:else>
+        </f:if>
+    </div>
+</html>

@@ -332,6 +332,34 @@ h2.tv-portal__heading {
     white-space: nowrap;
 }
 
+/* CLI command descriptions run much longer than advisory meta text, so this
+   list needs its title fixed-width and its meta free to wrap instead of
+   squeezing the title down to an unreadable ellipsis. */
+.tv-cli-commands .tv-list__title {
+    flex: 0 0 auto;
+    width: 220px;
+}
+
+.tv-cli-commands .tv-list__meta {
+    flex: 1 1 auto;
+    white-space: normal;
+}
+
+/* The command name is a <button> (clipboard copy needs a click target with no
+   navigation side effect), so it needs the plain-text look reset first. */
+.tv-copy {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.tv-copy.is-copied {
+    color: var(--tv-ok);
+}
+
 @media (max-width: 640px) {
     .tv-list__row {
         flex-wrap: wrap;

@@ -148,3 +148,68 @@ document.addEventListener('DOMContentLoaded', function () {
 
     render();
 });
+
+/*
+ * Filters the CLI command list by TYPO3 major, same pattern as the advisory
+ * filter above minus pagination: the full command list per major is short
+ * enough to show at once.
+ */
+document.addEventListener('DOMContentLoaded', function () {
+    var bar = document.querySelector('[data-tv-cli-filter]');
+    var list = document.querySelector('[data-tv-cli-list]');
+    if (!bar || !list) {
+        return;
+    }
+
+    var rows = Array.prototype.slice.call(list.querySelectorAll('[data-tv-cli-major]'));
+    var empty = document.querySelector('[data-tv-cli-empty]');
+
+    bar.addEventListener('click', function (event) {
+        var pill = event.target.closest('[data-tv-cli-major]');
+        if (!pill || !bar.contains(pill)) {
+            return;
+        }
+
+        var wanted = pill.getAttribute('data-tv-cli-major');
+
+        bar.querySelectorAll('[data-tv-cli-major]').forEach(function (other) {
+            other.classList.toggle('is-active', other === pill);
+        });
+
+        var visible = 0;
+        rows.forEach(function (row) {
+            var show = wanted === 'all' || row.getAttribute('data-tv-cli-major') === wanted;
+            row.hidden = !show;
+            if (show) {
+                visible++;
+            }
+        });
+
+        if (empty) {
+            empty.hidden = visible > 0;
+        }
+    });
+});
+
+/*
+ * Copies a CLI command to the clipboard on click, with a short "Kopiert!"
+ * confirmation on the button itself — no separate toast component needed.
+ */
+document.addEventListener('click', function (event) {
+    var button = event.target.closest('[data-tv-copy]');
+    if (!button) {
+        return;
+    }
+
+    var text = button.getAttribute('data-tv-copy');
+    navigator.clipboard.writeText(text).then(function () {
+        var original = button.dataset.tvCopyLabel || button.innerHTML;
+        button.dataset.tvCopyLabel = original;
+        button.classList.add('is-copied');
+        button.textContent = 'Kopiert!';
+        setTimeout(function () {
+            button.innerHTML = button.dataset.tvCopyLabel;
+            button.classList.remove('is-copied');
+        }, 1200);
+    });
+});

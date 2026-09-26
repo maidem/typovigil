@@ -37,6 +37,11 @@ services:
     arguments:
       $cache: '@cache.typovigil'
 
+  Maidemde\Typovigil\Service\CliCommandService:
+    public: true
+    arguments:
+      $cache: '@cache.typovigil'
+
   Maidemde\Typovigil\Command\CheckUpdatesCommand:
     tags:
       - name: 'console.command'

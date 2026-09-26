@@ -1,0 +1,33 @@
+name: typovigil/cli-commands
+title: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/cli-commands/language/labels.xlf:title
+group: common
+description: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/cli-commands/language/labels.xlf:description
+prefixFields: true
+prefixType: full
+fields:
+  - identifier: heading
+    type: Text
+    label: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/cli-commands/language/labels.xlf:heading.label
+    default: 'TYPO3 CLI-Commands'
+  - identifier: heading_level
+    type: Select
+    renderType: selectSingle
+    label: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/cli-commands/language/labels.xlf:heading_level.label
+    default: 'h2'
+    items:
+      - label: 'H1'
+        value: 'h1'
+      - label: 'H2'
+        value: 'h2'
+  - identifier: majors
+    type: Select
+    renderType: selectMultipleSideBySide
+    label: LLL:EXT:typovigil_sitepackage/ContentBlocks/ContentElements/cli-commands/language/labels.xlf:majors.label
+    default: '12,13,14'
+    items:
+      - label: 'TYPO3 12'
+        value: '12'
+      - label: 'TYPO3 13'
+        value: '13'
+      - label: 'TYPO3 14'
+        value: '14'
