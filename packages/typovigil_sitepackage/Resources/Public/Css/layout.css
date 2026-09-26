@@ -234,14 +234,17 @@ body {
 /* Repo links (Hub/Agent) read as pill buttons, not inline prose — easier to
    scan than two GitHub URLs buried in a paragraph. Targeted by href rather
    than a custom class/list, since RTE bodytext goes through TYPO3's HTML
-   sanitizer, which strips classes and list markup it doesn't know. */
+   sanitizer, which strips classes and list markup it doesn't know.
+   Excludes .tv-list__title: a security advisory's source is often a
+   github.com/advisories/... URL, and that list already has its own
+   one-line-per-row styling — the pill treatment doesn't belong there. */
 .tv-content p:has(> a[href*="github.com"]:only-child) {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
 }
 
-.tv-content a[href*="github.com"] {
+.tv-content a[href*="github.com"]:not(.tv-list__title) {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -255,7 +258,7 @@ body {
 /* Same "opens elsewhere" arrow as browsers/OS conventions use for external
    links — an inline SVG, so it inherits currentColor instead of needing a
    separate icon asset. */
-.tv-content a[href*="github.com"]::after {
+.tv-content a[href*="github.com"]:not(.tv-list__title)::after {
     content: "";
     width: 0.85em;
     height: 0.85em;
@@ -264,7 +267,7 @@ body {
     mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>') center / contain no-repeat;
 }
 
-.tv-content a[href*="github.com"]:hover {
+.tv-content a[href*="github.com"]:not(.tv-list__title):hover {
     border-color: var(--tv-muted);
 }
 
