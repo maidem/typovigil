@@ -250,6 +250,9 @@ body {
     align-items: center;
     gap: 6px;
     padding: 6px 14px;
+    /* Two pills in one paragraph only have a space between them, not the
+       flex gap above — without this they touch once they wrap. */
+    margin-block: 4px;
     border: 1px solid var(--tv-border);
     border-radius: var(--tv-radius-pill);
     font-weight: 600;
@@ -434,6 +437,10 @@ h2.tv-portal__heading {
 
     .tv-list__meta {
         order: 2;
+        /* Full row width, not its max-content width: otherwise the date
+           runs into the row's right padding instead of wrapping. */
+        flex: 1 1 100%;
+        min-width: 0;
         white-space: normal;
     }
 }
