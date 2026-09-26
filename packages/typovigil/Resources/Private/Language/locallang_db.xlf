@@ -120,6 +120,12 @@
             <trans-unit id="task.updateCheck.description">
                 <source>Matches all reported packages against Packagist, get.typo3.org and the security advisories.</source>
             </trans-unit>
+            <trans-unit id="task.warmupCliCommands.title">
+                <source>TypoVigil: warm up CLI Commands cache</source>
+            </trans-unit>
+            <trans-unit id="task.warmupCliCommands.description">
+                <source>Pre-fills the CLI Commands cache for TYPO3 12, 13 and 14 so visitors don't wait on the GitHub/jsDelivr lookup.</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

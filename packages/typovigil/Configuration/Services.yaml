@@ -60,6 +60,12 @@ services:
         command: 'typovigil:check-and-analyze'
         description: 'Run the update check and generate an AI risk report for each critical package'
 
+  Maidemde\Typovigil\Command\WarmupCliCommandsCacheCommand:
+    tags:
+      - name: 'console.command'
+        command: 'typovigil:warmup-cli-commands'
+        description: 'Pre-fill the CLI Commands cache for every supported TYPO3 major'
+
   # Own table (tx_typovigil_backup_queue) rather than core's default
   # sys_messenger_messages: TYPO3 only auto-creates that one via database
   # compare, a custom table_name needs its own ext_tables.sql entry, which

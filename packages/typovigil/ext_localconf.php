@@ -33,3 +33,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Maidemde\Typovi
     'title' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:task.updateCheck.title',
     'description' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:task.updateCheck.description',
 ];
+
+// Scheduler task that pre-fills the CLI Commands cache — without it the
+// first visitor per major triggers the GitHub/jsDelivr lookup themselves.
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Maidemde\Typovigil\Task\WarmupCliCommandsCacheTask::class] = [
+    'extension' => 'typovigil',
+    'title' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:task.warmupCliCommands.title',
+    'description' => 'LLL:EXT:typovigil/Resources/Private/Language/locallang_db.xlf:task.warmupCliCommands.description',
+];
