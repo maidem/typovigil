@@ -169,8 +169,10 @@ body {
 
 /* Fluid Styled Content wraps every element in .frame with its own
    margin-inline (TYPO3 core default CSS) — without this reset, text content
-   sits indented relative to .tv-portal above it. */
-.tv-content .frame {
+   sits indented relative to .tv-portal above it. The felogin frame is
+   excluded: it needs its own margin-inline: auto (see .frame-type-felogin_login)
+   to stay horizontally centered instead of sticking to the left edge. */
+.tv-content .frame:not(.frame-type-felogin_login) {
     margin-inline: 0;
 }
 

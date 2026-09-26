@@ -23,6 +23,7 @@ config.sendCacheHeaders: '1'
 # after login — sending customers there after login would show them nothing
 # of their own. Page 3 ("Meine Installationen") holds the actual project
 # overview plugin.
-felogin.redirectMode: 'login'
+felogin.redirectMode: 'login,logout'
 felogin.redirectPageLogin: 3
+felogin.redirectPageLogout: 1
 felogin.redirectDisable: false
