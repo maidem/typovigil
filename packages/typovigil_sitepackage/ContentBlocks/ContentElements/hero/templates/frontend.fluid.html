@@ -1,6 +1,7 @@
 <html
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
     xmlns:cb="http://typo3.org/ns/TYPO3/CMS/ContentBlocks/ViewHelpers"
+    xmlns:tv="http://typo3.org/ns/Maidemde/TypovigilSitepackage/ViewHelpers"
     data-namespace-typo3-fluid="true"
 >
     <div class="tv-portal tv-hero">
@@ -11,12 +12,7 @@
             <header class="tv-card__head">
                 <span class="tv-chip tv-chip--ok">Live-Überwachung</span>
             </header>
-            <!-- JSON steht als <script type="application/json">, nicht als
-                 Fluid-String: geschweifte Klammern im JSON würden sonst als
-                 Fluid-Ausdrücke geparst. f:format.raw ist hier sicher, weil
-                 metro_json ein Redakteursfeld ist, kein User-Input. -->
-            <script type="application/json" id="c{data.uid}-metro"><f:format.raw>{data.metro_json}</f:format.raw></script>
-            <div class="tv-metro tv-hero__metro" data-metro-src="c{data.uid}-metro"></div>
+            <div class="tv-metro tv-hero__metro"><tv:metro json="{data.metro_json}" /></div>
         </article>
     </div>
 </html>
