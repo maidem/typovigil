@@ -23,7 +23,7 @@ final class MetroViewHelper extends AbstractViewHelper
 {
     protected $escapeOutput = false;
 
-    private const ROW_H = 110;
+    private const ROW_H = 80;
     private const MIN_COL_W = 120;
     private const COL_GAP = 28;
     private const PAD = 40;
