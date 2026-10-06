@@ -1431,6 +1431,7 @@ body > ul a:hover {
 
 .tv-metro {
     width: 100%;
+    box-sizing: border-box; /* .tv-hero__metro adds padding; keep it inside the card */
 }
 
 .tv-metro__svg {
