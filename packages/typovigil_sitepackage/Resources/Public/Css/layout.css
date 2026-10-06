@@ -1441,6 +1441,15 @@ body > ul a:hover {
     font-family: "JetBrains Mono", monospace;
 }
 
+/* Two SVGs are rendered (see MetroViewHelper): vertical on phones,
+   horizontal from 768px up. */
+.tv-metro__svg--h { display: none; }
+
+@media (min-width: 768px) {
+    .tv-metro__svg--h { display: block; }
+    .tv-metro__svg--v { display: none; }
+}
+
 /* Phones: the hero fills the first screen; the graphic scales into the
    card, no sideways scrolling. */
 @media (max-width: 767px) and (orientation: portrait),
@@ -1476,6 +1485,13 @@ body > ul a:hover {
         padding-inline: 0;
         display: flex;
         align-items: center;
+    }
+
+    /* Fit the graphic into the remaining card height instead of overflowing. */
+    .tv-hero__metro .tv-metro__svg {
+        height: 100%;
+        width: auto !important; /* beats the inline 1:1 width */
+        max-width: 100%;
     }
 }
 
