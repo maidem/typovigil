@@ -11,7 +11,7 @@
 # Requires in Settings → Actions → General → Workflow permissions:
 #   - "Read and write permissions"
 #   - "Allow GitHub Actions to create and approve pull requests"
-# No secret is needed here; the hub's own token lives on the hub.
+# Secret PAT_TOKEN (fine-grained PAT: Contents + Pull requests, read/write).
 
 name: TypoVigil update
 
@@ -95,8 +95,12 @@ jobs:
             # required an approved AI report and a fresh backup, so pressing
             # it there IS the approval. Merging here is what makes that one
             # click actually reach the live installation.
+            #
+            # A PAT (PAT_TOKEN), not github.token: a push caused by the default
+            # GITHUB_TOKEN never triggers further workflow runs, so the merge
+            # would land on main without the deploy workflow ever starting.
             - name: Merge the pull request
               if: steps.update.outputs.changed == 'yes'
               env:
-                  GH_TOKEN: ${{ github.token }}
+                  GH_TOKEN: ${{ secrets.PAT_TOKEN }}
               run: gh pr merge "${{ steps.pr.outputs.pull-request-number }}" --squash --delete-branch
