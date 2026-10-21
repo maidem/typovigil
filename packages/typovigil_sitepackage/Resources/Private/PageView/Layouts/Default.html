@@ -3,12 +3,6 @@
     xmlns:tv="http://typo3.org/ns/Maidemde/TypovigilSitepackage/ViewHelpers"
     data-namespace-typo3-fluid="true"
 >
-<f:security.ifAuthenticated>
-    <f:else>
-        <p class="tv-demo-bar">Demo-Zugang: <code>demo</code> / <code>Demo2009#</code> · <a href="/demo-login">Direkt als Demo anmelden</a></p>
-    </f:else>
-</f:security.ifAuthenticated>
-
 <header class="tv-header">
     <!-- The security overview is always reachable, logged in or not — a
          customer checking their own project may still want the general
@@ -71,6 +65,7 @@
             <!-- Mirrors the logged-in topbar's position, so the corner always
                  holds exactly one thing: a way in, or a way out. -->
             <div class="tv-topbar">
+                <a href="/demo-login" class="tv-login-link">Demo-Login</a>
                 <a href="/login" class="tv-login-link">Anmelden</a>
             </div>
         </f:else>
