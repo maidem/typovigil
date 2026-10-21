@@ -1364,12 +1364,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:maidem/typo3-demo-login.git",
-                "reference": "8b733acb06b3c8f6d0eab6f9d74375bdefd01b68"
+                "reference": "dac8a5a553cd72f56094a903b0924a869317632b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/maidem/typo3-demo-login/zipball/8b733acb06b3c8f6d0eab6f9d74375bdefd01b68",
-                "reference": "8b733acb06b3c8f6d0eab6f9d74375bdefd01b68",
+                "url": "https://api.github.com/repos/maidem/typo3-demo-login/zipball/dac8a5a553cd72f56094a903b0924a869317632b",
+                "reference": "dac8a5a553cd72f56094a903b0924a869317632b",
                 "shasum": ""
             },
             "require": {
@@ -1404,7 +1404,7 @@
                 "source": "https://github.com/maidem/typo3-demo-login/tree/main",
                 "issues": "https://github.com/maidem/typo3-demo-login/issues"
             },
-            "time": "2026-10-21T11:50:02+00:00"
+            "time": "2026-10-21T12:28:07+00:00"
         },
         {
             "name": "maidemde/typovigil",
