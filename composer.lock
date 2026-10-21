@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5ab637bea44115fbc5e76767d7b166a7",
+    "content-hash": "329435fb8efc0ff24de5acfb549dafcd",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1357,6 +1357,54 @@
                 "source": "https://github.com/lolli42/FineDiff/tree/1.1.2"
             },
             "time": "2025-10-31T12:28:27+00:00"
+        },
+        {
+            "name": "maidem/demo-login",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:maidem/typo3-demo-login.git",
+                "reference": "8b733acb06b3c8f6d0eab6f9d74375bdefd01b68"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/maidem/typo3-demo-login/zipball/8b733acb06b3c8f6d0eab6f9d74375bdefd01b68",
+                "reference": "8b733acb06b3c8f6d0eab6f9d74375bdefd01b68",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2.0",
+                "typo3/cms-backend": "^14.1",
+                "typo3/cms-core": "^14.1",
+                "typo3/cms-frontend": "^14.1"
+            },
+            "default-branch": true,
+            "type": "typo3-cms-extension",
+            "extra": {
+                "typo3/cms": {
+                    "extension-key": "demo_login"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Maidem\\DemoLogin\\": "Classes/"
+                }
+            },
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "One-click demo login for TYPO3 frontend and backend users. Disabled until a username is configured.",
+            "homepage": "https://github.com/maidem/typo3-demo-login",
+            "keywords": [
+                "TYPO3 CMS",
+                "demo",
+                "login"
+            ],
+            "support": {
+                "source": "https://github.com/maidem/typo3-demo-login/tree/main",
+                "issues": "https://github.com/maidem/typo3-demo-login/issues"
+            },
+            "time": "2026-10-21T11:50:02+00:00"
         },
         {
             "name": "maidemde/typovigil",
@@ -8216,6 +8264,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "maidem/demo-login": 20,
         "maidemde/typovigil": 20,
         "maidemde/typovigil-sitepackage": 20
     },

@@ -15,6 +15,7 @@
     },
     "require": {
         "friendsoftypo3/content-blocks": "^2.4",
+        "maidem/demo-login": "dev-main",
         "maidemde/typovigil": "@dev",
         "maidemde/typovigil-sitepackage": "@dev",
         "typo3/cms-backend": "^14.3",
@@ -43,10 +44,16 @@
         "typo3/cms-viewpage": "^14.3",
         "typo3/cms-webhooks": "^14.3"
     },
-    "repositories": {
-        "packages": {
+    "repositories": [
+        {
+            "name": "demo-login",
+            "type": "vcs",
+            "url": "https://github.com/maidem/typo3-demo-login"
+        },
+        {
+            "name": "packages",
             "type": "path",
             "url": "./packages/*"
         }
-    }
+    ]
 }

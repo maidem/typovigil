@@ -50,6 +50,8 @@ jobs:
                   cache-from: type=gha
                   cache-to: type=gha,mode=min
                   provenance: false
+                  secrets: |
+                      composer_github_token=${{ secrets.COMPOSER_GITHUB_TOKEN }}
 
     notify-coolify:
         needs: build-and-push

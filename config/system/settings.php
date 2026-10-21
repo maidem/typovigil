@@ -35,6 +35,11 @@ return [
             'loginLogo' => '',
             'loginLogoAlt' => '',
         ],
+        'demo_login' => [
+            'backendUsername' => '',
+            'frontendRedirect' => '/',
+            'frontendUsername' => '',
+        ],
         'scheduler' => [
             'maxLifetime' => '1440',
         ],

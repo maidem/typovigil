@@ -9,7 +9,10 @@ RUN chmod +x /usr/local/bin/install-php-extensions && \
     install-php-extensions intl zip
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer install --no-dev --optimize-autoloader --no-interaction \
+# Token for the private maidem/demo-login repo, mounted as secret so it never lands in a layer
+RUN --mount=type=secret,id=composer_github_token \
+    COMPOSER_AUTH="{\"github-oauth\":{\"github.com\":\"$(cat /run/secrets/composer_github_token)\"}}" \
+    composer install --no-dev --optimize-autoloader --no-interaction \
     --ignore-platform-req=ext-gd --ignore-platform-req=ext-pdo_mysql --ignore-platform-req=ext-mysqli
 
 # Stage 2: runtime
