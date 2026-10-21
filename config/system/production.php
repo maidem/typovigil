@@ -27,6 +27,7 @@ $GLOBALS['TYPO3_CONF_VARS']['LANG']['availableLocales'] = array_unique(array_mer
 
 // One-click login behind the "Demo" link (maidem/demo-login)
 $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['demo_login']['frontendUsername'] = 'demo';
+$GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['demo_login']['frontendRedirect'] = '/status';
 
 if (getenv('IS_DDEV_PROJECT') === 'true') {
     return;
