@@ -1,5 +1,5 @@
 # Stage 1: PHP dependencies
-FROM php:8.4-cli-bookworm AS composer-builder
+FROM php:8.4.27-cli-bookworm AS composer-builder
 WORKDIR /app
 COPY composer.json composer.lock ./
 COPY packages ./packages
@@ -18,7 +18,7 @@ RUN --mount=type=secret,id=composer_github_token \
 # Stage 2: runtime
 # No Node/Vite stage: this hub ships no bundled assets. No Chromium either —
 # there is no PDF rendering here, unlike the portfolio project this is modelled on.
-FROM php:8.4-apache-bookworm
+FROM php:8.4.27-apache-bookworm
 
 WORKDIR /var/www/html
 
