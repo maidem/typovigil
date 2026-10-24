@@ -87,6 +87,8 @@ RUN { \
     echo 'post_max_size=32M'; \
     echo 'memory_limit=512M'; \
     echo 'max_execution_time=240'; \
+    echo 'expose_php=Off'; \
+    echo 'session.upload_progress.enabled=0'; \
     } > /usr/local/etc/php/conf.d/typo3-recommendations.ini
 
 # Application code — changes on almost every commit, so it stays last.
