@@ -65,6 +65,11 @@ su -s /bin/bash www-data -c \
     "php vendor/bin/typo3 extension:setup 2>&1" || \
     echo "[docker-entrypoint] WARNING: extension:setup exited non-zero - check output above"
 
+# Upgrade wizards (e.g. migrations of third-party extensions) never run on a deploy
+# otherwise. Wizards that are already done are skipped, so this is safe on every start.
+su -s /bin/bash www-data -c "php vendor/bin/typo3 upgrade:run --no-interaction 2>&1" || \
+    echo "[docker-entrypoint] WARNING: upgrade:run exited non-zero - check output above"
+
 # Hourly upstream check. Without this nothing ever queries Packagist and
 # get.typo3.org: the agents keep reporting their versions, but no comparison
 # happens and every data source stays "not queried yet" in the footer.

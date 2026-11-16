@@ -34,8 +34,9 @@ report($controller !== null && class_exists($controller), 'module controller cla
 report(in_array('index', $actions[$controller] ?? [], true), 'index action is declared');
 report(in_array('show', $actions[$controller] ?? [], true), 'show action is declared');
 
-// Every declared action needs a template, or the module dies on first click.
-foreach ($actions[$controller] ?? [] as $action) {
+// Every action that renders a view needs a template, or the module dies on first click.
+// The others redirect or return JSON.
+foreach (array_intersect($actions[$controller] ?? [], ['index', 'show']) as $action) {
     $template = $extensionDir . '/Resources/Private/Templates/Backend/' . ucfirst($action) . '.html';
     report(is_file($template), "template exists for action '{$action}'");
 }

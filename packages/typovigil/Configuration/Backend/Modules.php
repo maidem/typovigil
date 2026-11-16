@@ -8,7 +8,8 @@ return [
     'typovigil' => [
         'parent' => 'site',
         'position' => ['after' => 'site_configuration'],
-        'access' => 'user',
+        // admin only: the actions here issue tokens, run backups and open update PRs for every project
+        'access' => 'admin',
         'workspaces' => 'live',
         'iconIdentifier' => 'typovigil-module',
         'path' => '/module/site/typovigil',

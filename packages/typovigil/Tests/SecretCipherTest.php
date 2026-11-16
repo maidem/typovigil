@@ -99,4 +99,13 @@ putenv('TYPO3_ENCRYPTION_KEY=' . str_repeat('d', 96));
 check($cipher->decrypt($fromEnv) === 'secret', 'the environment key reads it back');
 putenv('TYPO3_ENCRYPTION_KEY');
 
+// A value written before the key derivation (raw string as AES key) still reads.
+$legacyKey = str_repeat('e', 96);
+$iv = random_bytes(12);
+$tag = '';
+$legacyCipher = openssl_encrypt('old', 'aes-256-gcm', $legacyKey, OPENSSL_RAW_DATA, $iv, $tag, '', 16);
+putenv('TYPO3_ENCRYPTION_KEY=' . $legacyKey);
+check($cipher->decrypt('enc:v1:' . base64_encode($iv . $tag . $legacyCipher)) === 'old', 'a value from before the key derivation still decrypts');
+putenv('TYPO3_ENCRYPTION_KEY');
+
 fwrite(STDOUT, "OK: {$checks} checks passed\n");

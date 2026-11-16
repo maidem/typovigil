@@ -277,7 +277,7 @@ final readonly class VersionCheckService
             $items[] = [
                 'id' => (string)($advisory['cve'] ?? $advisory['advisoryId'] ?? ''),
                 'title' => $title,
-                'link' => (string)($advisory['link'] ?? ''),
+                'link' => self::safeLink((string)($advisory['link'] ?? '')),
                 'date' => strtotime((string)($advisory['reportedAt'] ?? '')) ?: 0,
                 'severity' => (string)($advisory['severity'] ?? 'unknown'),
             ];
@@ -511,6 +511,12 @@ final readonly class VersionCheckService
                 'exception' => $e->getMessage(),
             ]);
         }
+    }
+
+    /** Upstream data ends up in an href, so only http(s) passes (no javascript: URLs). */
+    public static function safeLink(string $url): string
+    {
+        return preg_match('#^https?://#i', $url) === 1 ? $url : '';
     }
 
     private function isNotFound(\Throwable $e): bool

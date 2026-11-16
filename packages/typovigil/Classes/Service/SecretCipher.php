@@ -55,7 +55,7 @@ final readonly class SecretCipher
         $iv = random_bytes($ivLength);
         $tag = '';
 
-        $ciphertext = openssl_encrypt($plaintext, self::CIPHER, $key, OPENSSL_RAW_DATA, $iv, $tag, '', self::TAG_BYTES);
+        $ciphertext = openssl_encrypt($plaintext, self::CIPHER, self::derive($key), OPENSSL_RAW_DATA, $iv, $tag, '', self::TAG_BYTES);
         if ($ciphertext === false) {
             throw new \RuntimeException('Encryption failed.', 1758480001);
         }
@@ -96,9 +96,22 @@ final readonly class SecretCipher
         $tag = substr($raw, $ivLength, self::TAG_BYTES);
         $ciphertext = substr($raw, $ivLength + self::TAG_BYTES);
 
-        $plaintext = openssl_decrypt($ciphertext, self::CIPHER, $key, OPENSSL_RAW_DATA, $iv, $tag);
+        // The derived key first; values written before the derivation used the raw
+        // string as the key, so that stays a fallback until they have been saved again.
+        foreach ([self::derive($key), $key] as $candidate) {
+            $plaintext = openssl_decrypt($ciphertext, self::CIPHER, $candidate, OPENSSL_RAW_DATA, $iv, $tag);
+            if ($plaintext !== false) {
+                return $plaintext;
+            }
+        }
 
-        return $plaintext === false ? '' : $plaintext;
+        return '';
+    }
+
+    /** AES-256 wants exactly 32 bytes; hashing avoids OpenSSL silently padding or cutting the raw string. */
+    private static function derive(string $key): string
+    {
+        return hash('sha256', $key, true);
     }
 
     /**

@@ -78,7 +78,7 @@ final class SecuritySourcesViewHelper extends AbstractViewHelper
                 $items[] = [
                     'id' => (string)($advisory['cve'] ?? $advisory['advisoryId'] ?? ''),
                     'title' => $title,
-                    'link' => (string)($advisory['link'] ?? ''),
+                    'link' => \Maidemde\Typovigil\Service\VersionCheckService::safeLink((string)($advisory['link'] ?? '')),
                     'date' => strtotime((string)($advisory['reportedAt'] ?? '')) ?: 0,
                     'severity' => (string)($advisory['severity'] ?? 'unknown'),
                     'source' => $labelByComposerName[$composerName] ?? $composerName,

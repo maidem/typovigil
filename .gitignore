@@ -3,6 +3,7 @@
 nbproject
 /var/*
 !/var/labels
+/var/labels/language_pack_states.json
 /vendor
 # public/ is generated, except the entry points: without index.php in the image
 # Apache has nothing to serve and answers 403 on / and 500 on /typo3/.

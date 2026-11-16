@@ -64,7 +64,7 @@ final readonly class GitHubClient
      */
     public function dispatchUpdateWorkflow(string $repo, array $packages): bool
     {
-        if (!preg_match('#^[\w.-]+/[\w.-]+$#', $repo)) {
+        if (!preg_match('#^[A-Za-z0-9_][\w.-]*/[A-Za-z0-9_][\w.-]*$#', $repo)) {
             $this->logger->warning('TypoVigil: refusing to dispatch to a malformed repository name', [
                 'repo' => $repo,
             ]);

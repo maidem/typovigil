@@ -11,6 +11,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Http\Response;
+use TYPO3\CMS\Core\RateLimiter\RateLimiterFactoryInterface;
 
 /**
  * Receives agent reports at POST /typovigil/report.
@@ -24,7 +25,10 @@ final readonly class ReportReceiver implements MiddlewareInterface
     private const MAX_BODY_BYTES = 1048576; // 1 MB — a report is a few hundred packages at most
     private const MAX_PACKAGES = 2000;
 
-    public function __construct(private ProjectRepository $projects) {}
+    public function __construct(
+        private ProjectRepository $projects,
+        private RateLimiterFactoryInterface $rateLimiterFactory,
+    ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -36,8 +40,22 @@ final readonly class ReportReceiver implements MiddlewareInterface
             return new Response(null, 405, ['Allow' => 'POST']);
         }
 
+        // Only failed logins count against the limit: behind Cloudflare many clients can share
+        // one address, and a flood of bad tokens must not lock real agents out.
+        $limiter = $this->rateLimiterFactory->createRequestBasedLimiter($request, [
+            'id' => 'typovigil-report-auth',
+            'policy' => 'sliding_window',
+            'limit' => 10,
+            'interval' => '1 minute',
+        ]);
+        // consume(0) is always accepted, so look at what is left instead.
+        if ($limiter->consume(0)->getRemainingTokens() < 1) {
+            return new Response(null, 429, ['Retry-After' => '60']);
+        }
+
         $project = $this->authenticate($request);
         if ($project === null) {
+            $limiter->consume();
             // Deliberately vague: a precise reason would help someone probe for valid tokens.
             return new JsonResponse(['error' => 'unauthorized'], 401);
         }
